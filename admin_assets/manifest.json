@@ -1,0 +1,21 @@
+{
+    "name": "ATB Admin Portal",
+    "short_name": "ATB Admin Portal",
+    "lang": "en",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#A6BFDE",
+    "icons": [{
+            "src": "images/icon-64.png",
+            "sizes": "64x64"
+        },
+        {
+            "src": "images/icon-128.png",
+            "sizes": "128x128"
+        },
+        {
+            "src": "images/icon-512.png",
+            "sizes": "512x512"
+        }
+    ]
+}

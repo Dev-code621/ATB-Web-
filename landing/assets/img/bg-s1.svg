@@ -1,0 +1,13 @@
+<svg width="1597" height="995.989" xmlns="http://www.w3.org/2000/svg" style="vector-effect: non-scaling-stroke;" stroke="null">
+ <defs style="vector-effect: non-scaling-stroke;" stroke="null">
+  <style style="vector-effect: non-scaling-stroke;" stroke="null">.a{fill:#a6bfde;stroke:rgba(0,0,0,0);}.b{fill:#fff;opacity:0.1;}.c{fill:#737373;opacity:0.08;}</style>
+ </defs>
+ <g stroke="null">
+  <title stroke="null">Layer 1</title>
+  <g stroke="null" id="svg_1">
+   <path stroke="null" id="svg_2" d="m784.12739,245.80799c-38.38392,-84.72866 -65.59691,-169.76424 -82.11284,-252.61631l0,-24.37069l898.45928,0l0,1024.45075c-412.1899,-162.58232 -681.74879,-450.34783 -816.34644,-747.46376z" class="a"/>
+   <circle stroke="null" id="svg_3" r="446.88379" cy="-189.64984" cx="1611.61543" class="b"/>
+   <path stroke="null" id="svg_4" d="m-3.50003,888.39788l0,-918.95051l1271.87937,0q0.74129,19.64412 0.74246,39.46112c0,532.39063 -404.09203,963.97878 -902.56452,963.97878a899.46565,960.66905 0 0 1 -370.05732,-84.48939z" class="c"/>
+  </g>
+ </g>
+</svg>

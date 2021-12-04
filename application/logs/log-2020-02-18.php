@@ -1,0 +1,60 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2020-02-18 01:58:38 --> 404 Page Not Found: 
+ERROR - 2020-02-18 03:57:31 --> Severity: Notice --> Array to string conversion /opt/bitnami/apache2/htdocs/system/database/DB_driver.php 1471
+ERROR - 2020-02-18 03:57:31 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Array, 0, 1, 'New post: dick', 'Gerards', 'uploads/profile_photos/profile_157998' at line 1 - Invalid query: INSERT INTO `notification_history` (`user_id`, `type`, `related_id`, `read_status`, `visible`, `text`, `name`, `profile_image`, `updated_at`, `created_at`) VALUES ('10008', 2, Array, 0, 1, 'New post: dick', 'Gerards', 'uploads/profile_photos/profile_1579987188.jpg', 1582027051, 1582027051)
+ERROR - 2020-02-18 04:36:26 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:26 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:27 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:28 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:29 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:29 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:29 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:30 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:30 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:36:31 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:43:46 --> 404 Page Not Found: 
+ERROR - 2020-02-18 04:43:47 --> 404 Page Not Found: 
+ERROR - 2020-02-18 07:02:07 --> 404 Page Not Found: 
+ERROR - 2020-02-18 07:17:36 --> 404 Page Not Found: 
+ERROR - 2020-02-18 10:09:21 --> 404 Page Not Found: 
+ERROR - 2020-02-18 11:03:11 --> 404 Page Not Found: 
+ERROR - 2020-02-18 12:56:53 --> Severity: Notice --> Array to string conversion /opt/bitnami/apache2/htdocs/system/database/DB_driver.php 1471
+ERROR - 2020-02-18 12:56:53 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Array, 0, 1, 'New post: hello', 'Gerards', 'uploads/profile_photos/profile_15799' at line 1 - Invalid query: INSERT INTO `notification_history` (`user_id`, `type`, `related_id`, `read_status`, `visible`, `text`, `name`, `profile_image`, `updated_at`, `created_at`) VALUES ('10008', 2, Array, 0, 1, 'New post: hello', 'Gerards', 'uploads/profile_photos/profile_1579987188.jpg', 1582059413, 1582059413)
+ERROR - 2020-02-18 14:19:59 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:00 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:00 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:00 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:01 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:02 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:03 --> 404 Page Not Found: 
+ERROR - 2020-02-18 15:37:03 --> 404 Page Not Found: 
+ERROR - 2020-02-18 16:20:32 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:24 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:24 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:25 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:26 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:26 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:27 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:27 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:28 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:28 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:44:28 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:52:31 --> 404 Page Not Found: 
+ERROR - 2020-02-18 17:52:32 --> 404 Page Not Found: 
+ERROR - 2020-02-18 19:34:27 --> 404 Page Not Found: 
+ERROR - 2020-02-18 22:14:31 --> 404 Page Not Found: 
+ERROR - 2020-02-18 23:41:24 --> 404 Page Not Found: 
