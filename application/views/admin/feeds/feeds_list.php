@@ -22,8 +22,19 @@ if(!$user_id){
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
    
-
-</head>
+    <style>
+        img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 3px;
+        width: 90px;
+        height: 90px;
+        }
+        img:hover {
+           box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+        </style>
+    </head>
 <body>
   
     <main class="bgEndWhite feed-page">
@@ -62,6 +73,12 @@ if(!$user_id){
                                       if($allposts[$i]['post_type'] == 1){
                                           $type = 'Advice';
                                       }
+                                      else if($allposts[$i]['post_type'] == 3){
+                                        $type = 'Service';
+                                      }
+                                      else if($allposts[$i]['post_type'] == 4){
+                                        $type = 'Poll';
+                                      }                                                                        
                                     ?>
                                     <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                     <span class="post-info"><?php echo($postType);?></span>
@@ -87,7 +104,23 @@ if(!$user_id){
                                         </div>
                                     </div>
                                 </div>
-                                <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+
+                                
+                                <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                        </div>
+                               
+                              
+    
                             </div>
                          <?php endfor;?> 
                     </div>
@@ -108,6 +141,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -155,6 +194,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -203,6 +248,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -250,6 +301,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -297,6 +354,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -344,6 +407,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -391,6 +460,12 @@ if(!$user_id){
                                         if($allposts[$i]['post_type'] == 1){
                                             $type = 'Advice';
                                         }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>

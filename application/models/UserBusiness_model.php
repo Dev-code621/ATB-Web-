@@ -21,6 +21,7 @@ class UserBusiness_model extends MY_Model
         $businessInfos = $this->db->select('*')
                     ->from(self::TABLE_BUSINESS_INFO)
                     ->where($where)
+                    ->order_by('created_at', 'DESC')
                     ->get()
                     ->result_array();
 

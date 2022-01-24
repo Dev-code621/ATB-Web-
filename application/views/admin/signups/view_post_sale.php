@@ -30,7 +30,7 @@ if(!$user_id){
     <main class="posts-page minPaddingTop bg-white">
         <div class="container">
             <header>
-                <a href="<?php echo route('admin.feeds.index');?>" class="nav-link"><i class="fa-regular fa-chevron-left"></i></a>
+                <a href="javascript:history.go(-1)" class="nav-link"><i class="fa-regular fa-chevron-left"></i></a>
                 <div class="user-info">
                     <div class="user-icon">
                         <img src="<?php echo $post['user'][0]['pic_url'];?>" alt="User icon">
@@ -142,48 +142,48 @@ if(!$user_id){
                                 <p ><?php echo $post['description'];?> </p>
 
                                 <div class="post-description"> 
-                                <div class="content">
+                                 
+                                    <div class="content">
+                                        <span>Brand</span>
+                                        <strong><?php echo $post["post_brand"];?></strong>
+                                    </div>
+                                    <div class="content">
+                                        <span>Price</span>
+                                        <strong>£<?php echo $post["price"];?></strong>
+                                    </div>
+                                    <div class="content">
+                                        <span>Postage Cost</span>
+                                        <strong>£<?php echo $post["delivery_cost"];?></strong>
+                                    </div>
+                                    <?php if (!empty($post["post_location"])) { ?>
+                                        <div class="content">
+                                            <span>Location</span>
+                                            <strong><?php echo $post["post_location"];?></strong>
+                                        </div>
+                                    <?php } ?>
+                                    
+                               <div class="content">
                                         <span>Payment Options</span>
                                         <strong>
-                                   
                                     <?php
                                         switch ($post['post_type']) {
                                             case 1:
                                                 echo 'Cash';
                                                 break;
                                             case 2:
-                                                echo 'Stripe';
+                                                echo 'Paypal';
                                                 break;
                                             case 3:
-                                                echo 'Stripe or Cash';
+                                                echo 'Paypal or Cash';
                                                 break;
 
                                         } ?> 
                                         </strong>
                                      </div>                                 
-                                    <?php if (!empty($post["brand"])) { ?>
                                     <div class="content">
-                                        <span>Brand</span>
-                                        <strong><?php echo $post["brand"];?></strong>
+                                        <span>Condition</span>
+                                        <strong><?php echo $post["post_condition"];?></strong>
                                     </div>
-                                    <?php } ?>                                   
-                                    <div class="content">
-                                        <span>Price</span>
-                                        <strong>£<?php echo $post["price"];?></strong>
-                                    </div>
-                                    <?php if (!empty($post["post_postage"])) { ?>
-                                        <div class="content">
-                                            <span>Postage Cost</span>
-                                            <strong>£<?php echo $post["post_postage"];?></strong>
-                                        </div>
-                                    <?php } ?>
-
-                                    <?php if (!empty($post["post_item"])) { ?>
-                                        <div class="content">
-                                            <span>Item</span>
-                                            <strong><?php echo $post["post_item"];?></strong>
-                                        </div>
-                                    <?php } ?>
 
                                     <?php if (!empty($post["size_title"])) { ?>
                                         <div class="content">
@@ -191,16 +191,12 @@ if(!$user_id){
                                             <strong><?php echo $post["size_title"];?></strong>
                                         </div>
                                     <?php } ?>
-                                    <?php if (!empty($post["post_location"])) { ?>
-                                        <div class="content">
-                                            <span>Location</span>
-                                            <strong><?php echo $post["post_location"];?></strong>
-                                        </div>
-                                    <?php } ?>
-                                    <div class="content">
+                                   
+                                    <!-- <div class="content">
                                         <span>Category</span>
                                         <a href="#"><?php echo $post["category_title"];?> <i class="fa-regular fa-chevron-right"></i></a>
-                                    </div>
+                                    </div> -->
+                                    
                                     <!-- <div class="content">
                                         <span>Tags</span>
                                         <a href="#"><i class="fa-solid fa-tag"></i> Office Tools</a>
@@ -286,7 +282,9 @@ if(!$user_id){
                                             <p><i class="fa-solid fa-circle-user"></i> <?php echo $post['comments'][$i]['user_name'];?></p>
                                             <p><i class="fa-regular fa-calendar-clock"></i> <?php echo $post['comments'][$i]['read_created'];?></p>
                                         </div>
-                                              <p> <?php echo $post['comments'][$i]['comment'];?> </p>
+                                              <p> <?php
+                                                    $json = json_decode($post['comments'][$i]['comment'], true);
+                                                     echo $json[0]['comment'];?> </p>
                                     </div>
                                     <?php endfor;?>                                 
                                 </div>

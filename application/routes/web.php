@@ -50,6 +50,7 @@
         Route::post('/cart_delete_item', 'PostController@cart_delete_item')->name('api.post.cart_delete_item');
         Route::post('/cart_delete_items', 'PostController@cart_delete_items')->name('api.post.cart_delete_items');
         Route::post('/get_cart_products', 'PostController@get_cart_products')->name('api.post.get_cart_products');
+        Route::post('/send_files', 'PostController@sendFiles')->name('api.post.sendFiles');
     });
 
     Route::group('/api/auth', ['namespace' => 'api'], function() {
@@ -197,8 +198,8 @@
 	    
 	    Route::post('/set_transaction_booking_id', 'ProfileController@set_transaction_booking_id')->name('api.profile.set_transaction_booking_id');	
 
-        Route::post('/can_rate_business', 'ProfileController@can_rate_business')->name('api.profile.can_rate_business');
-    });
+        Route::post('/can_rate_business', 'ProfileController@canRateBusiness')->name('api.profile.can_rate_business');
+        Route::post('/can_message_seller', 'ProfileController@canMessageSeller')->name('api.profile.can_message_seller');    });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {
         Route::post('/auctions', 'AuctionController@getAuctions')->name('api.auctions.get_auctions');
@@ -215,6 +216,8 @@
     
     Route::group('api/search', ['namespace' => 'api'], function() {
        Route::post('/business', 'SearchController@searchBusiness')->name('api.search.search_business'); 
+       Route::post('/spotlight', 'SearchController@getSpotLight')->name('api.search.spotlight');
+       Route::post('/users', 'SearchController@getAllUsers')->name('api.search.users');
     });
 
 /****
@@ -286,6 +289,9 @@
 	
 	Route::group('admin/chat', ['namespace' => 'admin'], function() {
         Route::get('/', 'ChatController@index')->name('admin.chat.index');
+        Route::get('/detail/{channelID}', 'ChatController@detail')->name('admin.chat.detail');
+        Route::get('/newchat', 'ChatController@newchat')->name('admin.chat.newchat');
+        Route::post('/sendmessage', 'ChatController@sendmessage')->name('admin.chat.sendmessage');
     });
 
     Route::group('admin/reported_post', ['namespace' => 'admin'], function() {

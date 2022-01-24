@@ -31,7 +31,7 @@ if(!$user_id){
     <main>
         <header class="app-header container">
             <a href="<?php echo route('admin.dashboards.index', $user_id);?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
-            <h1 class="page-title"><i class="fa-duotone fa-users-medical"></i>Last Sign Ups</h1>
+            <h1 class="page-title"><i class="fa-duotone fa-users-medical"></i>Last Members</h1>
             <a href="#" class="nav-link"><i class="fa-regular fa-magnifying-glass"></i></a>
         </header>
             
@@ -39,15 +39,15 @@ if(!$user_id){
             <div class="notification-info">
                 <span class="notification-qty"><?php echo(count($users));?></span>
                 <div>
-                    <span class="notification-label">New <br> Sign ups</span>                    
+                    <span class="notification-label">New <br> Members</span>                    
                     <span class="notification-stats"><i class="fa-regular fa-chevron-up"></i> 3% more than last week</span>
                 </div>
             </div>
-            <div class="last-notification-stats">
+            <!-- <div class="last-notification-stats">
                 <span>Last signed up <strong>All users</strong></span>
                 <span>-</span>
                 <span><span class="total-qty"><?php count($users) ?></span> active users</span>
-            </div>
+            </div> -->
         </section>
 
         <section class="data-container">

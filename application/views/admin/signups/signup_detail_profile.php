@@ -46,7 +46,7 @@ if(!$user_id){
                             <p class="user-username">@<?php echo $profile['user_name'];?></p>
                         </div>
                     </div>
-                    <a href="#" class="nav-link"><i class="fa-regular fa-ellipsis"></i></a>
+                    <!-- <a href="#" class="nav-link"><i class="fa-regular fa-ellipsis"></i></a> -->
                 </header>
 
                 <table class="user-data"  cellspacing="0" cellpadding="0">
@@ -132,7 +132,7 @@ if(!$user_id){
             </table>
 
             <div class="container">
-                <a href="#" class="btn btn-primary mb-15"><i class="fa-regular fa-messages"></i> Send a Message</a>
+                <a href="<?php echo route('admin.chat.detail', $profile['id']);?>" class="btn btn-primary mb-15"><i class="fa-regular fa-messages"></i> Send a Message</a>
                 <?php if ($profile['status'] != 1) { ?>
                       <button type="button" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i>Block this user</button>
                 <?php } ?>
@@ -147,7 +147,10 @@ if(!$user_id){
             <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
             <div class="text-center">
                 <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
-                <h3>Are you sure you want to block this user?</h3>
+                <h3> <?php if ($profile['status'] != 1) echo  "Are you sure you want to block this user";
+                        else
+                         echo  "Are you sure you want to unblock this user";
+                    ?>  </h3>
                 <h4>If so, please provide a reason below</h4>
                 <div id="screenHeight"></div>
             </div>
@@ -159,7 +162,7 @@ if(!$user_id){
                     action="<?php echo route('admin.signups.submit_unblock');?>" method="get" enctype="multipart/form-data"
                 <?php } ?>
             >
-                <textarea rows="5" id="Reason" placeholder="This user is providing spam, in all inboxes"></textarea>
+                <textarea rows="5" id="Reason"  name = "Reason" placeholder="This user is providing spam, in all inboxes"></textarea>
                 <input type="hidden" id="userid" name="userid" value="<?php echo $profile['id'];?>">
 
                 <?php if ($profile['status'] != 1) { ?>

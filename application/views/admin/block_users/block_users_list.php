@@ -38,14 +38,14 @@ if(!$user_id){
                 <span class="notification-qty"><?php echo(count($blockUsers));?></span>
                 <span class="notification-label">Blocked Users</span>                    
             </div>
-            <div class="notification-info">
+            <!-- <div class="notification-info">
                 <span class="notification-qty"><?php echo(count($removedUsers));?></span>
                 <span class="notification-label">Removed Users</span>                    
             </div>
             <div class="notification-info">
                 <span class="notification-qty"><?php echo(count($frozenUsers));?></span>
                 <span class="notification-label">Frozen Users</span>                    
-            </div>
+            </div> -->
         </section>
 
 
@@ -53,8 +53,8 @@ if(!$user_id){
             <div class="navTabs position-relative">
                 <button class="btn tablinks active" data-tab="all">All</button>
                 <button class="btn tablinks" data-tab="blocked">Blocked</button>
-                <button class=" btn tablinks" data-tab="removed">Removed</button>
-                <button class=" btn tablinks" data-tab="freezed">Freezed Accounts</button>
+                <!-- <button class=" btn tablinks" data-tab="removed">Removed</button>
+                <button class=" btn tablinks" data-tab="freezed">Freezed Accounts</button> -->
             </div>
             
             <div class="data-container blocked-data tab-content-wrapper container">
@@ -101,7 +101,7 @@ if(!$user_id){
                     <div class="data-item">
                         <div class="user-info"> 
                             <div class="user-icon">
-                               <img src="<?php echo $user['pic_url']?>" alt="User icon">
+                               <img src="<?php echo $user['pic_url']?>" alt="User icon">                               
                             </div>
                             <div class="user-info-content">
                                 <h2 class="user-name"><?php echo $user['user_name'];?></h2>

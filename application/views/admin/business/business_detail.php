@@ -190,13 +190,13 @@ if(!$user_id){
             <?php          
                 if ($business['approved'] == 0) {?>
                     <div class="btn-footer">
-                        <a href="#" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-solid fa-circle-xmark"></i>Reject</a>
+                        <a href="#" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-solid fa-circle-xmark"></i>Block</a>
                         <a href="#" data-modal="approveModal" class="btn btn-success"><i class="fa-solid fa-circle-check"></i>Approve</a>
                     </div>
                 <?php    
                 }else if ($business['approved'] == 1) {?>
                    <div class="btn-footer">
-                     <a href="#" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-solid fa-circle-xmark"></i>Reject</a>
+                     <a href="#" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-solid fa-circle-xmark"></i>Block</a>
                     </div>
                 <?php    
                 }else{?>
@@ -237,7 +237,7 @@ if(!$user_id){
                    action="<?php echo route('admin.business.submit_approve');?>" method="get" enctype="multipart/form-data" action="<?php echo route('admin.business.submit_block');?>" method="get" enctype="multipart/form-data" >
                     <textarea rows="5" id="approveReason" name="approveReason" placeholder="Please provide approved reason"></textarea>
                     <input type="hidden" id="approve_businessid" name="approve_businessid" value="<?php echo  $business['id'];?>">
-                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Approve this Business user</button>
+                    <button type="submit"  class="btn btn-success"><i class="fa-regular fa-ban"></i> Approve this Business user</button>
 
 
                 </form>

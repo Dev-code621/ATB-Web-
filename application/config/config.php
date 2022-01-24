@@ -542,3 +542,11 @@ $config['paypal_secret'] = 'EJ-G59u9bjF2VFesBhYH97oHNYJk0-t2xH0xgwD7VOadhCYF6MFE
 
 $config['fcm_send_url'] = 'https://fcm.googleapis.com/fcm/send';
 $config['fcm_api_key'] = 'AAAAuAGuWfw:APA91bGs73zxFzJWeEyFkgCENB281dNoLLZM4dhWd7zuUlG2JX-kCYP6-eM8YG_Qge1_yQyHDu22DVywy4VfSNCyqJ6krl64uXdZaMs583B4ll_Wy4HPoWBqP_OITfxqdjGhjqJEHeUy';
+
+
+// $config['pubnub_publish_key'] = 'pub-c-f93545e5-80db-4b7c-be40-d9c5b524383b';
+// $config['pubnub_sub_key'] = 'sub-c-5b6e32b8-5a80-11ec-a2d9-0639f9732331';
+
+
+$config['pubnub_publish_key'] = 'pub-c-56276161-dfe0-4551-a730-8ac8b6ba0f1e';
+$config['pubnub_sub_key'] = 'sub-c-488c32e2-5a87-11ec-96e9-32997ff5e1b9';

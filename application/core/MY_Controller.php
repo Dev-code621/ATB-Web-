@@ -8,6 +8,12 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+use PubNub\PubNub;
+use PubNub\Enums\PNStatusCategory;
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\PNConfiguration;
+
+
 //Load Composer's autoloader
 require 'vendor/autoload.php';
 /**
@@ -234,5 +240,18 @@ class MY_Controller extends CI_Controller
             //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
 
+    }
+
+    function loginPubNub() {
+        $publish_key = $this->config->item('pubnub_publish_key');
+		$sub_key = $this->config->item('pubnub_sub_key');
+        $pnconf = new PNConfiguration();
+        
+        $pnconf->setSubscribeKey($sub_key);
+        $pnconf->setPublishKey($publish_key);
+        $pnconf->setUuid("ADMIN");
+        $pubnub = new PubNub($pnconf);
+
+        return $pubnub;
     }
 }

@@ -41,11 +41,11 @@ if(!$user_id){
                     <span class="notification-stats attention"><i class="fa-regular fa-circle-exclamation"></i> Needs attention</span>
                 </div>
             </div>
-            <div class="last-notification-stats">
+            <!-- <div class="last-notification-stats">
                 <span>Last signed up <strong></strong></span>
                 <span>-</span>
                 <span><span class="total-qty"><?php echo(count($closed_reports));?></span> active users</span>
-            </div>
+            </div> -->
         </section>
 
 
@@ -78,7 +78,8 @@ if(!$user_id){
                                     </p>
                                     <a href="#" class="business-type">
                                         <i class="fa-regular fa-briefcase business-icon "></i>
-                                        <?php echo $open_reports[$i]['business_name'];?> <i class="fas fa-chevron-right"></i>
+                                        <?php echo $open_reports[$i]['business_name'];?> 
+                                        <!-- <i class="fas fa-chevron-right"></i> -->
                                     </a>
                                     <div class="data-info data-info-list">
                                         <div class="data-info-item date">
@@ -93,7 +94,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="#" class="btn btn-outline-dark mr-10" >Message User</a>
+                                <a href="<?php echo route('admin.chat.detail', $open_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $open_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>
@@ -114,7 +115,8 @@ if(!$user_id){
                                     <a href="#" class="business-type">
                                         <i class="fa-regular fa-briefcase business-icon "></i>
                                         <i class="fa-solid fa-circle-check"></i>
-                                        <?php echo $closed_reports[$i]['business_name'];?> <i class="fa-regular fa-chevron-right"></i>
+                                        <?php echo $closed_reports[$i]['business_name'];?>
+                                         <!-- <i class="fa-regular fa-chevron-right"></i> -->
                                     </a>
                                     <div class="data-info data-info-list">
                                         <div class="data-info-item date">
@@ -129,7 +131,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="#" class="btn btn-outline-dark mr-10" >Message User</a>
+                                <a href="<?php echo route('admin.chat.detail', $closed_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $closed_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>
@@ -149,7 +151,8 @@ if(!$user_id){
                                     <a href="#" class="business-type">
                                         <i class="fa-regular fa-briefcase business-icon "></i>
                                         <i class="fa-regular fa-circle-xmark"></i>
-                                        <?php echo $ignored_reports[$i]['business_name'];?> <i class="fa-regular fa-chevron-right"></i>
+                                        <?php echo $ignored_reports[$i]['business_name'];?> 
+                                        <!-- <i class="fa-regular fa-chevron-right"></i> -->
                                     </a>
                                     <div class="data-info data-info-list">
                                         <div class="data-info-item date">
@@ -164,7 +167,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="#" class="btn btn-outline-dark mr-10" >Message User</a>
+                                <a href="<?php echo route('admin.chat.detail', $ignored_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $ignored_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>

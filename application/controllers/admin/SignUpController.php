@@ -310,7 +310,7 @@ class SignUpController extends MY_Controller
 
         $setArray = array(
             'is_active' => 1,
-            'status_reason' => $this->input->get('unblockReason'),
+            'status_reason' => $this->input->get('Reason'),
             'updated_at' => time(),
         );
 

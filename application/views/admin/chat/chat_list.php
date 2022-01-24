@@ -21,6 +21,8 @@ if(!$user_id){
     <script src="https://kit.fontawesome.com/cfcaed50c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.37.0.js"></script>
+
 </head>
 <body>
   
@@ -31,106 +33,31 @@ if(!$user_id){
         </header>
       
         <section class="messages-list container bg-white">
-        
-            <a href="chat.html" class="contact-item new-message">
-                <div class="user-icon online">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Phoenix</h2>
-                    <p>Offensive language ⚠️</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item new-message">
-                <div class="user-icon online">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Mercy</h2>
-                    <p>nm, can you please tell me testing testing testing</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon offline">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Tripp</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon offline">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Ruby</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon online">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Leo</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Kelly</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Kelly</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
-            <a href="chat.html" class="contact-item">
-                <div class="user-icon">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
-                </div>
-                <div class="message-info">
-                    <h2 class="user-name">Kelly</h2>
-                    <p>Thanks…</p>
-                </div>
-                <span class="message-date">
-                    Apr 14
-                </span>
-            </a>
+         <?php for($i = 0 ; $i < count($rooms); $i++):?>
+                <a href="<?php echo route('admin.chat.detail', $rooms[$i]['channel']);?>" class="contact-item new-message">
+                    <div class="<?php 
+                        if( $rooms[$i]['online'] == 1)
+                            {echo "user-icon online";}
+                        else if( $rooms[$i]['online'] == 0)
+                           { echo "user-icon offline";}
+                        else if( $rooms[$i]['online'] == -1)
+                           { echo "user-icon";}
+                        ?>">
+                        <img src="<?php echo  $rooms[$i]['image'];?>" alt="User icon">
+                    </div>
+                    <div class="message-info">
+                        <h2 class="user-name">  <?php echo  $rooms[$i]['title'];?></h2>
+                        <p><?php echo  $rooms[$i]['last_message'];?></p>
+                    </div>
+                    <span class="message-date">
+                        Apr 14
+                    </span>
+                </a>         
+            <?php endfor;?>              
+ 
         </section>
         
-        <a href="new-message.html" class="new-group">
+        <a href="<?php echo route('admin.chat.newchat', $user_id);?>" class="new-group">
             <i class="fa-solid fa-plus"></i>
         </a>
 
@@ -159,6 +86,50 @@ if(!$user_id){
     </main>
     <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
+    <script>
+        function letsGo() {
+            // Update this block with your publish/subscribe keys
+            pubnub = new PubNub({
+                publishKey : "pub-c-f93545e5-80db-4b7c-be40-d9c5b524383b",
+                subscribeKey : "sub-c-5b6e32b8-5a80-11ec-a2d9-0639f9732331",
+                uuid: "ATBADMIN"
+            })
+            function publishSampleMessage() {
+                console.log("Publish to a channel 'hello_world'");
+                // With the right payload, you can publish a message, add a reaction to a message,
+                // send a push notification, or send a small payload called a signal.
+                var publishPayload = {
+                    channel : "hello_world",
+                    message: {
+                        title: "greeting",
+                        description: "This is my first message!"
+                    }
+                }
+                pubnub.publish(publishPayload, function(status, response) {
+                    console.log(status, response);
+                })
+            }
 
+            pubnub.addListener({
+                status: function(statusEvent) {
+                    if (statusEvent.category === "PNConnectedCategory") {
+                        publishSampleMessage();
+                    }
+                },
+                message: function(msg) {
+                    console.log(msg.message.title);
+                    console.log(msg.message.description);
+                },
+                presence: function(presenceEvent) {
+                    // This is where you handle presence. Not important for now :)
+                }
+            })
+            console.log("Subscribing...");
+
+            pubnub.subscribe({
+                channels: ['hello_world']
+            });
+            };
+    </script>
 </body>
 </html>

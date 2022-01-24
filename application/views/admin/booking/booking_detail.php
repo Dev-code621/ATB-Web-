@@ -27,7 +27,7 @@ if(!$user_id){
   
     <main class="posts-page booking-detail minPaddingTop bg-white">
         <div class="container">
-            <a href="<?php echo route('admin.booking.index');?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
+            <a href="javascript:history.go(-1)" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
             <h1 class="page-title ml-20 mb-30"> Booking Detail</h1>
             <header>
                 <div class="user-info">
