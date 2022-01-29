@@ -1274,6 +1274,10 @@ label.contact-item.selected {
    display: flex;
    flex-direction: column;
 }
+.chat-container .messages-container .messages-row-content {
+   display: flex;
+   flex-direction: row;
+}
 .chat-container .messages-container .chat-message {
    max-width: 80%;
    font-size: 15px;
@@ -1294,6 +1298,7 @@ label.contact-item.selected {
    background: #EBEBEB;
    color: #7C7C7C;
    text-align: left;
+   margin-right: auto;
    border-bottom-left-radius: 0px;
 }
 .chat-container .chat-bottom {

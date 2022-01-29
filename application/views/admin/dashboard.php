@@ -2,6 +2,7 @@
 $user_id= $this->session->userdata('user_id');
 if(!$user_id){
 	redirect(route('admin.auth.login'));
+
 }
 ?>
 <!DOCTYPE html>
@@ -27,7 +28,7 @@ if(!$user_id){
             <img src="<?php echo base_url();?>admin_assets/images/logo-white.svg" alt="Logo ATB" class="img-fluid dashboardLogo">
             <div class="feed-date"><span><?php echo(date("F j, Y"));?> </span></div>
         </div>
-
+       
             <div class="feed-navigation">
                 <div class="nav-item">
                     <a href="<?php echo route('admin.signups.index');?>">
@@ -87,15 +88,16 @@ if(!$user_id){
                     </a>
                 </div>
                 <div class="nav-item">
+
                     <a href="<?php echo route('admin.auth.logout');?>"  class="profile">
                         <span><small>Logged in as:</small> <?php echo ($this->session->userdata('user_name')) ?></span>
                         <?php
                             $picURL = base_url()."admin_assets/images/samples/profile-sample.png";
                             if (!empty($this->session->userdata('profile_pic'))){
-                                $picURL = $this->session->userdata('profile_pic');
+                                $picURL = base_url().$this->session->userdata('profile_pic');
                             }
                         ?>
-                        <img src= "<?php echo  $picURL;?>" alt="">
+                        <img src= "<?php echo $picURL;?>" alt="">
 
                     </a>
                 </div>
@@ -117,7 +119,13 @@ if(!$user_id){
                     Log Out
                 </a>
                 <a href="<?php echo route('admin.mainpages.index');?>">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/profile-sample.png" alt="">
+                      <?php
+                            $picURL = base_url()."admin_assets/images/samples/profile-sample.png";
+                            if (!empty($this->session->userdata('profile_pic'))){
+                                $picURL = base_url().$this->session->userdata('profile_pic');
+                            }
+                        ?>
+                    <img src="<?php echo $picURL;?>" alt="">
                     Richard
                 </a>
             </nav>

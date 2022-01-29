@@ -1,7 +1,6 @@
 <?php
 $user_id= $this->session->userdata('user_id');
 
-
 if(!$user_id){
 	redirect(route('admin.auth.login'));
 }
@@ -41,16 +40,24 @@ if(!$user_id){
                         <h3 class="user-name"><?php echo $users[$i]['username'];?></h3>
                         <p class="user-mail"><?php echo $users[$i]['email'];?></p>
                     </div>
-                    <span class="nav-icon" ><i class="fa-regular fa-chevron-right"></i></span>
+                    <span class="nav-icon" >                        
+                        <i class="fa-regular fa-chevron-right"></i>
+                    </span>
                 </div>
                 <div class="modal adminModal" id="removeModal<?php echo $i?>">
                     <div class="closeModal barIcon" data-close="removeModal<?php echo $i?>"><i class="fa-regular fa-minus"></i></div>
                     <div class="user-icon onModal">
-                        <i class="fa-solid fa-user-gear"></i>
+                          <?php if(strlen($users[$i]['profile_pic']) == 0){?>
+                            <i class="fa-solid fa-user-gear"></i>
+                         <?php } ?>       
+                        <?php  if(strlen($users[$i]['profile_pic'])> 0) { ?>                                 
+                            <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 80px;height: 80px;border-radius:10%" id="blashE" alt=""/> 
+                        <?php } ?> 
+                        
                     </div>
                     <div class="text-center">
                         <h2><?php echo $users[$i]['username'];?></h2>
-                        <p class="color-blue"><?php echo $i?></p>
+                        <p class="color-blue"><?php echo $users[$i]['email']?></p>
                         <form action="<?php echo route('admin.admin.delete', $users[$i]['id']);?>">
                             <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-trash-can"></i> Delete this account</button>
                         </form>
@@ -65,14 +72,20 @@ if(!$user_id){
         </div>
 
         <div class="modal newAdminModal bg-gray" id="newAdminModal">
-            <div class="user-icon onModal">
-                <i class="fa-solid fa-user-plus"></i>
+            <div class="user-icon onModal" >
+                <label for="file-input"> 
+                    <img  src="<?php echo base_url();?>admin_assets/images/upload.png" style="width: 80px;height: 80px;border-radius:10%" id="blashE" alt=""/> 
+                </label>
+
+                <input id="file-input" type="file" style="display:none;" onchange="readURL(this,'edit');" accept="image/*" />
+                <input type="hidden" name="owner_id" id="owner_id" class="form-control" required="">
             </div>
             <div class="closeModal barIcon" data-close="newAdminModal"><i class="fa-regular fa-minus"></i></div>
                 <h3 class="text-center">New Admin Account</h3>
             <form action="<?php echo route('admin.admin.create');?>" method="get" enctype="multipart/form-data">
                 <input type="text" placeholder="Username" id="inputUsername" name="inputUsername">
                 <input type="email" placeholder="Email Address" autocomplete="email" id="inputEmail" name="inputEmail" >
+                <input type="hidden" placeholder="Email Address" id="profile_pic" name="profile_pic">
                 <input type="password" placeholder="Password" autocomplete="new-password"  id = 'inputPassword' name="inputPassword">
                 <button type="submit"  class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Create New Account</button>
             </form>
@@ -81,6 +94,41 @@ if(!$user_id){
     </main>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
     <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <script>
+        function readURL(input, type) {
+            var doc_file = $("#file-input").prop("files")[0];
+            var form_data = new FormData();
+            form_data.append("uploadedFile", doc_file)
+            form_data.append("file_type", "owner")
+            $.ajax({
+                url: '<?php echo base_url();?>admin/admin/doUpload',
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,
+                type: 'post',
+                async: false,
+                success: function(data) {
+                    var image_name = data['file_name'];
+                    var image_url = data['file_url'];
+                    $("#owner_id").val(image_name);
+                    $("#profile_pic").val(image_url);
+                    if(input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#blashE').attr('src', e.target.result).width(85).height(85);
+                        };
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
 </body>
 </html>

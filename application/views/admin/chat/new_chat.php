@@ -43,7 +43,9 @@ if(!$user_id){
             <div class="messages-list tab-content-wrapper container">
                 <div data-tabcontent="contacts" class="tabcontent" style="display: block;">
                 <?php for($i = 0 ; $i < count($users); $i++):?>
-                    <a href="<?php echo route('admin.chat.detail', "ADMIN_".$users[$i]['id']);?>" class="contact-item">
+                    <a href="<?php 
+                        echo route('admin.chat.detail',$users[$i]['id'] );
+                        ?>" class="contact-item">
                         <div class="user-icon">
                         <?php
                                         $picURL = base_url()."<?php echo base_url();?>admin_assets/img/generic-user.png";
@@ -74,7 +76,12 @@ if(!$user_id){
         
                 </div>
                 <div data-tabcontent="group" class="tabcontent">
-                    <a href="<?php echo route('admin.chat.detail', $user_id);?>" class="contact-item">
+                    <a href="<?php 
+                        $chatUsers  = $users[0]['id'];
+                        for($i =1 ; $i < count($users); $i++){
+                            $chatUsers = $chatUsers."_".$users[$i]['id']; 
+                        }
+                        echo route('admin.chat.detail', $chatUsers);?>" class="contact-item">
                         <div class="user-icon">
                             <i class="fa-light fa-users"></i>
                         </div>
@@ -116,7 +123,9 @@ if(!$user_id){
                             </div>
                         </label>           
                         <?php endfor;?>              
-                        <a href="<?php echo route('admin.chat.detail', $user_id);?>" class="btn btn-primary new-group-btn"><i class="fa-light fa-users-medical"></i> Create Group</a>
+                        <a href="<?php
+                             echo route('admin.chat.detail', $user_id);
+                        ?>" class="btn btn-primary new-group-btn"><i class="fa-light fa-users-medical"></i> Create Group</a>
                     </form>
 
                 </div>

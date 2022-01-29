@@ -1,6 +1,14 @@
 
 <?php
 $user_id= $this->session->userdata('user_id');
+$user_name= $this->session->userdata('user_name');
+$profile_pic= $this->session->userdata('profile_pic');
+if(empty($profile_pic)){
+    $profile_pic = base_url()."admin_assets/logo.png";
+} else{
+    $profile_pic = base_url(). $profile_pic;
+}
+
 $publish_key = $this->config->item('pubnub_publish_key');
 $sub_key = $this->config->item('pubnub_sub_key');
 
@@ -31,19 +39,19 @@ if(!$user_id){
     <main class="has-bottomNav" id="chat-page">
         <header class="app-header container">
             <div class="d-flex">
-                <a href="<?php echo route('admin.chat.index');?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
+                <a href="javascript:history.go(-1)" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
                 <div class="user-icon online">
                     <img src="<?php echo  $rooms['image'];?>" alt="User icon">
                 </div>
                 <h1 class="page-title"> <?php echo  $rooms['title'];?></h1>
             </div>
-            <a href="#" class="nav-link"><i class="fa-regular fa-bars"></i></a>
+            <!-- <a href="#" class="nav-link"><i class="fa-regular fa-bars"></i></a> -->
         </header>
       
         <section class="chat-container bg-white" id="chatContainer">
 
-            <div class="messages-container container">
-                <div class="messages-content">
+            <div class="messages-container container" id= "div_contain">
+                <div class="messages-content" id = "div_list">
                                     
                 </div>
 
@@ -51,7 +59,7 @@ if(!$user_id){
             <div class="chat-bottom container">
                 <form class="d-flex" action="" method="post">
                     <div class="chat-input">
-                        <button class="btn emojiBtn"><i class="fa-regular fa-face-smile"></i></button>
+                        <!-- <button class="btn emojiBtn"><i class="fa-regular fa-face-smile"></i></button> -->
                         <textarea type="text" placeholder="Message..." id="messageInput"></textarea>
                         <button class="btn fileBtn"><i class="fa-regular fa-paperclip"></i></button>
                     </div>
@@ -68,6 +76,12 @@ if(!$user_id){
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.37.0.min.js"></script>
     <script>
         var pubnub = undefined;
+        var user_id = '<?php echo  $user_id; ?>';
+        var user_name = '<?php echo  $user_name; ?>';
+        var profile_pic = '<?php echo  $profile_pic; ?>';
+        var channelId = '<?php echo  $rooms['channel']; ?>';
+        var pageCount = 0;
+        var messageModels = [];
         $(document).ready(function()
         {    
             
@@ -75,53 +89,153 @@ if(!$user_id){
             pubnub = new PubNub({
                 publishKey : "<?php echo $publish_key ?>",
                 subscribeKey : "<?php echo $sub_key ?>",
-                uuid: "ADMIN"
+                uuid: user_id + "#ADMIN"
             })
 
- 
+
             pubnub.addListener({
                 status: function(statusEvent) {
 
                     if (statusEvent.category === "PNConnectedCategory") {
                     }
+                    
                 },
-                message: function(msg) {
-                    alert(msg)
+                message: function(object) {
+                    if(channelId.localeCompare(object.channel)  == 0 ){
+                       
+                 
+                        try {
+                            var message =  object.message.text
+
+                            var sender = object.message.sender;
+                            // alert(sender.id.localeCompare("ADMIN_" + user_id));
+                            var div_pic = "";
+                            if(object.message.messageType.localeCompare("Image") == 0){
+                                div_pic =  '<img src="' + message + '" alt="" style = " border-radius: 5%; width :200px; height:200px;">';
+                                message = "";
+                            }
+                            if(sender.id.localeCompare("ADMIN_" + user_id) == 0){
+                                let container = document.querySelectorAll('.messages-content')[0];
+                                container.innerHTML += `<div class="chat-message outcome">${div_pic}${message}</div>`;
+                                chatTextarea.value = '';
+                                chatTextarea.style.height = 20 + 'px';
+                            
+                            }else{
+                                let container = document.querySelectorAll('.messages-content')[0];
+                                container.innerHTML += `
+                                    <div class="messages-row-content" >
+                                        <div class="column" >
+                                            <img src="${sender.imageUrl}" alt="" style = " border-radius: 50%; width :40px; height:40px;">
+                                        </div>
+                                        <div class="column" >
+                                            <div class="chat-message income">${div_pic}${message}</div>
+                                        </div>
+                                    </div>`;
+                                chatTextarea.value = '';
+                                chatTextarea.style.height = 20 + 'px';
+                            }             
+
+                        } catch (error) {
+                          console.error(error);
+                      
+                        }
+
+                        
+                    }
+                
                 },
-                presence: function(presenceEvent) {
-                    // This is where you handle presence. Not important for now :)
+                presence: function(presenceEvent) {         
+
                 }
             })
+            featchMessages(pageCount);
+            pubnub.subscribe({
+                     channels: [channelId]
+            });
+            $("#div_contain").scroll(function()
+            {
+                var div = $(this);
+                // console.log(pageCount ,div[0].scrollHeight  ,div.scrollTop(),div.height());
+                if (div[0].scrollHeight + div.scrollTop()-40 == div.height() )
+                {
+                    featchMessages(pageCount++);
 
-            var channelId = '<?php echo  $rooms['channel']; ?>';
+                    // alert("Reached the bottom!");
+                }
+                else if(div.scrollTop() == 0)
+                {
+                    // alert("Reached the top!");
+                }
+            });
+            
+            
+        });        
+        function featchMessages(page){
+            var messageTime = null;
+            if(messageModels.length>0){
+                 messageTime = messageModels[0].timetoken;
+                // alert(JSON.stringify(messageModels[0]))
 
+            }
             pubnub.fetchMessages(
                 {
                     channels: [channelId],
                     stringifiedTimeToken: true,
                     includeMeta: true,
+                    count:25,
+                    start:messageTime,
                     includeMessageActions: true,
                 },
                 function (status, response) {
                     // handle status, response
                     var array = response.channels[channelId]
+                    Array.prototype.push.apply(array, messageModels);
+                    messageModels = array;
+                    $('#div_list').empty();
                     for(var k in array) {
                         var object = array[k];
-                        var message =  object.message.msg
+                        var message =  object.message.text
+                       // alert(JSON.stringify(object.message));
+                       try {
+                            var sender = object.message.sender;
+                            // alert(sender.id.localeCompare("ADMIN_" + user_id));
+                            var div_pic = "";
+                            if(object.message.messageType.localeCompare("Image") == 0){
+                                div_pic =  '<img src="' + message + '" alt="" style = " border-radius: 5%; width :200px; height:200px;">';
+                                message = "";
+                            }
+                            let container = document.querySelectorAll('.messages-content')[0];
+                            if(sender.id.localeCompare("ADMIN_" + user_id) == 0){
+                                container.innerHTML += `<div class="chat-message outcome">${div_pic}${message}</div>`;
+                                chatTextarea.value = '';
+                                chatTextarea.style.height = 20 + 'px';
+                            
+                            }else{
+                                container.innerHTML += `
+                                    <div class="messages-row-content" >
+                                        <div class="column" >
+                                            <img src="${sender.imageUrl}" alt="" style = " border-radius: 50%; width :40px; height:40px;">
+                                        </div>
+                                        <div class="column" >
+                                            <div class="chat-message income">${div_pic}${message}</div>
+                                        </div>
+                                    </div>`;
+                                chatTextarea.value = '';
+                                chatTextarea.style.height = 20 + 'px';
+                            }             
 
-                        let container = document.querySelectorAll('.messages-content')[0];
-                        container.innerHTML += `<div class="chat-message outcome">${message}</div>`;
-                        chatTextarea.value = '';
-                        chatTextarea.style.height = 20 + 'px';
+                        } catch (error) {
+                          console.error(error);
+                      
+                        }
+
                     }
                 }
             );  
+        }
 
-        })
-    </script>   
-    <script type="text/JavaScript">
-       function sendMessage() {       
-
+        function sendMessage() {       
+            
             let chatTextarea = document.getElementById('messageInput');
             if(chatTextarea !== null ) {
                 chatTextarea.addEventListener('keyup', function() {
@@ -131,29 +245,35 @@ if(!$user_id){
                 
             // e.preventDefault();
             let msg = chatTextarea.value;
+            if (msg === "") {
+                alert("Please input message");
+                return;
+            }
             var channelId = '<?php echo  $rooms['channel']; ?>';
-
+            var messageType = "Text"
+            var sender = new Object();
+                sender.id = "ADMIN_" + user_id;
+                sender.name  = user_name;
+                sender.imageUrl = profile_pic;
             var publishPayload = {
                 channel : channelId,
                 message: {
-                    "msg":msg,
-                    "timetoken" : "0",
-                    "senderId" : "0",
-                    "senderName" : "ATB Admin",
-                    "senderImage" :  '<?php echo base_url();?>admin_assets/logo.png',
-                    "messageType" : "Text",
+                    "text":msg,
+                    "messageType" : messageType,
+                    "sender" :  sender                 
                 }
             }
 
             pubnub.publish(publishPayload, function(status, response) {
-                let container = document.querySelectorAll('.messages-content')[0];
-                        container.innerHTML += `<div class="chat-message outcome">${msg}</div>`;
-                        chatTextarea.value = '';
-                        chatTextarea.style.height = 20 + 'px';
+                // let container = document.querySelectorAll('.messages-content')[0];
+                //         container.innerHTML += `<div class="chat-message outcome">${msg}</div>`;
+                //         chatTextarea.value = '';
+                //         chatTextarea.style.height = 20 + 'px';
             })
 
             } 
-    </script>
+    </script>   
+  
 
 </body>
 </html>

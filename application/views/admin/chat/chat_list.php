@@ -34,7 +34,7 @@ if(!$user_id){
       
         <section class="messages-list container bg-white">
          <?php for($i = 0 ; $i < count($rooms); $i++):?>
-                <a href="<?php echo route('admin.chat.detail', $rooms[$i]['channel']);?>" class="contact-item new-message">
+                <a href="<?php echo route('admin.chat.detail', urlencode($rooms[$i]['channel']));?>" class="contact-item new-message">
                     <div class="<?php 
                         if( $rooms[$i]['online'] == 1)
                             {echo "user-icon online";}
@@ -50,7 +50,7 @@ if(!$user_id){
                         <p><?php echo  $rooms[$i]['last_message'];?></p>
                     </div>
                     <span class="message-date">
-                        Apr 14
+                    <?php echo date('d/m/Y H:i', $rooms[$i]['timesteapm']);?>
                     </span>
                 </a>         
             <?php endfor;?>              
@@ -78,7 +78,13 @@ if(!$user_id){
                     Log Out
                 </a>
                 <a href="<?php echo route('admin.mainpages.index');?>">
-                    <img src="<?php echo base_url();?>admin_assets/images/samples/profile-sample.png" alt="">
+                      <?php
+                            $picURL = base_url()."admin_assets/images/samples/profile-sample.png";
+                            if (!empty($this->session->userdata('profile_pic'))){
+                                $picURL = base_url().$this->session->userdata('profile_pic');
+                            }
+                        ?>
+                    <img src="<?php echo $picURL;?>" alt="">
                     Richard
                 </a>
             </nav>
@@ -87,49 +93,49 @@ if(!$user_id){
     <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
     <script>
-        function letsGo() {
-            // Update this block with your publish/subscribe keys
-            pubnub = new PubNub({
-                publishKey : "pub-c-f93545e5-80db-4b7c-be40-d9c5b524383b",
-                subscribeKey : "sub-c-5b6e32b8-5a80-11ec-a2d9-0639f9732331",
-                uuid: "ATBADMIN"
-            })
-            function publishSampleMessage() {
-                console.log("Publish to a channel 'hello_world'");
-                // With the right payload, you can publish a message, add a reaction to a message,
-                // send a push notification, or send a small payload called a signal.
-                var publishPayload = {
-                    channel : "hello_world",
-                    message: {
-                        title: "greeting",
-                        description: "This is my first message!"
-                    }
-                }
-                pubnub.publish(publishPayload, function(status, response) {
-                    console.log(status, response);
-                })
-            }
+        // function letsGo() {
+        //     // Update this block with your publish/subscribe keys
+        //     pubnub = new PubNub({
+        //         publishKey : "pub-c-f93545e5-80db-4b7c-be40-d9c5b524383b",
+        //         subscribeKey : "sub-c-5b6e32b8-5a80-11ec-a2d9-0639f9732331",
+        //         uuid: "ATBADMIN"
+        //     })
+        //     function publishSampleMessage() {
+        //         console.log("Publish to a channel 'hello_world'");
+        //         // With the right payload, you can publish a message, add a reaction to a message,
+        //         // send a push notification, or send a small payload called a signal.
+        //         var publishPayload = {
+        //             channel : "hello_world",
+        //             message: {
+        //                 title: "greeting",
+        //                 description: "This is my first message!"
+        //             }
+        //         }
+        //         pubnub.publish(publishPayload, function(status, response) {
+        //             console.log(status, response);
+        //         })
+        //     }
 
-            pubnub.addListener({
-                status: function(statusEvent) {
-                    if (statusEvent.category === "PNConnectedCategory") {
-                        publishSampleMessage();
-                    }
-                },
-                message: function(msg) {
-                    console.log(msg.message.title);
-                    console.log(msg.message.description);
-                },
-                presence: function(presenceEvent) {
-                    // This is where you handle presence. Not important for now :)
-                }
-            })
-            console.log("Subscribing...");
+        //     pubnub.addListener({
+        //         status: function(statusEvent) {
+        //             if (statusEvent.category === "PNConnectedCategory") {
+        //                 publishSampleMessage();
+        //             }
+        //         },
+        //         message: function(msg) {
+        //             console.log(msg.message.title);
+        //             console.log(msg.message.description);
+        //         },
+        //         presence: function(presenceEvent) {
+        //             // This is where you handle presence. Not important for now :)
+        //         }
+        //     })
+        //     console.log("Subscribing...");
 
-            pubnub.subscribe({
-                channels: ['hello_world']
-            });
-            };
+        //     pubnub.subscribe({
+        //         channels: ['hello_world']
+        //     });
+        //     };
     </script>
 </body>
 </html>

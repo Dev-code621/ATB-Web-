@@ -6,6 +6,12 @@ use PubNub\PubNub;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\PNConfiguration;
+use Lcobucci\JWT\Validation\ConstraintViolation;
+use Symfony\Component\VarDumper\Cloner\Data;
+use function Aws\flatmap;
+use PubNub\Endpoints\Objects\Membership\GetMemberships;
+use PubNub\Endpoints\Objects\Member\SetMembers;
+
 class ChatController extends MY_Controller
 {
     const NOTIFICATION_LIST = 0;
@@ -48,68 +54,165 @@ class ChatController extends MY_Controller
         return $dataToBeDisplayed;
     }
 
-    public function getChannelDetail($channel,$chatFlag){
+    public function getChannelDetail($channel,$chatFlag,$wholeUsers){
         $pubnub = $this->loginPubNub();
         $array = explode("_",$channel);
         $rooms['channel'] = $channel;
-        $rooms['last_message'] = "This is last message";
-        $rooms['timestepm'] = "Apr 14";
-        $rooms['online'] = 1;
-        if(count($array) == 2 ){
-            $rooms['title']= "ATB admin";
-            $rooms['image']= base_url()."admin_assets/logo.png";
+        $rooms['last_message'] = "";
+        $rooms['timesteapm'] = (int) (microtime(true) );
+        $userArray = array();
+        $memberArray = array();    
+
+
+        $member['id'] ="ADMIN_".$this->session->userdata('user_id');    
+        $member['name'] = $this->session->userdata('user_name');   
+        $profile_pic = $this->session->userdata('profile_pic');
+        if(empty($profile_pic)){
+            $profile_pic = base_url()."admin_assets/logo.png";
+        } else{
+            $profile_pic = base_url(). $profile_pic;
+        }
+        $member['imageUrl'] = $profile_pic;    
+        $memberArray[0] = $member;     
+        for($j = 1 ;$j<count($array);$j++){            
+            for($i = 0 ; $i<count( $wholeUsers);$i++){
+                $user = $wholeUsers[$i];
+                if($user['id'] == $array[$j]){
+                    $userArray[$j-1] = $user;
+                    $member['id'] = "user_".$user['id'];
+                    $member['name'] = $user['user_name'];
+                    $member['imageUrl'] = $user['pic_url'];
+                    $memberArray[$j] = $member;
+                    break;
+                }
+            }          
+        }  
+    
+        if(count($array) == 2 ){            
+            if(count($userArray)>0){
+                $rooms['title']= $userArray[0]["user_name"];
+                $rooms['image']=  $userArray[0]["pic_url"];
+                if(abs($userArray[0]['online'] - time()) < 1800){
+                    $rooms['online'] = 0;
+                }else{
+                    $rooms['online'] = -1;
+                }
+            }
+          
 
         }else if(count($array) >2){
-            $rooms['title']= "ATB admin(group";
+            $rooms['title']= "ATB admin(group)";
             $rooms['image']= base_url()."admin_assets/logo.png";
             $rooms['online'] = -1;
         }           
+        $custom = array();
+        $custom['members'] = json_encode($memberArray);
+   
         if ($chatFlag == 1) {
             $flag = false;
             $chatroom= $this->session->userdata('chatRooms');
+           
             for($i = 0 ; $i<count( $chatroom);$i++){
                 $room = $chatroom[$i];
+               
                 if($room['channel'] == $channel){
                     $flag = true;
                     break;
                 }
-            }           
-            if ($flag) {
-               
-            } else {   
-                $pubnub->setChannelMetadata()
-                ->channel($channel)
+            }      
+           
+
+            $pubnub->setChannelMetadata()
+                ->channel(urlencode($channel))
                 ->meta([
                     "name" => $channel,
-                    "description" => "description_of_channel",
-                    "custom" =>$rooms
+                    "metadataID" => $channel,
+                    "description" => "description_of_channel",                    
+                    "custom" => $custom
                 ])
-                ->sync();  
-                // $members = array();     
-                // for($i = 1 ; $i<count( $array);$i++){
-                //     $members[$i] = "user_".$array[$i];
-                // } 
-                // $pubnub->setMembers()
-                // ->channel($channel)
-                // ->uuids( $members)               
+                ->sync(); 
+
+            if($flag){
+                // $udids = [];
+                // for($i = 0 ; $i<count( $memberArray);$i++){
+                //     $member = $memberArray[$i];
+                //     $customs['lastReadTimetoken'] = ((int) (microtime(true) ))*10000000;
+                //     $udids[$i]['id'] = $member['id'];
+                //     $udids[$i]['custom'] = $customs;
+                    
+                // }
+               
+
+            //    $response = $pubnub->getMembers()
+            //     ->channel($channel)
+            //     ->sync();
+            //     print_r($response);
+
+                // $response = $pubnub->setMembers()
+                // ->channel( $channel)
+                // ->uuids([
+                //     "uuid",
+                    
+                // ])
+                // ->custom([
+                //     "a" => "aa",
+                //     "b" => "bb",
+                // ])
                 // ->sync();
+                
             }
-        }
+
+
+        }        
+        $result = $pubnub->history()
+        ->channel($channel)
+        ->count(1)
+        ->sync();
+        // $rooms['last_message'] = "";
+       
+            $pnHistoryResult = $result->getMessages();     
+       
+            if(count($pnHistoryResult)>0){
+                try{
+
+                    $messageModel = $pnHistoryResult[0]->getEntry();  
+                    // print_r( "aaaa". $pnHistoryResult[0]->getTimetoken());
+                    // exit;
+                    if(str_contains(json_encode($messageModel), "text")){                        
+                        $rooms['last_message'] = $messageModel['text'];  
+                        if($messageModel['messageType'] == "Image" ){
+                            $rooms['last_message'] = "Image Sent";
+                        }                  
+                        $rooms['timesteapm'] = $result->getStartTimetoken()/10000000; 
+
+                    }
+                   
+                }catch(Exception $e){
+
+                }
+            
+            }       
         return $rooms;
     }
     public function index() {
+
+        $user_id=$this->session->userdata('user_id');
+        $_filter  = "name LIKE "."'*".$user_id."#"."ADMIN"."*'";
          $pubnub = $this->loginPubNub();
          $result = $pubnub->getAllChannelMetadata()
          ->includeFields([ "totalCount" => true, "customFields" => true ])
+        ->filter(  urlencode($_filter))
          ->sync();
          $channelMetadata = $result-> getData();
          $rooms = array();
          $count = 0;
+         $wholeUsers = $this->User_model->getUsersListInDashboard();
          for($i =0;$i<count($channelMetadata);++$i ){
             $channel = $channelMetadata[$i]->getId();
-            if (str_contains($channel, "ADMIN_")) {
-                
-                $rooms[$count] = $this-> getChannelDetail($channel, 0);
+            if (str_contains($channel, $user_id."#ADMIN")) {
+                $rooms[$count] = $this-> getChannelDetail($channel, 0, $wholeUsers );
+                // print_r($channelMetadata[$i]);
+                // exit;
                 $count ++;
             }
         } 
@@ -117,26 +220,29 @@ class ChatController extends MY_Controller
         $this->session->set_userdata('pubnub', $pubnub);
 
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);        
-        $wholeUsers = $this->User_model->getOnlyUser(array('status' => 3));
         $dataToBeDisplayed['whole_users'] = count($wholeUsers);
         $dataToBeDisplayed['rooms'] =  $rooms;
         $this->load->view('admin/chat/chat_list', $dataToBeDisplayed);
     }
 
    
-    public function detail($channel) {
-    
+    public function detail($channel) {  
+        $channel = urldecode($channel);
+        $wholeUsers = $this->User_model->getUsersListInDashboard();
+        $user_id=$this->session->userdata('user_id');    
+        if (!str_contains($channel, $user_id."#ADMIN")) {    
+            $channel = $user_id."#ADMIN_".$channel    ;
+        }    
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);
        // $booking = $this->Booking_model->getBooking($bookingid);
-        $rooms = $this->getChannelDetail($channel,1);
+        $rooms = $this->getChannelDetail($channel,1,$wholeUsers);
+       
         $dataToBeDisplayed['rooms'] = $rooms;
         $this->load->view('admin/chat/chat', $dataToBeDisplayed);
     }
     public function newchat() {
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);
-       // $booking = $this->Booking_model->getBooking($bookingid);
 
-      //  $dataToBeDisplayed['booking'] = $booking;
       $dataToBeDisplayed['users'] = $this->User_model->getUsersListInDashboard();
 
         $this->load->view('admin/chat/new_chat', $dataToBeDisplayed);
@@ -153,23 +259,7 @@ class ChatController extends MY_Controller
 
         print json_encode( $data);
 
-        exit;
-		// $this->load->model('Admin_model');
-		// echo "console.log('aaaaaaa')";
-		// $email = strtolower($this->input->post('email'));
-		// $retVal = array();
-		// $existUser = $this->Admin_model->getAdmin(array('email' => $email));
-		// if(count($existUser) == 0) {
-		// 	redirect(route('admin.auth.forgot_pass'));
-		// }
-		// else{
-		// 	$subject = 'Admin Password was Reset';
-		// 	$content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">Plase use this new password</span></p>
-		// 	<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('approveReason').'</span></p>';
-		// 	$this->User_model->sendUserEmail($email, $subject, $content);						
-		// 	redirect(route('admin.auth.login'));
-
-		// }
+        exit;		
 	}
 
 }

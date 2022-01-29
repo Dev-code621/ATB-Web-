@@ -274,6 +274,8 @@
         Route::get('/new', 'AdminController@newAdmin') -> name('admin.admin.new');
         Route::get('/create', 'AdminController@createAdmin') -> name('admin.admin.create');
         Route::get('/delete/{userid}', 'AdminController@deleteAdmin') -> name('admin.admin.delete');
+        Route::post('/doUpload', 'AdminController@doUpload') -> name('admin.admin.doUpload');
+
     });
 
     Route::group('admin/notifications', ['namespace' => 'admin'], function() {

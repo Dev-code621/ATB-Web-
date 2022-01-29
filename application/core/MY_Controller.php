@@ -12,6 +12,7 @@ use PubNub\PubNub;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\PNConfiguration;
+use Lcobucci\JWT\Validation\ConstraintViolation;
 
 
 //Load Composer's autoloader
@@ -243,13 +244,14 @@ class MY_Controller extends CI_Controller
     }
 
     function loginPubNub() {
+        $user_id= $this->session->userdata('user_id');   
         $publish_key = $this->config->item('pubnub_publish_key');
 		$sub_key = $this->config->item('pubnub_sub_key');
         $pnconf = new PNConfiguration();
         
         $pnconf->setSubscribeKey($sub_key);
         $pnconf->setPublishKey($publish_key);
-        $pnconf->setUuid("ADMIN");
+        $pnconf->setUuid( $user_id ."#ADMIN");
         $pubnub = new PubNub($pnconf);
 
         return $pubnub;
