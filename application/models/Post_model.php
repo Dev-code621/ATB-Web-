@@ -259,7 +259,7 @@ class Post_model extends MY_Model
         ->where('id', $postId)
         ->get()
         ->result_array();
-    
+        if(count($posts) == 0 )return null;
         $posts[0]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[0]['id']));
         $posts[0]['likes'] = $this->PostLike_model->getLikes(array('post_id' => $posts[0]['id']));
         $commentors  =  $this->PostComment_model->getComments(array('post_id' => $posts[0]['id'])); 

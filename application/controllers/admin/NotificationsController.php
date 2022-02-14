@@ -139,9 +139,11 @@ class NotificationsController extends MY_Controller
         $newNotifications = $this->AdminNotification_model->getAdminNotification(array('read_status' => 0));
 
         for($i = 0 ; $i < count($newNotifications); $i++) {
+            $newNotifications[$i]['post'] = $this->Post_model->getPostDetail($newNotifications[$i]['related_id'], 0);
+
             if ($newNotifications[$i]['type'] == 0) {
                 $newNotifications[$i]['comment'] = $this->PostComment_model->getComments(array("id" => $newNotifications[$i]['related_id']));
-                $newNotifications[$i]['post'] = $this->Post_model->getPostDetail($newNotifications[$i]['comment'][0]['post_id'], 0);
+                $newNotifications[$i]['post'] = $this->Post_model->getPostDetail($newNotifications[$i]['related_id'], 0);
             } else {
                 $newNotifications[$i]['post'] = $this->Post_model->getPostDetail($newNotifications[$i]['related_id'], 0);
             }
@@ -155,7 +157,7 @@ class NotificationsController extends MY_Controller
             if ($oldNotifications[$i]['type'] == 0) {
 
                 $oldNotifications[$i]['comment'] = $this->PostComment_model->getComments(array("id" => $oldNotifications[$i]['related_id']));
-                $oldNotifications[$i]['post'] = $this->Post_model->getPostDetail($oldNotifications[$i]['comment'][0]['post_id'],0);
+                $oldNotifications[$i]['post'] = $this->Post_model->getPostDetail($oldNotifications[$i]['related_id'],0);
             } else {
                 $oldNotifications[$i]['post'] = $this->Post_model->getPostDetail($oldNotifications[$i]['related_id'], 0);
             }

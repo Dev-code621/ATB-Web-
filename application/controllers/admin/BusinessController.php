@@ -2,6 +2,8 @@
 
 use SebastianBergmann\Environment\Console;
 
+use function PHPSTORM_META\type;
+
 class BusinessController extends MY_Controller {
     const BUSINESS_LIST = 0;
     const PAGE_DETAIL = 1;
@@ -265,5 +267,53 @@ class BusinessController extends MY_Controller {
         ]);
 
         redirect('/admin/business');
+    }
+
+    public function threedot() {
+
+        $user_id = $this->input->get('userid');
+        $type = $this->input->get('type');
+        $dataToBeDisplayed = $this->makeComponentLayout(self::PAGE_BLOCK);
+        // $dataToBeDisplayed['approve_serviceid'] = $serviceid;
+        $dataToBeDisplayed['type'] =$type;
+        $dataToBeDisplayed['title'] = "BOOKINGS";
+
+        if($type == 1 ){
+            $dataToBeDisplayed['title'] = "SOLD ITEMS";
+
+        } else if($type == 2 ){
+            $dataToBeDisplayed['title'] = "POSTS";
+
+        } else if($type == 3 ){
+            $dataToBeDisplayed['title'] = "SERVICES CREATED";
+        }
+
+
+        $allBookings = $this->Booking_model->getBookings( array('business_user_id' => $user_id));
+        $dataToBeDisplayed['allBookings'] = $allBookings;
+
+        $query = array('user_id' => $user_id);
+        if($type == 1){
+            $query = array('user_id' => $user_id,'is_sold' => 1 );
+        }else if($type == 3){
+            $query = array('user_id' => $user_id,'post_type' => 3 );
+        }
+        $allposts = $this->Post_model->getPostInfo($query,"");
+        $cats = array();
+        foreach ($allposts as $post) {
+            $cats[] = $post["category_title"];
+        }
+        $cats = array_unique($cats);
+        sort($cats);
+
+        $dataToBeDisplayed['allposts'] = $allposts;
+        $dataToBeDisplayed["cats"] = $cats;
+
+
+        if($type == 0){
+            $this->load->view('admin/business/three_dot_booking_list', $dataToBeDisplayed);
+        }else{
+            $this->load->view('admin/business/three_dot_detail_feed', $dataToBeDisplayed);
+        }
     }
 }

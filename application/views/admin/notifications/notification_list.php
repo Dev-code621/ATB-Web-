@@ -59,7 +59,8 @@ if(!$user_id){
                 
                 <div class="data-container tab-content-wrapper container">
                     <div data-tabcontent="unread-notifications" class="tabcontent" style="display: block;">
-                        <?php for($i = 0 ; $i < count($newNotifications); $i++):?>
+                        <?php for($i = 0 ; $i < count($newNotifications); $i++):
+                                if($newNotifications[$i]['post'] == null) continue; ?>
                             <div class="data-item d-flex">
                                 <div class="user-info"> 
                                     <div class="user-icon online">
@@ -90,7 +91,9 @@ if(!$user_id){
                     </div>
 
                     <div data-tabcontent="actioned-notifications" class="tabcontent">
-                      <?php for($i = 0 ; $i < count($oldNotifications); $i++):?>
+                      <?php for($i = 0 ; $i < count($oldNotifications); $i++):
+                               if($oldNotifications[$i]['post'] == null) continue; ?>
+
                         <div class="data-item d-flex">
                             <div class="user-info"> 
                                 <div class="user-icon online">

@@ -310,7 +310,8 @@
     Route::get('/submit_approve', 'BusinessController@approve_business') -> name('admin.business.submit_approve');
 	Route::get('/approve_service/{serviceid}', 'BusinessController@service_approve_form') -> name('admin.business.approve_service');
     Route::get('/submit_approve_service', 'BusinessController@approve_service') -> name('admin.business.submit_approve_service');
-	
+    Route::get('/threedot', 'BusinessController@threedot') -> name('admin.business.threedot');
+
 	
 });
 

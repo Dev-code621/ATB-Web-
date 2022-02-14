@@ -40,7 +40,7 @@ if(!$user_id){
                             <p class="user-username">@<?php echo $business['user']["profile"]['user_name'];?></p>
                         </div>
                     </div>
-                    <a href="#" class="nav-link"><i class="fa-regular fa-ellipsis"></i></a>
+                    <a href="#" data-modal="bussinessModal" class="nav-link"><i class="fa-regular fa-ellipsis"></i></a>
                 </header>
                 <div class="user-description">
                     <p> <?php echo $business['business_bio'];?></p>
@@ -242,6 +242,45 @@ if(!$user_id){
 
                 </form>
             </div>
+
+
+            
+            <div class="modal" id="bussinessModal" style="background:#A6BFDE;"> 
+                <div class="closeModal" data-close="bussinessModal" style="margin-bottom:20px" ><i class="fa-solid fa-circle-xmark" style='color: white'></i></div>
+                <div class="text-center">
+                    <h3 style='color: white'>WHERE would you like to go?</h3>
+                    <div id="screenHeight"></div>
+                </div>
+                <form 
+                   action="<?php echo route('admin.business.threedot');?>" method="get" enctype="multipart/form-data">
+                    <input type="hidden" id="userid" name="userid" value="<?php echo  $business['user_id'];?>">  
+                    <input type="hidden" id="type" name="type" value="0">                    
+                  
+                    <button type="submit"  class="btn btn-light" style="background-color:#fff;color:#656565" >BOOKINGS</button>
+                </form>
+                <form 
+                   action="<?php echo route('admin.business.threedot');?>" method="get" enctype="multipart/form-data">
+                    <input type="hidden" id="userid" name="userid" value="<?php echo  $business['user_id'];?>">           
+                    <input type="hidden" id="type" name="type" value="1">                    
+         
+                    <button type="submit"  class="btn btn-light" style="background-color:#fff;color:#656565" >SOLD ITEMS</button>
+                </form>
+                <form 
+                   action="<?php echo route('admin.business.threedot');?>" method="get" enctype="multipart/form-data">
+                    <input type="hidden" id="userid" name="userid" value="<?php echo  $business['user_id'];?>">                    
+                    <input type="hidden" id="type" name="type" value="2">                    
+
+                    <button type="submit"  class="btn btn-light" style="background-color:#fff;color:#656565" >POSTS</button>
+                </form>
+                <form 
+                   action="<?php echo route('admin.business.threedot');?>" method="get" enctype="multipart/form-data">
+                    <input type="hidden" id="userid" name="userid" value="<?php echo  $business['user_id'];?>">                   
+                    <input type="hidden" id="type" name="type" value="3">                    
+ 
+                    <button type="submit"  class="btn btn-light" style="background-color:#fff;color:#656565" >SERVICES CREATED</button>
+                </form>             
+            </div>
+
 
         </section>
 

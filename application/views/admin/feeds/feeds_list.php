@@ -117,7 +117,7 @@ if(!$user_id){
                                    
                                         <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
                                     </a>
-                                        </div>
+                                </div>
                                
                               
     
@@ -172,7 +172,18 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
                                 </div>
                                 <?php } ?>
                             <?php endfor;?> 
@@ -225,8 +236,18 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
-                                </div>
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>                                </div>
                                 <?php } ?>
                             <?php endfor;?> 
                             
@@ -332,7 +353,18 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
                                 </div>
                                 <?php } ?>
                             <?php endfor;?> 
@@ -385,7 +417,18 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
                                 </div>
                                 <?php } ?>
                             <?php endfor;?> 
@@ -491,8 +534,22 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+                                    <!-- <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a> -->
+
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
                                 </div>
+                                </div>
+
                                 <?php } ?>
                             <?php endfor;?> 
                     </div>
