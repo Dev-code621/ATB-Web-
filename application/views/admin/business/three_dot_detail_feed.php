@@ -51,12 +51,14 @@ if(!$user_id){
 
                         <button class="btn tablinks" data-tab="review">For Review</button>
                         <button class=" btn tablinks" data-tab="rejected">Rejected</button>
-                    <? } ?>
+                    <?php } ?>
                  </div>
                 
                 <div class="data-container tab-content-wrapper container">
                     <div data-tabcontent="all" class="tabcontent" style="display: block;">
                        <?php for($i = 0 ; $i < count($allposts); $i++):?>
+                        <?php if ($allposts[$i]["is_active"] == 1) { ?>
+
                             <div class="data-item d-flex">
                                 <div class="user-info-content">
                                   <?php 
@@ -116,15 +118,13 @@ if(!$user_id){
                                         <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
                                     </a>
                                 </div>
-                               
-                              
-    
                             </div>
+                            <?php } ?>
                          <?php endfor;?> 
                     </div>
                     <div data-tabcontent="review" class="tabcontent">
                         <?php for($i = 0 ; $i < count($allposts); $i++):?>
-                            <?php if ($allposts[$i]["is_active"] == 1) { ?>
+                            <?php if ($allposts[$i]["is_active"] == 3) { ?>
                                 <div class="data-item d-flex">
                                     <div class="user-info-content">
                                     <?php 
@@ -188,7 +188,7 @@ if(!$user_id){
                     </div>
                     <div data-tabcontent="rejected" class="tabcontent">
                     <?php for($i = 0 ; $i < count($allposts); $i++):?>
-                            <?php if ($allposts[$i]["is_active"] == 0) { ?>
+                            <?php if ($allposts[$i]["is_active"] == 2) { ?>
                                 <div class="data-item d-flex">
                                     <div class="user-info-content">
                                     <?php 
@@ -234,18 +234,17 @@ if(!$user_id){
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a> -->
                                     <div style="width: 120px; min-width:120px;">
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                        <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                        
+                                            <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                                <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                            <?php } else{?>
+                                                <img style="border : initial;opacity:0" >
+                                            <?php }?>
                                     
-                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
-                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
-                                        <?php } else{?>
-                                            <img style="border : initial;opacity:0" >
-                                        <?php }?>
-                                   
-                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
-                                    </a>
+                                            <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                        </a>
                                 </div>
                                 </div>
                                 <?php } ?>
