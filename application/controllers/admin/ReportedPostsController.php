@@ -131,4 +131,12 @@ class ReportedPostsController extends MY_Controller
 
         redirect('/admin/reported_post');
     }
+
+    public function commentReport($commentid) {
+
+        $post = $this->PostComment_model->getPostIDByCommentID($commentid);
+        // route('admin.signups.view_post',  $post[0]['post_id']);
+        redirect('/admin/signups/post/' . $post[0]['post_id']);
+
+    }
 }

@@ -39,7 +39,7 @@ class User_model extends MY_Model
 
     public function getOnlyUser($where = array()) {
 		
-		$existUser = $this->db->select('*')->from(self::TABLE_USER_INFO)->where($where)->get()->result_array();
+		$existUser = $this->db->select('*')->from(self::TABLE_USER_INFO)->where($where)->order_by('created_at', 'DESC')->get()->result_array();
 		
 		if(count($existUser) > 0) {
 			$businessInfos = $this->UserBusiness_model->getBusinessInfo($existUser[0]['id']);

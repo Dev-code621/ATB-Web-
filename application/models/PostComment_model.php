@@ -1,5 +1,7 @@
 <?php
 
+use Lcobucci\JWT\Validation\ConstraintViolation;
+
 /**
  * Created by PhpStorm.
  * User: zeus
@@ -142,4 +144,15 @@ class PostComment_model extends MY_Model
         }
         return $retVal;
     }
+
+    public function getPostIDByCommentID($commentid) {
+        $retVal = $this->db->select('*')
+                    ->from(self::TABLE_POST_COMMENT)
+                    ->where(array('id' => $commentid))
+                    ->order_by('created_at', 'DESC')
+                    ->get()
+                    ->result_array();
+      
+        return $retVal;
+	}
 }

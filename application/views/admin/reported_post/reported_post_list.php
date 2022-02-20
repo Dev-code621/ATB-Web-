@@ -95,11 +95,14 @@ if(!$user_id){
                                             <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
                                         </div>
                                     </div>
-                                    <?php if($open_reports[$i]['post_id'] != 0) { ?>
+                                    <?php 
+                                    if($open_reports[$i]['post_id'] != 0) { ?>
                                         <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
                                     <?php } elseif($open_reports[$i]['user_id'] != 0) { ?>
                                         <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
-
+                                    <?php } elseif($open_reports[$i]['comment_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
+                                            
                                     <?php }?>
                                 </div>
                             </div>

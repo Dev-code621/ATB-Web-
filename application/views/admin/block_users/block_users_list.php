@@ -77,7 +77,9 @@ if(!$user_id){
 
                                                 break;
                                             case 1:
-                                                echo '<span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span>'  ;                                   'blocked';
+                                                // echo '<span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span>'  ;                                   'blocked';
+                                                echo '<button type="button" data-modal="blockModal" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>';
+
                                                 break;
                                             case 2:
                                                 echo '<span class="tag freezed"><i class="fa-regular fa-ban"></i> Freezed</span>';
@@ -94,6 +96,37 @@ if(!$user_id){
                                 </div>
                             </div>
                         </div>
+                        <div class="modal" id="blockModal">
+                            <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
+                            <div class="text-center">
+                                <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
+                                <h3> <?php if ($user['status'] != 1) echo  "Are you sure you want to block this user";
+                                        else
+                                        echo  "Are you sure you want to unblock this user";
+                                    ?>  </h3>
+                                <h4>If so, please provide a reason below</h4>
+                                <div id="screenHeight"></div>
+                            </div>
+                            <form 
+                                <?php if ($user['status'] != 1) { ?> 
+                                    action="<?php echo route('admin.signups.submit_block');?>" method="get" enctype="multipart/form-data"
+                                <?php } ?>
+                                <?php if ($user['status'] == 1) { ?>
+                                    action="<?php echo route('admin.signups.submit_unblock');?>" method="get" enctype="multipart/form-data"
+                                <?php } ?>
+                            >
+                                <textarea rows="5" id="Reason"  name = "Reason" placeholder="This user is providing spam, in all inboxes"></textarea>
+                                <input type="hidden" id="userid" name="userid" value="<?php echo $user['id'];?>">
+
+                                <?php if ($user['status'] != 1) { ?>
+                                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Block this user</button>
+                                <?php } ?>
+                                <?php if ($user['status'] == 1) { ?>
+                                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Unblock this user</button>
+                                <?php } ?>
+
+                            </form>
+                        </div>
                    <?php endforeach;?>
                 </div>
                 <div data-tabcontent="blocked" class="tabcontent">
@@ -107,10 +140,43 @@ if(!$user_id){
                                 <h2 class="user-name"><?php echo $user['user_name'];?></h2>
                                 <p class="user-mail"><?php echo $user['user_email'];?></p>
                                 <p><i class="fa-solid fa-quote-left"></i> <?php echo $user['status_reason'];?></p>
-                                <span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span>
+                                <!-- <span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span> -->
+                                <button type="button" data-modal="blockModal" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>
+
                             </div>
                         </div>
                     </div>
+                    <div class="modal" id="blockModal">
+                            <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
+                            <div class="text-center">
+                                <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
+                                <h3> <?php if ($user['status'] != 1) echo  "Are you sure you want to block this user";
+                                        else
+                                        echo  "Are you sure you want to unblock this user";
+                                    ?>  </h3>
+                                <h4>If so, please provide a reason below</h4>
+                                <div id="screenHeight"></div>
+                            </div>
+                            <form 
+                                <?php if ($user['status'] != 1) { ?> 
+                                    action="<?php echo route('admin.signups.submit_block');?>" method="get" enctype="multipart/form-data"
+                                <?php } ?>
+                                <?php if ($user['status'] == 1) { ?>
+                                    action="<?php echo route('admin.signups.submit_unblock');?>" method="get" enctype="multipart/form-data"
+                                <?php } ?>
+                            >
+                                <textarea rows="5" id="Reason"  name = "Reason" placeholder="This user is providing spam, in all inboxes"></textarea>
+                                <input type="hidden" id="userid" name="userid" value="<?php echo $user['id'];?>">
+
+                                <?php if ($user['status'] != 1) { ?>
+                                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Block this user</button>
+                                <?php } ?>
+                                <?php if ($user['status'] == 1) { ?>
+                                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Unblock this user</button>
+                                <?php } ?>
+
+                            </form>
+                        </div>
                    <?php endforeach;?>
 
                 </div>
@@ -147,10 +213,12 @@ if(!$user_id){
                                 </div>
                             </div>
                         </div>
-                        <?php endforeach;?>
+                    <?php endforeach;?>
                 </div>
+                
             </div>
         </div>
+        
     </main>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
     <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>

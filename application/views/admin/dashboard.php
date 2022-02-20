@@ -126,7 +126,7 @@ if(!$user_id){
                             }
                         ?>
                     <img src="<?php echo $picURL;?>" alt="">
-                    Richard
+                    <?php echo $this->session->userdata('user_name')  ?>
                 </a>
             </nav>
         </div>

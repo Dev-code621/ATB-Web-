@@ -21,7 +21,9 @@ if(!$user_id){
     <script src="https://kit.fontawesome.com/cfcaed50c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
-   
+    <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/search.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         img {
         border: 1px solid #ddd;
@@ -41,7 +43,11 @@ if(!$user_id){
         <header class="app-header container">
             <a href="<?php echo route('admin.dashboards.index', $user_id);?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
             <h1 class="page-title"><i class="fa-duotone fa-newspaper"></i> Feed</h1>
-            <a href="#" class="nav-link"><i class="fa-regular fa-magnifying-glass"></i></a>
+            <!-- <a href="#" class="nav-link"><i class="fa-regular fa-magnifying-glass"></i></a> -->
+            <div class="search-box">            
+                <button class="btn-search"><i class="fas fa-search"></i></button>
+                <input onchange ="search()" type="text" class="input-search" placeholder="Search" id = "search"> 
+            </div>
         </header>
 
             <div class="tabs-container">
@@ -558,6 +564,20 @@ if(!$user_id){
     </main>
     <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
+    <script>
+        var allposts = <?php echo json_encode($allposts);?>;
+        function getbaseurl(){
+            return <?php echo "'".base_url()."'"?>;
+        }
+        function search() {
+             var query = document.getElementById("search").value;
+             document.getElementById("search").value = "";
+             $('#item').empty();
+             window.location = getbaseurl() + "admin/feeds/" + query;
+
+
+        }
+    </script>
 
 </body>
 </html>

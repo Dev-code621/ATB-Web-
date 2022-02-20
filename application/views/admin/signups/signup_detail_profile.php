@@ -87,7 +87,10 @@ if(!$user_id){
                     </tr>
                     <tr>
                         <td><i class="fa-regular fa-signs-post"></i> <span>Posts</span></td>
-                        <td> <?php echo $post_counter;?></td>
+                        <td> 
+                            <a href="<?php echo route('admin.feeds.posts', $profile['id']);?>" ><?php echo $post_counter;?></a>
+
+                        </td>
                     </tr>
                     <tr>
                         <td><i class="fa-regular fa-user-circle"></i> <span>Status</span></td>

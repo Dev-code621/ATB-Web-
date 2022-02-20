@@ -299,6 +299,9 @@
     Route::group('admin/reported_post', ['namespace' => 'admin'], function() {
     Route::get('/', 'ReportedPostsController@index')->name('admin.reported_post.index');
     Route::get('/ignore/{reportid}', 'ReportedPostsController@ignoreReport') -> name('admin.reported_post.ignore');
+    Route::get('/commentreport/{commentid}', 'ReportedPostsController@commentReport') -> name('admin.reported_post.commentreport');
+
+
 });
 
     Route::group('admin/business', ['namespace' => 'admin'], function() {
@@ -323,6 +326,9 @@
     Route::group('admin/feeds', ['namespace' => 'admin'], function() {
         Route::get('/', 'FeedsController@index')->name('admin.feeds.index');
         Route::get('/detail/{userid}', 'FeedsController@detail') -> name('admin.feeds.detail');
+        Route::get('/{search}', 'FeedsController@search')->name('admin.feeds.search');
+        Route::get('/post/{userid}', 'FeedsController@userPost')->name('admin.feeds.posts');
+
     });
     
     Route::group('admin/bookings', ['namespace' => 'admin'], function() {

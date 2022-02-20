@@ -69,6 +69,42 @@ class FeedsController extends MY_Controller
         $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
     }
 
+    public function search($search) {
+
+        $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
+        $allposts = $this->Post_model->getPostInfo( array(),$search);
+        $cats = array();
+
+        foreach ($allposts as $post) {
+            $cats[] = $post["category_title"];
+        }
+
+        $cats = array_unique($cats);
+        sort($cats);
+
+        $dataToBeDisplayed['allposts'] = $allposts;
+        $dataToBeDisplayed["cats"] = $cats;
+        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
+    }
+
+    public function userPost($userid) {
+
+        $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
+        $allposts = $this->Post_model->getPostInfo( array('user_id' => $userid),"");
+        $cats = array();
+
+        foreach ($allposts as $post) {
+            $cats[] = $post["category_title"];
+        }
+
+        $cats = array_unique($cats);
+        sort($cats);
+
+        $dataToBeDisplayed['allposts'] = $allposts;
+        $dataToBeDisplayed["cats"] = $cats;
+        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
+    }
+
     public function detail($userid) {
         $dataToBeDisplayed = $this->makeComponentLayout(self::PAGE_DETAIL);
         $this->load->view('admin/feeds/feed_detail', $dataToBeDisplayed);
