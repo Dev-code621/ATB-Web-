@@ -83,7 +83,11 @@ class PostComment_model extends MY_Model
         $now = time();
 		
 			for($x = 0 ; $x < count($retVal); $x++) {
-				$retVal[$x]['read_created'] = human_readable_date($retVal[$x]['created_at']);
+                $encodedComments = $retVal[$x]['reply'];
+                $decodededComments = json_decode($encodedComments);
+                $retVal[$x]['replies'] = $decodededComments;
+
+                $retVal[$x]['read_created'] = human_readable_date($retVal[$x]['created_at']);
 				$replyUser = $this->User_model->getOnlyUser(array('id' => $retVal[$x]['reply_user_id']));
 				$retVal[$x]['user_img'] = $replyUser[0]['pic_url'];
 				
@@ -107,6 +111,9 @@ class PostComment_model extends MY_Model
 
         $now = time();
         for($i = 0 ; $i < count($retVal); $i++) {
+            $encodedComments = $retVal[$i]['comment'];
+            $decodededComments = json_decode($encodedComments);
+            $retVal[$i]['comments'] = $decodededComments;
 			
 			$user = $this->User_model->getOnlyUser(array('id' => $retVal[$i]['commenter_user_id']));
 						
@@ -118,6 +125,10 @@ class PostComment_model extends MY_Model
                     ->result_array();
 					
 			for($x = 0 ; $x < count($retPostReply); $x++) {
+                $encodedComments = $retPostReply[$x]['reply'];
+                $decodededComments = json_decode($encodedComments);
+                $retPostReply[$x]['replies'] = $decodededComments;
+                
 				$retPostReply[$x]['read_created'] = human_readable_date($retPostReply[$x]['created_at']);
 				$replyUser = $this->User_model->getOnlyUser(array('id' => $retPostReply[$x]['reply_user_id']));
 				$likes = $this->PostLike_model->getLikes(array('reply_id' => $retPostReply[$x]['id']));

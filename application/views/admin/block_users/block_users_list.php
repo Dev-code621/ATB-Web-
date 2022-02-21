@@ -141,12 +141,12 @@ if(!$user_id){
                                 <p class="user-mail"><?php echo $user['user_email'];?></p>
                                 <p><i class="fa-solid fa-quote-left"></i> <?php echo $user['status_reason'];?></p>
                                 <!-- <span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span> -->
-                                <button type="button" data-modal="blockModal" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>
+                                <button type="button" data-modal="blockModal1" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>
 
                             </div>
                         </div>
                     </div>
-                    <div class="modal" id="blockModal">
+                    <div class="modal" id="blockModal1">
                             <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
                             <div class="text-center">
                                 <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
