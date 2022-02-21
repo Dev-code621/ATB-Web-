@@ -328,6 +328,7 @@
         Route::get('/detail/{userid}', 'FeedsController@detail') -> name('admin.feeds.detail');
         Route::get('/{search}', 'FeedsController@search')->name('admin.feeds.search');
         Route::get('/post/{userid}', 'FeedsController@userPost')->name('admin.feeds.posts');
+        Route::get('/purchase/{userid}', 'FeedsController@purchase')->name('admin.feeds.purchase');
 
     });
     
@@ -348,7 +349,9 @@
     	Route::get('/reply/{ticketid}', 'TicketsController@reply_form') -> name('admin.tickets.reply');
     	Route::get('/submit_reply', 'TicketsController@reply_ticket') -> name('admin.tickets.submit_reply');
     });
-   
+    Route::group('admin/transaction', ['namespace' => 'admin'], function() {
+        Route::get('/', 'TransactionHistoryController@index')->name('admin.transaction.index');
+    });
 
     Route::set('404_override', function(){
        show_404();

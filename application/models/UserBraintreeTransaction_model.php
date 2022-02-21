@@ -33,7 +33,7 @@ class UserBraintreeTransaction_model extends MY_Model
    
     public function getTransactionHistory($where  = array()) {
         $transactions = $this->db->select('*')->from(self::TABLE_USER_BRAINTREE_TRANSACTION)->where($where)
-                ->order_by('created_at', 'DESC')
+                ->order_by('created_at', 'ASC')
                 ->get()->result_array();
                 
         for ($i = 0; $i<count($transactions); $i++) {

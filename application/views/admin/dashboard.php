@@ -44,10 +44,15 @@ if(!$user_id){
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="<?php echo route('admin.notifications.index');?>">
+                    <a href="<?php echo route('admin.transaction.index');?>">
+                        <!-- <i class="fa-thin fa-bell-on"></i>
+                        <span>Notifications</span> -->
+                        <!-- <span class="notification-icon"><?php echo ($this->session->userdata('notification_count')) ?></span> -->
+                        
+                        <!-- <a href="<?php echo route('admin.transaction.index');?>"> -->
                         <i class="fa-thin fa-bell-on"></i>
-                        <span>Notifications</span>
-                        <span class="notification-icon"><?php echo ($this->session->userdata('notification_count')) ?></span>
+                        <span>Transaction</span>
+                    </a>
                     </a>
                 </div>
                 <div class="nav-item">
@@ -89,7 +94,7 @@ if(!$user_id){
                 </div>
                 <div class="nav-item">
 
-                    <a href="<?php echo route('admin.auth.logout');?>"  class="profile">
+                    <!-- <a href="<?php echo route('admin.auth.logout');?>"  class="profile">
                         <span><small>Logged in as:</small> <?php echo ($this->session->userdata('user_name')) ?></span>
                         <?php
                             $picURL = base_url()."admin_assets/images/samples/profile-sample.png";
@@ -99,6 +104,11 @@ if(!$user_id){
                         ?>
                         <img src= "<?php echo $picURL;?>" alt="">
 
+                    </a> -->
+
+                    <a href="<?php echo route('admin.feeds.purchase', $user_id);?>">
+                        <i class="fa-thin fa-newspaper"></i>
+                        <span>Purchases</span>
                     </a>
                 </div>
             </div>

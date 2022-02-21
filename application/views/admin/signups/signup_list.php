@@ -175,6 +175,7 @@ $array = $users;
             var i=0;
             var filtered_users;
             for(i=0; i<users.length; i++){
+                if(users[i].user_name == null )continue;
                 if(users[i].user_name.toLowerCase().includes(query.toLowerCase())){
                     var online_status = 'user-icon online';
                     if(Math.abs(users[i].online - new Date().getTime()) >= 1800){

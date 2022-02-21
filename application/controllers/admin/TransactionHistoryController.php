@@ -6,7 +6,7 @@
  * Date: 2019/6/19
  * Time: 4:38 AM
  */
-class FeedsController extends MY_Controller
+class TransactionHistoryController extends MY_Controller
 {
     const FEEDS_LIST = 0;
     const PAGE_DETAIL = 1;
@@ -54,76 +54,11 @@ class FeedsController extends MY_Controller
 
     public function index() {
         $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
-        $allposts = $this->Post_model->getPostInfo();
-        $cats = array();
+        $alltransaction = $this->UserBraintreeTransaction_model->getTransactionHistory();
 
-        foreach ($allposts as $post) {
-            $cats[] = $post["category_title"];
-        }
-
-        $cats = array_unique($cats);
-        sort($cats);
-
-        $dataToBeDisplayed['allposts'] = $allposts;
-        $dataToBeDisplayed["cats"] = $cats;
-        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
+        $dataToBeDisplayed['alltransaction'] = $alltransaction;
+        $this->load->view('admin/transaction/transaction_list', $dataToBeDisplayed);
     }
 
-    public function search($search) {
 
-        $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
-        $allposts = $this->Post_model->getPostInfo( array(),$search);
-        $cats = array();
-
-        foreach ($allposts as $post) {
-            $cats[] = $post["category_title"];
-        }
-
-        $cats = array_unique($cats);
-        sort($cats);
-
-        $dataToBeDisplayed['allposts'] = $allposts;
-        $dataToBeDisplayed["cats"] = $cats;
-        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
-    }
-
-    public function userPost($userid) {
-
-        $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
-        $allposts = $this->Post_model->getPostInfo( array('user_id' => $userid),"");
-        $cats = array();
-
-        foreach ($allposts as $post) {
-            $cats[] = $post["category_title"];
-        }
-
-        $cats = array_unique($cats);
-        sort($cats);
-
-        $dataToBeDisplayed['allposts'] = $allposts;
-        $dataToBeDisplayed["cats"] = $cats;
-        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
-    }
-
-    public function detail($userid) {
-        $dataToBeDisplayed = $this->makeComponentLayout(self::PAGE_DETAIL);
-        $this->load->view('admin/feeds/feed_detail', $dataToBeDisplayed);
-    }
-
-    public function purchase() {
-        $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
-        $allposts = $this->Post_model->getPostInfo();
-        $cats = array();
-
-        foreach ($allposts as $post) {
-            $cats[] = $post["category_title"];
-        }
-
-        $cats = array_unique($cats);
-        sort($cats);
-
-        $dataToBeDisplayed['allposts'] = $allposts;
-        $dataToBeDisplayed["cats"] = $cats;
-        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
-    }
 }
