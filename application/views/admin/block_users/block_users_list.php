@@ -78,7 +78,7 @@ if(!$user_id){
                                                 break;
                                             case 1:
                                                 // echo '<span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span>'  ;                                   'blocked';
-                                                echo '<button type="button" data-modal="blockModal" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>';
+                                                echo '<button type="button" data-modal="blockModal' .$user['id'].'" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>';
 
                                                 break;
                                             case 2:
@@ -96,8 +96,8 @@ if(!$user_id){
                                 </div>
                             </div>
                         </div>
-                        <div class="modal" id="blockModal">
-                            <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
+                        <div class="modal" id="blockModal<?php echo $user['id']?>">
+                            <div class="closeModal" data-close="blockModal<?php echo $user['id']?>"><i class="fa-regular fa-circle-xmark"></i></div>
                             <div class="text-center">
                                 <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
                                 <h3> <?php if ($user['status'] != 1) echo  "Are you sure you want to block this user";
@@ -141,13 +141,13 @@ if(!$user_id){
                                 <p class="user-mail"><?php echo $user['user_email'];?></p>
                                 <p><i class="fa-solid fa-quote-left"></i> <?php echo $user['status_reason'];?></p>
                                 <!-- <span class="tag blocked"><i class="fa-regular fa-ban"></i> Blocked</span> -->
-                                <button type="button" data-modal="blockModal1" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>
+                                <button type="button" data-modal="blockModals<?php echo $user['id']?>" ><span class="tag blocked"><i class="fa-regular fa-ban"></i> Unblock this user</span></button>
 
                             </div>
                         </div>
                     </div>
-                    <div class="modal" id="blockModal1">
-                            <div class="closeModal" data-close="blockModal"><i class="fa-regular fa-circle-xmark"></i></div>
+                    <div class="modal" id="blockModals<?php echo $user['id']?>">
+                            <div class="closeModal" data-close="blockModals<?php echo $user['id']?>"><i class="fa-regular fa-circle-xmark"></i></div>
                             <div class="text-center">
                                 <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
                                 <h3> <?php if ($user['status'] != 1) echo  "Are you sure you want to block this user";

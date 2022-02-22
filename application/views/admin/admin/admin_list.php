@@ -36,7 +36,16 @@ if(!$user_id){
         <section class="data-container container">
            <?php for($i = 0 ; $i < count($users); $i++){?>
                 <div class="data-item d-flex" data-modal="removeModal<?php echo $i?>" data-id='<?php echo $i?>' >
-                    <div class="user-info d-block">
+                    <div>
+                        <?php if(strlen($users[$i]['profile_pic']) == 0){?>
+                        <img  src="<?php echo base_url();?>admin_assets/images/upload.png" style="width: 50px;height: 50px;border-radius:50%" id="blashE" alt=""/> 
+                         <?php } ?>       
+                        <?php  if(strlen($users[$i]['profile_pic'])> 0) { ?>                                 
+                            <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 50px;height: 50px;border-radius:50%" id="blashE" alt=""/> 
+                        <?php } ?> 
+                    </div>
+                     
+                    <div class="user-info d-block" style="margin-left: 20px;">
                         <h3 class="user-name"><?php echo $users[$i]['username'];?></h3>
                         <p class="user-mail"><?php echo $users[$i]['email'];?></p>
                     </div>

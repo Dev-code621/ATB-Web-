@@ -237,7 +237,7 @@ if(!$user_id){
                    action="<?php echo route('admin.business.submit_approve');?>" method="get" enctype="multipart/form-data" action="<?php echo route('admin.business.submit_block');?>" method="get" enctype="multipart/form-data" >
                     <textarea rows="5" id="approveReason" name="approveReason" placeholder="Please provide approved reason"></textarea>
                     <input type="hidden" id="approve_businessid" name="approve_businessid" value="<?php echo  $business['id'];?>">
-                    <button type="submit"  class="btn btn-success"><i class="fa-regular fa-ban"></i> Approve this Business user</button>
+                    <button type="submit"  class="btn btn-success"><i class="fa-solid fa-circle-check"></i> Approve this Business user</button>
 
 
                 </form>
