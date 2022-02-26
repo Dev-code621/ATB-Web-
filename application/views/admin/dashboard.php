@@ -44,24 +44,32 @@ if(!$user_id){
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="<?php echo route('admin.transaction.index');?>">
-                        <!-- <i class="fa-thin fa-bell-on"></i>
-                        <span>Notifications</span> -->
-                        <!-- <span class="notification-icon"><?php echo ($this->session->userdata('notification_count')) ?></span> -->
-                        
-                        <!-- <a href="<?php echo route('admin.transaction.index');?>"> -->
-                        <i class="fa-thin fa-bell-on"></i>
+                    <a href="<?php echo route('admin.transaction.index');?>">                        
+                        <i class="fa-thin fa-info-circle"></i>
                         <span>Transaction</span>
                     </a>
                     </a>
                 </div>
+
                 <div class="nav-item">
+                    <a href="<?php echo route('admin.notifications.index');?>">
+                        <!-- <i class="fa-thin fa-bell-on"></i>
+                        <span>Notifications</span> -->
+                        <span class="notification-icon"><?php echo ($this->session->userdata('notification_count')) ?></span>
+                        
+                        <!-- <a href="<?php echo route('admin.notifications.index');?>"> -->
+                        <i class="fa-thin fa-bell-on"></i>
+                        <span>Notification</span>
+                    </a>
+                    </a>
+                </div>
+                <!-- <div class="nav-item">
                     <a href="<?php echo route('admin.reported_post.index');?>">
                         <i class="fa-thin fa-info-circle"></i>
                         <span>Reported Posts</span>
                         <span class="notification-icon"><?php echo ($this->session->userdata('report_count')) ?></span>
                     </a>
-                </div>
+                </div> -->
                 <div class="nav-item">
                     <a href="<?php echo route('admin.users.index');?>">
                         <i class="fa-thin fa-user-alt-slash"></i>

@@ -23,7 +23,18 @@ if(!$user_id){
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
    
-
+    <style>
+        img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 3px;
+        width: 90px;
+        height: 90px;
+        }
+        img:hover {
+           box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+        </style>
 </head>
 <body>
   
@@ -51,10 +62,15 @@ if(!$user_id){
 
 
             <div class="tabs-container">
-                <div class="navTabs position-relative">
-                    <button class="btn tablinks active" data-tab="unread-notifications">Unread Notifications</button>
-                    <button class="btn tablinks" data-tab="actioned-notifications">Actioned Notifications</button>
-                    <button class=" btn tablinks" data-tab="keywords-alert">Keywords to Alert</button>
+                <div class="navTabs position-relative scrollable mt-0">
+                     <button class="btn tablinks active" data-tab="unread-notifications">Unread</button>
+                    <button class="btn tablinks" data-tab="actioned-notifications">Actioned</button>
+                    <button class=" btn tablinks" data-tab="keywords-alert">Keywords Reported</button>
+                    <button class="btn tablinks" data-tab="open">Unread Reported</button>
+                    <button class="btn tablinks" data-tab="closed">Actioned Reported</button>
+                    <button class=" btn tablinks" data-tab="new-business">New Business</button>
+                    <button class=" btn tablinks" data-tab="new-service">New Service</button>
+
                 </div>
                 
                 <div class="data-container tab-content-wrapper container">
@@ -149,6 +165,202 @@ if(!$user_id){
                                 <a href="#" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
                             </div>
                             <?php endfor;?>
+                            <div class="btn-footer top-shadow">
+                            <a href="#" class="btn btn-primary" data-modal="newAdminModal"><i class="fa-solid fa-user-plus"></i> New Alert</a>
+                        </div>
+                    </div>
+
+                    <div data-tabcontent="open" class="tabcontent" style="display: block;">
+                      <?php for($i = 0 ; $i < count($open_reports); $i++):?>
+                        <div class="data-item">
+                            <div class="user-info"> 
+                                <div class="user-icon online">
+                                    <img src="<?php echo $open_reports[$i]['reported_user']['profile']['pic_url'];?>" alt="User icon">
+                                </div>
+                                <div class="user-info-content">
+                                    <p><a href="<?php echo route('admin.signups.detail', $open_reports[$i]['reported_user']['profile']['id']);?>"> 
+                                       @<?php echo $open_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
+                                       <?php if ($open_reports[$i]['post_id'] != 0) { ?>
+                                                            the  <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['post']['user'][0]['id']);?>" > @<?php echo $open_reports[$i]['post']['user'][0]['user_name'];?> </a> post - <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post']['id']);?>" ><?php echo $open_reports[$i]['post']["title"];?> </a>
+                                                            <?php } else if ($open_reports[$i]['user_id'] != 0) { ?>
+                                                            the user <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user']['profile']['id']);?>"> @<?php echo $open_reports[$i]['user']['profile']['user_name'];?> </a>
+                                                            <?php } ?>
+                                    
+                                    </p>
+                                    <p><i class="fa-solid fa-quote-left"></i><?php echo $open_reports[$i]['content'];?></p>
+                                    <div class="data-info ">
+                                        <div class="data-info-item">
+                                            <i class="fa-regular fa-calendar-day"></i>
+                                            <span><?php echo date('d/m/Y', $open_reports[$i]['created_at']);?> </span>
+                                        </div>
+                                        <div class="data-info-item">
+                                            <i class="fa-regular fa-clock"></i>
+                                            <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
+                                        </div>
+                                    </div>
+                                    <?php 
+                                    if($open_reports[$i]['post_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
+                                    <?php } elseif($open_reports[$i]['user_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
+                                    <?php } elseif($open_reports[$i]['comment_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
+                                            
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endfor;?>
+                        
+                    </div>
+                    <div data-tabcontent="closed" class="tabcontent" style="display: block;">
+                      <?php for($i = 0 ; $i < count($open_reports); $i++):?>
+                        <div class="data-item">
+                            <div class="user-info"> 
+                                <div class="user-icon online">
+                                    <img src="<?php echo $open_reports[$i]['reported_user']['profile']['pic_url'];?>" alt="User icon">
+                                </div>
+                                <div class="user-info-content">
+                                    <p><a href="<?php echo route('admin.signups.detail', $open_reports[$i]['reported_user']['profile']['id']);?>"> 
+                                       @<?php echo $open_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
+                                       <?php if ($open_reports[$i]['post_id'] != 0) { ?>
+                                                            the  <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['post']['user'][0]['id']);?>" > @<?php echo $open_reports[$i]['post']['user'][0]['user_name'];?> </a> post - <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post']['id']);?>" ><?php echo $open_reports[$i]['post']["title"];?> </a>
+                                                            <?php } else if ($open_reports[$i]['user_id'] != 0) { ?>
+                                                            the user <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user']['profile']['id']);?>"> @<?php echo $open_reports[$i]['user']['profile']['user_name'];?> </a>
+                                                            <?php } ?>
+                                    
+                                    </p>
+                                    <p><i class="fa-solid fa-quote-left"></i><?php echo $open_reports[$i]['content'];?></p>
+                                    <div class="data-info ">
+                                        <div class="data-info-item">
+                                            <i class="fa-regular fa-calendar-day"></i>
+                                            <span><?php echo date('d/m/Y', $open_reports[$i]['created_at']);?> </span>
+                                        </div>
+                                        <div class="data-info-item">
+                                            <i class="fa-regular fa-clock"></i>
+                                            <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
+                                        </div>
+                                    </div>
+                                    <?php 
+                                    if($open_reports[$i]['post_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
+                                    <?php } elseif($open_reports[$i]['user_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
+                                    <?php } elseif($open_reports[$i]['comment_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
+                                            
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endfor;?>
+                        
+                    </div>
+                    <div data-tabcontent="new-business" class="tabcontent pending-review" style="display: block;">
+                   <?php for($i = 0 ; $i < count($open_businesUsers); $i++):?>
+                        <div class="data-item">
+                            <div class="user-info">
+                                <div class="user-icon">
+
+                                    <img src="<?php echo $open_businesUsers[$i]['business_logo'];?>">
+                                </div>
+                                <div class="user-info-content">
+                                    <h2 class="user-name"><?php echo $open_businesUsers[$i]['user']['profile']['first_name'];?> <?php echo $open_businesUsers[$i]['user']['profile']['last_name'];?> </h2>
+                                    <p class="user-username">@<?php echo $open_businesUsers[$i]['user']['profile']['user_name'];?> </p>
+                                    <p>
+                                        <?php if ($open_businesUsers[$i]['type'] == "business") { ?>
+                                                has submitted the business for approval
+                                                <?php } else {  ?>
+                                                has submitted a service against their business
+                                        <?php }   ?>
+                                    </p>
+                                    <a href="#" class="business-type">
+                                        <i class="fa-regular fa-briefcase business-icon "></i>
+                                        <?php echo $open_businesUsers[$i]['business_name'];?> 
+                                        <!-- <i class="fas fa-chevron-right"></i> -->
+                                    </a>
+                                    <div class="data-info data-info-list">
+                                        <div class="data-info-item date">
+                                            <i class="fa-regular fa-calendar-day"></i>
+                                            <span><?php echo date('d/m/Y', $open_businesUsers[$i]['created_at']);?></span>
+                                        </div>
+                                        <div class="data-info-item time">
+                                            <i class="fa-regular fa-clock"></i>
+                                            <span><?php echo date('H:i:s', $open_businesUsers[$i]['created_at']);?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-actions">
+                                <a href="<?php echo route('admin.chat.detail', $open_businesUsers[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
+                                <a href="<?php echo route('admin.business.detail', $open_businesUsers[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
+                            </div>
+                        </div>
+                    <?php endfor;?>
+                </div>
+                <div data-tabcontent="new-service" class="tabcontent">
+                        <?php for($i = 0 ; $i < count($allposts); $i++):?>
+                            <?php if ($allposts[$i]["is_active"] == 3) { ?>
+                                <div class="data-item d-flex">
+                                    <div class="user-info-content">
+                                    <?php 
+                                        $postType = 'Video Post';
+                                        $type = "Sales";
+                                        if($allposts[$i]['media_type'] == 0){
+                                            $postType = 'Text Post';
+                                        }elseif($allposts[$i]['media_type'] == 1){
+                                            $postType = 'Image Post';
+                                        }
+
+                                        if($allposts[$i]['post_type'] == 1){
+                                            $type = 'Advice';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
+                                        ?>
+                                        <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
+                                        <span class="post-info"><?php echo($postType);?></span>
+                                        <div class="post-content">
+                                            <p><?php echo $allposts[$i]['title'] ?></p>
+                                        </div>
+                                        <div class="data-info ">
+                                            <div class="data-info-item date">
+                                                <i class="fa-solid fa-circle-user"></i>
+                                                <span><a href="<?php echo route('admin.signups.detail', $allposts[$i]['user'][0]['id']);?>"><?php echo $allposts[$i]['user'][0]["user_name"]; ?></a></span>
+                                            </div>
+                                            <div class="data-info-item date">
+                                                <i class="fa-regular fa-calendar-day"></i>
+                                                <span><?php echo human_readable_date($allposts[$i]['created_at']);?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-heart"></i>
+                                                <span><?php echo $allposts[$i]['likes'];?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-comment"></i>
+                                                <span><?php echo $allposts[$i]['comments'];?> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
+                                </div>
+                                <?php } ?>
+                            <?php endfor;?> 
                     </div>
                 </div>
             </div>

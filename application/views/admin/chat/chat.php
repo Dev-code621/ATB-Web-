@@ -61,7 +61,7 @@ if(!$user_id){
                     <div class="chat-input">
                         <!-- <button class="btn emojiBtn"><i class="fa-regular fa-face-smile"></i></button> -->
                         <textarea type="text" placeholder="Message..." id="messageInput"></textarea>
-                        <button class="btn fileBtn"><i class="fa-regular fa-paperclip"></i></button>
+                        <!-- <button class="btn fileBtn"><i class="fa-regular fa-paperclip"></i></button> -->
                     </div>
                     <button type="button" onclick="sendMessage()" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
                     <!-- <button type="submit"  class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button> -->

@@ -40,14 +40,20 @@ if(!$user_id){
                         <a href="<?php echo route('admin.signups.detail', $post['user'][0]['id']);?>" class="user-username"> @<?php echo $post['user'][0]['user_name'];?></a>
                     </div>
                 </div>
-            <?php if ($post['is_active'] != 2) { ?>
+           
+            <?php if ($post['is_active'] == 1) { ?>
                 <a href="#" data-modal="blockModal" class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Block this post</a>
 
             <?php } ?>
             <?php if ($post['is_active'] == 2) { ?>
-                <a href="#" data-modal="unblockModal" class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Unblock this post</a>
+                <a href="#" data-modal="unblockModal" class="btn btn-outline-danger"><i class="fa-solid fa-circle-check"></i> Unblock this post</a>
 
             <?php } ?>
+
+            <?php if ($post['is_active'] == 3) { ?>
+                <a href="#" data-modal="blockModal1" class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Decline this post</a>
+                <a href="#" data-modal="unblockModal1" class="btn btn-success"><i class="fa-solid fa-circle-check"></i> Approve this post</a>
+            <?php } ?>   
             </header>
         </div>
         <div class="modal" id="blockModal">
@@ -80,7 +86,43 @@ if(!$user_id){
                    action="<?php echo route('admin.signups.unblock_post');?>" method="get" enctype="multipart/form-data" action="<?php echo route('admin.business.submit_block');?>" method="get" enctype="multipart/form-data" >
                     <textarea rows="5" id="unblockReason" name="unblockReason" placeholder="Please provide approved reason"></textarea>
                     <input type="hidden" id="unblock_postid" name="unblock_postid" value="<?php echo  $post['id'];?>">
-                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Unblock this post</button>
+                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-solid fa-circle-check"></i> Unblock this post</button>
+
+
+                </form>
+            </div>
+
+            <div class="modal" id="blockModal1">
+                <div class="closeModal" data-close="blockModal1"><i class="fa-regular fa-circle-xmark"></i></div>
+                <div class="text-center">
+                    <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
+                    <h3>Are you sure you want to decline this Post?</h3>
+                    <h4>If so, please provide a reason below</h4>
+                    <div id="screenHeight"></div>
+                </div>
+                <form 
+                   action="<?php echo route('admin.signups.block_post');?>" method="get" enctype="multipart/form-data" action="<?php echo route('admin.business.submit_block');?>" method="get" enctype="multipart/form-data" >
+                    <textarea rows="5" id="blockReason" name="blockReason"  placeholder="This business is providing spam, in all inboxes"></textarea>
+                    <input type="hidden" id="block_postid" name="block_postid" value="<?php echo  $post['id'];?>">
+                    <button type="submit"  class="btn btn-outline-danger"><i class="fa-regular fa-ban"></i> Decline this post</button>
+
+
+                </form>
+            </div>
+
+            <div class="modal" id="unblockModal1">
+                <div class="closeModal" data-close="unblockModal1"><i class="fa-regular fa-circle-xmark"></i></div>
+                <div class="text-center">
+                    <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
+                    <h3>Are you sure you want to approve this post?</h3>
+                    <h4>If so, please provide a reason below</h4>
+                    <div id="screenHeight"></div>
+                </div>
+                <form 
+                   action="<?php echo route('admin.signups.unblock_post');?>" method="get" enctype="multipart/form-data" action="<?php echo route('admin.business.submit_block');?>" method="get" enctype="multipart/form-data" >
+                    <textarea rows="5" id="unblockReason" name="unblockReason" placeholder="Please provide approved reason"></textarea>
+                    <input type="hidden" id="unblock_postid" name="unblock_postid" value="<?php echo  $post['id'];?>">
+                    <button type="submit"  class="btn btn-success"><i class="fa-solid fa-circle-check"></i> Approve this post</button>
 
 
                 </form>

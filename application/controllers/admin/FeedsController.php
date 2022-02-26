@@ -102,6 +102,7 @@ class FeedsController extends MY_Controller
 
         $dataToBeDisplayed['allposts'] = $allposts;
         $dataToBeDisplayed["cats"] = $cats;
+        $dataToBeDisplayed["title"] = 'Feed';
         $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
     }
 
@@ -112,18 +113,13 @@ class FeedsController extends MY_Controller
 
     public function purchase() {
         $dataToBeDisplayed = $this->makeComponentLayout(self::FEEDS_LIST);
-        $allposts = $this->Post_model->getPostInfo();
-        $cats = array();
-
-        foreach ($allposts as $post) {
-            $cats[] = $post["category_title"];
-        }
-
-        $cats = array_unique($cats);
-        sort($cats);
-
-        $dataToBeDisplayed['allposts'] = $allposts;
-        $dataToBeDisplayed["cats"] = $cats;
-        $this->load->view('admin/feeds/feeds_list', $dataToBeDisplayed);
+        $transactions = $this->UserBraintreeTransaction_model->getPurchased();
+        // foreach ($transactions as $post) {
+        //     print_r(json_encode($post));
+        //     print_r("==========");
+        // }
+        // return;
+        $dataToBeDisplayed["allposts"] = $transactions;
+        $this->load->view('admin/feeds/purchaseslist', $dataToBeDisplayed);
     }
 }

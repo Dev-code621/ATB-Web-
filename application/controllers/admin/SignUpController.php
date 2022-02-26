@@ -318,7 +318,7 @@ class SignUpController extends MY_Controller
 
         $this->Post_model->updatePostContent($setArray, $whereArray);
 
-        redirect('/admin/signups');
+        redirect('/admin/feeds');
     }
 
     public function view_post($postid) {

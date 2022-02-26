@@ -42,7 +42,7 @@ if(!$user_id){
     <main class="bgEndWhite feed-page">
         <header class="app-header container">
             <a href="<?php echo route('admin.dashboards.index', $user_id);?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
-            <h1 class="page-title"><i class="fa-duotone fa-newspaper"></i> Feed</h1>
+            <h1 class="page-title"><i class="fa-duotone fa-newspaper"></i> <?php echo $title ?></h1>
             <!-- <a href="#" class="nav-link"><i class="fa-regular fa-magnifying-glass"></i></a> -->
             <div class="search-box">            
                 <button class="btn-search"><i class="fas fa-search"></i></button>

@@ -109,19 +109,6 @@ class ChatController extends MY_Controller
         $custom['members'] = json_encode($memberArray);
    
         if ($chatFlag == 1) {
-            $flag = false;
-            $chatroom= $this->session->userdata('chatRooms');
-           
-            for($i = 0 ; $i<count( $chatroom);$i++){
-                $room = $chatroom[$i];
-               
-                if($room['channel'] == $channel){
-                    $flag = true;
-                    break;
-                }
-            }      
-           
-
             $pubnub->setChannelMetadata()
                 ->channel(urlencode($channel))
                 ->meta([
@@ -131,37 +118,6 @@ class ChatController extends MY_Controller
                     "custom" => $custom
                 ])
                 ->sync(); 
-
-            if($flag){
-                // $udids = [];
-                // for($i = 0 ; $i<count( $memberArray);$i++){
-                //     $member = $memberArray[$i];
-                //     $customs['lastReadTimetoken'] = ((int) (microtime(true) ))*10000000;
-                //     $udids[$i]['id'] = $member['id'];
-                //     $udids[$i]['custom'] = $customs;
-                    
-                // }
-               
-
-            //    $response = $pubnub->getMembers()
-            //     ->channel($channel)
-            //     ->sync();
-            //     print_r($response);
-
-                // $response = $pubnub->setMembers()
-                // ->channel( $channel)
-                // ->uuids([
-                //     "uuid",
-                    
-                // ])
-                // ->custom([
-                //     "a" => "aa",
-                //     "b" => "bb",
-                // ])
-                // ->sync();
-                
-            }
-
 
         }        
         $result = $pubnub->history()

@@ -169,6 +169,64 @@ class NotificationsController extends MY_Controller
         $dataToBeDisplayed["newNotifications"] = $newNotifications;
         $dataToBeDisplayed["oldNotifications"] = $oldNotifications;
 
+
+
+
+        $open_reports = $this->PostReport_model->getReports();
+
+        for($i = 0 ; $i < count($open_reports); $i++) {
+            if ($open_reports[$i]['post_id'] != 0) {
+                $open_reports[$i]['post'] = $this->Post_model->getPostDetail($open_reports[$i]['post_id'], 0);
+            }
+			if ($open_reports[$i]['user_id'] != 0) {
+                $open_reports[$i]['user'] = $this->User_model->getUserProfileDTO($open_reports[$i]['user_id']);
+            }
+            $open_reports[$i]['reported_user'] = $this->User_model->getUserProfileDTO($open_reports[$i]['reporter_user_id']);
+        }
+
+        $close_reports = $this->PostReport_model->getReports(array("is_active" => 1));
+
+        for($i = 0 ; $i < count($close_reports); $i++) {
+            if ($close_reports[$i]['post_id'] != 0) {
+                $close_reports[$i]['post'] = $this->Post_model->getPostDetail($close_reports[$i]['post_id'], 0);
+            }
+			if ($close_reports[$i]['user_id'] != 0) {
+                $close_reports[$i]['user'] = $this->User_model->getUserProfileDTO($close_reports[$i]['user_id']);
+            }
+            $close_reports[$i]['reported_user'] = $this->User_model->getUserProfileDTO($close_reports[$i]['reporter_user_id']);
+        }
+
+        $ignored_reports = $this->PostReport_model->getReports(array("is_active" => 2));
+
+        for($i = 0 ; $i < count($ignored_reports); $i++) {
+            if ($ignored_reports[$i]['post_id'] != 0) {
+                $ignored_reports[$i]['post'] = $this->Post_model->getPostDetail($ignored_reports[$i]['post_id'], 0);
+            }
+			if ($ignored_reports[$i]['user_id'] != 0) {
+                $ignored_reports[$i]['user'] = $this->User_model->getUserProfileDTO($ignored_reports[$i]['user_id']);
+            }
+            $ignored_reports[$i]['reported_user'] = $this->User_model->getUserProfileDTO($ignored_reports[$i]['reporter_user_id']);
+        }
+
+        $dataToBeDisplayed['open_reports'] = $open_reports;
+        $dataToBeDisplayed['closed_reports'] = $close_reports;
+        $dataToBeDisplayed['ignored_reports'] = $ignored_reports;
+
+
+
+        $open_businesUsers = $this->UserBusiness_model->getBusinessInfos(array("approved" => 0));
+
+        for($i = 0 ; $i < count($open_businesUsers); $i++) {
+			$open_businesUsers[$i]['type'] = "business";
+            $open_businesUsers[$i]['user'] = $this->User_model->getUserProfileDTO($open_businesUsers[$i]['user_id']);
+            $open_businesUsers[$i]['services'] = $this->UserService_model->getServiceInfoList($open_businesUsers[$i]['user_id']);
+        }
+        $dataToBeDisplayed['open_businesUsers'] = $open_businesUsers;
+
+
+        $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
+        $dataToBeDisplayed['allposts'] = $allposts;
+
         $this->load->view('admin/notifications/notification_list', $dataToBeDisplayed);
     }
 
