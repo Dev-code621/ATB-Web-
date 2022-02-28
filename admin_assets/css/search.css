@@ -1,6 +1,4 @@
-*{
-  box-sizing: border-box;
-  }
+
   body{
   margin: 0px;
   padding: 0px;
@@ -8,8 +6,8 @@
   height: 100vh;
   justify-content: center;
   align-items: center;
-  font-family: 'Lato' !important;
-  }
+  font-family: tondo, -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important;
+}
   .search-box{
   width: fit-content;
   height: fit-content;
@@ -82,8 +80,8 @@
 
   footer p {
       margin: 10px 0;
-      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida  Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  }
+      font-family: tondo, -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    }
   footer .fa-heart{
       color: red;
   }
@@ -137,8 +135,8 @@
   transition:all .3s ease-in-out;
   }
   .youtubeBtn span{
-      font-family: 'Lato';
-      font-weight: normal;
+    font-family: tondo, -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-weight: normal;
       color: #fff;
       display: block;
       font-size: 12px;

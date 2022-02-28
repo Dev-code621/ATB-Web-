@@ -34,8 +34,12 @@ class PostController extends MY_Controller
 
 		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
 			$insResult = 0;
+			$status = "1";
+			if ($this->input->post('type') == '3') {
+				$status = '3';
+			}
 
-			if ($this->input->post('is_multi') == "1") {			
+			if ($this->input->post('is_multi') == "1") {				
 				$createPostArray = array(
 						'user_id' => $verifyTokenResult['id'],
 						'post_type' => $this->input->post('type'),
@@ -67,6 +71,7 @@ class PostController extends MY_Controller
 						'insurance_id' => $this->input->post('insurance_id'),
 						'qualification_id' => $this->input->post('qualification_id'),
 						'cancellations' => $this->input->post('cancellations'), 
+						'is_active' => $status,
 						'updated_at' => time(),
 						'created_at' => time()
 					);
@@ -108,6 +113,7 @@ class PostController extends MY_Controller
 						'qualification_id' => $this->input->post('qualification_id'),
 						'cancellations' => $this->input->post('cancellations'), 
 						'poll_expiry' => $this->input->post('poll_day'),
+						'is_active' => $status,
 						'updated_at' => time(),
 						'created_at' => time()
 					);

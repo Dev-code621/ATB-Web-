@@ -44,7 +44,7 @@ if(!$user_id){
                 </header>
                 <div class="user-description">
                     <p> <?php echo $business['business_bio'];?></p>
-                    <a href="<?php echo $business['business_website'];?>"><?php echo $business['business_website'];?></a></p>
+                    <a href="\\<?php echo $business['business_website'];?>"><?php echo $business['business_website'];?></a></p>
                 </div>
                 <p class="btn btn-sm btn-outline-warning"><i class="fa-regular fa-alarm-clock"></i>     
                     <?php          

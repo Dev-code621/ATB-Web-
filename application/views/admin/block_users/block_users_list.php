@@ -51,14 +51,14 @@ if(!$user_id){
 
         <div class="tabs-container">
             <div class="navTabs position-relative">
-                <button class="btn tablinks active" data-tab="all">All</button>
-                <button class="btn tablinks" data-tab="blocked">Blocked</button>
+                <!-- <button class="btn tablinks active" data-tab="all">All</button> -->
+                <button class="btn tablinks active" data-tab="blocked">Blocked</button>
                 <!-- <button class=" btn tablinks" data-tab="removed">Removed</button>
                 <button class=" btn tablinks" data-tab="freezed">Freezed Accounts</button> -->
             </div>
             
             <div class="data-container blocked-data tab-content-wrapper container">
-                <div data-tabcontent="all" class="tabcontent" style="display: block;">
+                <!-- <div data-tabcontent="all" class="tabcontent" style="display: block;">
                 
                     <?php foreach($users as $user):?>
                         <div class="data-item">
@@ -128,7 +128,7 @@ if(!$user_id){
                             </form>
                         </div>
                    <?php endforeach;?>
-                </div>
+                </div> -->
                 <div data-tabcontent="blocked" class="tabcontent">
                   <?php foreach($blockUsers as $user):?>
                     <div class="data-item">

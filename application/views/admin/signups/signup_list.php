@@ -20,13 +20,16 @@ $array = $users;
 	<meta name="theme-color" content="#A6BFDE" media="(prefers-color-scheme: dark)">
     
     <title>ATB Admin Portal</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="images/favicon.ico" />
     <link rel="stylesheet" href="https://use.typekit.net/led0usk.css">
     <script src="https://kit.fontawesome.com/cfcaed50c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/search.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/search.css" />
+
 
 </head>
 <body>
@@ -34,7 +37,7 @@ $array = $users;
     <main>
         <header class="app-header container">
             <a href="<?php echo route('admin.dashboards.index', $user_id);?>" class="nav-link goBack"><i class="fa-regular fa-chevron-left"></i></a>
-            <h1 class="page-title"><i class="fa-duotone fa-users-medical"></i>Last Members</h1>
+            <h1 class="page-title"><i class="fa-duotone fa-users-medical"></i>Members</h1>
 
             <!-- <a href="#" class="nav-link" ><i class="fa-regular fa-magnifying-glass"></i></a> -->
             <div class="search-box">            
