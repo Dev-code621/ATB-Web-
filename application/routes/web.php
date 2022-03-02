@@ -199,7 +199,8 @@
 	    Route::post('/set_transaction_booking_id', 'ProfileController@set_transaction_booking_id')->name('api.profile.set_transaction_booking_id');	
 
         Route::post('/can_rate_business', 'ProfileController@canRateBusiness')->name('api.profile.can_rate_business');
-        Route::post('/can_message_seller', 'ProfileController@canMessageSeller')->name('api.profile.can_message_seller');    });
+        Route::post('/can_message_seller', 'ProfileController@canMessageSeller')->name('api.profile.can_message_seller');  
+    });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {
         Route::post('/auctions', 'AuctionController@getAuctions')->name('api.auctions.get_auctions');

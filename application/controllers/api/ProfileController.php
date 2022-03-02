@@ -2729,6 +2729,7 @@ class ProfileController extends MY_Controller
 			$avatar = $this->fileUpload('business_avatars', 'business_' . time(), 'avatar');
 			$businessId = $this->UserBusiness_model->insertNewBusinessInfo(
 				array(
+					'group_title' => $this->input->post('group_title'),
 					'business_logo' => $avatar,
 					'business_name' => $this->input->post('business_name'),
 					'business_website' => $this->input->post('business_website'),
@@ -2832,6 +2833,7 @@ class ProfileController extends MY_Controller
 			}
 
 			$updateArray = array(
+				'group_title' => $this->input->post('group_title'),
 				'business_name' => $this->input->post('business_name'),
 				'business_website' => $this->input->post('business_website'),
 				'business_profile_name' => $this->input->post('business_profile_name'),
@@ -3990,7 +3992,7 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
-	public function can_rate_business() {
+	public function canRateBusiness() {
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
 			$userId = $tokenVerifyResult['id'];
@@ -4035,7 +4037,7 @@ class ProfileController extends MY_Controller
 			$weekAgo = strtotime("-7 days");
 
 			$where = array();
-			$where['type'] = '9'; 			// rating requested
+			$where['type'] = '10'; 			// rating requested
 			$where['user_id'] = $userId;	// requested to the user who is going to rate the business
 			$where['created_at >='] = $weekAgo;
 
@@ -4046,15 +4048,17 @@ class ProfileController extends MY_Controller
 				$searchArray['state'] = 'active'; 	//'complete'
 				$activeBookings = $this->Booking_model->getBookings($searchArray);
 				
-				$activeBookingIds = array();
+				$businessUserIds = array();
 				foreach ($activeBookings as $activieBooking) {
-					array_push($activeBookingIds, $activieBooking['id']);
+					if (!in_array($activieBooking['business_user_id'], $businessUserIds)) {
+						array_push($businessUserIds, $activieBooking['business_user_id']);
+					}					
 				}
 
 				for ($ni = 0; $ni < count($notifications); $ni ++) {
 					$relatedId = $notifications[$ni]['related_id'];
 
-					if (in_array($related_id, $activeBookingIds)) {
+					if (in_array($relatedId, $businessUserIds)) {
 						$retVal[self::RESULT_FIELD_NAME] = true;
 						$retVal[self::MESSAGE_FIELD_NAME] = "Success";
 						$retVal[self::EXTRA_FIELD_NAME] = array('can_rate' => '1');
@@ -4069,7 +4073,48 @@ class ProfileController extends MY_Controller
 			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
 			$retVal[self::EXTRA_FIELD_NAME] = array('can_rate' => '0');
 
-			echo json_encode($retVal);			
+			echo json_encode($retVal);
+			
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+	}
+
+	public function canMessageSeller() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			$userId = $tokenVerifyResult['id'];
+			$toUserId = $this->input->post('toUserId');
+			$productId = $this->input->post('productId');
+
+			// get purchased products
+			$purchases = $this->UserBraintreeTransaction_model->getPurchasedProductHistory($userId);
+			
+			for ($index = 0; $index < count($purchases); $index ++) {
+				if ($purchases[$index]['purchase_type'] == "product_variant" || 
+					$purchases[$index]['purchase_type'] == "product") {
+					$products = $purchases[$index]['product'];
+
+					if (count($products) > 0 && 
+						$products[0]['user_id'] == $toUserId && 
+						$products[0]['id'] == $productId) {
+						$retVal[self::RESULT_FIELD_NAME] = true;
+						$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+						$retVal[self::EXTRA_FIELD_NAME] = array('can_message' => '1');
+
+						echo json_encode($retVal);
+						exit();
+					}
+				}
+			}
+
+			$retVal[self::RESULT_FIELD_NAME] = true;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+			$retVal[self::EXTRA_FIELD_NAME] = array('can_message' => '0');
+
+			echo json_encode($retVal);
 
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
