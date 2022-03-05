@@ -1,5 +1,8 @@
 <?php
 
+use Lcobucci\JWT\Validation\ConstraintViolation;
+use Symfony\Component\VarDumper\Cloner\Data;
+
 /**
  * Created by PhpStorm.
  * User: zeus
@@ -172,7 +175,7 @@ class NotificationsController extends MY_Controller
 
 
 
-        $open_reports = $this->PostReport_model->getReports();
+        $open_reports = $this->PostReport_model->getReports(array("is_active" => 0));
 
         for($i = 0 ; $i < count($open_reports); $i++) {
             if ($open_reports[$i]['post_id'] != 0) {
@@ -238,7 +241,9 @@ class NotificationsController extends MY_Controller
     public function createKeyword(){
         $insertArray = array(
             'keyword' => $this->input->get('inputKeyword'),
-            'active' => 1
+            'active' => 1,
+            'created_at' => time()
+
         );
 
         $this->AdminNotification_model->insertNewNotificationKeyword($insertArray);
@@ -270,4 +275,50 @@ class NotificationsController extends MY_Controller
 
         redirect('/admin/notifications');
     }
+
+    public function readnotification(){
+		$notification_id  = $this->input->post('notification_id');
+        $data=array('status'=>$notification_id,);
+        header( 'Content-type:application/json');
+       
+      
+        $setArray = array(
+            'read_status' => 1,
+            'action' => $this->input->get('actionTaken'),
+            'updated_at' => time(),
+        );
+
+        $whereArray = array('id' => $notification_id);
+
+        $this->AdminNotification_model->updateAdminNotificationRecord($setArray, $whereArray);
+        $this->session->set_userdata('notification_count',count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))));
+
+        print json_encode( $data);
+        exit;
+    }
+
+    public function ignoreReport() {
+		$reportid  = $this->input->post('reportid');
+        $open_report = $this->PostReport_model->getReports(array("id" => $reportid));
+
+        $setArray = array("is_active" => 1);
+        $whereArray = array('id'=>$reportid);
+
+        $this->PostReport_model->updateReport($setArray, $whereArray);
+
+        $setArray = array(
+            'is_active' => 1,
+            'status_reason' => "Report ignored",
+            'updated_at' => time(),
+        );
+
+        $whereArray = array('id' => $open_report[0]['post_id']);
+
+        $this->Post_model->updatePostContent($setArray, $whereArray);
+        $data=array('status'=>$open_report,);
+
+        print json_encode( $data);
+        exit;
+    }    
 }
+

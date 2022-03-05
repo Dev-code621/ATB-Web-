@@ -7,6 +7,7 @@ use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\PNConfiguration;
 use Lcobucci\JWT\Validation\ConstraintViolation;
+use PayPal\Api\Details;
 use Symfony\Component\VarDumper\Cloner\Data;
 use function Aws\flatmap;
 use PubNub\Endpoints\Objects\Membership\GetMemberships;
@@ -63,10 +64,9 @@ class ChatController extends MY_Controller
         $userArray = array();
         $memberArray = array();    
 
-
-        $member['id'] ="ADMIN_".$this->session->userdata('user_id');    
-        $member['name'] = $this->session->userdata('user_name');   
-        $profile_pic = $this->session->userdata('profile_pic');
+        $member['id'] ="ADMIN_1";//$this->session->userdata('user_id');    
+        $member['name'] = "ADMIN";//$this->session->userdata('user_name');   
+        $profile_pic = base_url().'admin_assets/logo.png'; //$this->session->userdata('profile_pic');
         if(empty($profile_pic)){
             $profile_pic = base_url()."admin_assets/logo.png";
         } else{
@@ -107,7 +107,7 @@ class ChatController extends MY_Controller
         }           
         $custom = array();
         $custom['members'] = json_encode($memberArray);
-   
+       
         if ($chatFlag == 1) {
             $pubnub->setChannelMetadata()
                 ->channel(urlencode($channel))
@@ -152,7 +152,7 @@ class ChatController extends MY_Controller
     }
     public function index() {
 
-        $user_id=$this->session->userdata('user_id');
+        $user_id= 1;//$this->session->userdata('user_id');
         $_filter  = "name LIKE "."'*".$user_id."#"."ADMIN"."*'";
          $pubnub = $this->loginPubNub();
          $result = $pubnub->getAllChannelMetadata()
@@ -163,6 +163,7 @@ class ChatController extends MY_Controller
          $rooms = array();
          $count = 0;
          $wholeUsers = $this->User_model->getUsersListInDashboard();
+         
          for($i =0;$i<count($channelMetadata);++$i ){
             $channel = $channelMetadata[$i]->getId();
             if (str_contains($channel, $user_id."#ADMIN")) {
@@ -171,23 +172,24 @@ class ChatController extends MY_Controller
                 // exit;
                 $count ++;
             }
-        } 
+         } 
         $this->session->set_userdata('chatRooms',$rooms);
         $this->session->set_userdata('pubnub', $pubnub);
 
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);        
         $dataToBeDisplayed['whole_users'] = count($wholeUsers);
-        $dataToBeDisplayed['rooms'] =  $rooms;
+        $dataToBeDisplayed['rooms'] =  $rooms;        
         $this->load->view('admin/chat/chat_list', $dataToBeDisplayed);
     }
 
    
-    public function detail($channel) {  
+    public function detail($channel) {        
         $channel = urldecode($channel);
+       
         $wholeUsers = $this->User_model->getUsersListInDashboard();
-        $user_id=$this->session->userdata('user_id');    
-        if (!str_contains($channel, $user_id."#ADMIN")) {    
-            $channel = $user_id."#ADMIN_".$channel    ;
+        $user_id=1;  //$this->session->userdata('user_id');    
+        if (!str_contains($channel, $user_id.'#ADMIN')) {    
+            $channel = $user_id."#ADMIN_".$channel;      
         }    
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);
        // $booking = $this->Booking_model->getBooking($bookingid);
@@ -217,5 +219,22 @@ class ChatController extends MY_Controller
 
         exit;		
 	}
+
+    public function makeGroup(){   
+
+        if (!isset($_POST["selectGroup"])){
+            $this->newchat();
+            return;
+        }
+        $array = $_POST['selectGroup'];
+ 
+        $channelID = $array[0];
+        for($i = 1; $i<count($array);$i++){
+            $channelID = $channelID . "_" . $array[$i];
+        }       
+    
+        $this->detail( $channelID);        
+
+    }
 
 }

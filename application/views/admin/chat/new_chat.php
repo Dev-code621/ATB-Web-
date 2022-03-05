@@ -91,11 +91,10 @@ if(!$user_id){
                         <i class="fa-solid fa-chevron-right"></i>
                     </a>
                     
-                    <form action="" class="new-group-form">
-                        
+                    <form  class="new-group-form" action="<?php echo route('admin.chat.makeGroup');?>" method="post">
                         <?php for($i = 0 ; $i < count($users); $i++):?>
                             <label class="contact-item">
-                            <input type="checkbox" class="selectContact" name="selectGroup" value="user1" />
+                            <input type="checkbox" class="selectContact" name="selectGroup[]" value="<?php echo $users[$i]['id'] ?>" />
                             <div class="user-icon">
                                  <?php
                                         $picURL = base_url()."admin_assets/img/generic-user.png";
@@ -122,10 +121,8 @@ if(!$user_id){
                                     ?></p>
                             </div>
                         </label>           
-                        <?php endfor;?>              
-                        <a href="<?php
-                             echo route('admin.chat.detail', $user_id);
-                        ?>" class="btn btn-primary new-group-btn"><i class="fa-light fa-users-medical"></i> Create Group</a>
+                        <?php endfor;?>     
+                        <button type="submit" class="btn btn-primary new-group-btn"><i class="fa-light fa-users-medical"></i> Create Group</button>                                
                     </form>
 
                 </div>

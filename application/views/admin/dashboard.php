@@ -34,7 +34,7 @@ if(!$user_id){
                     <a href="<?php echo route('admin.signups.index');?>">
                         <i class="fa-thin fa-users-medical"></i>
                         <span>Members</span>
-                        <span class="notification-icon"> <?php echo ($this->session->userdata('user_count')) ?></span>
+                        <!-- <span class="notification-icon"> <?php echo ($this->session->userdata('user_count')) ?></span> -->
                     </a>
                 </div>
                 <div class="nav-item">

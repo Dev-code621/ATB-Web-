@@ -22,7 +22,7 @@ if(!$user_id){
     <script src="https://kit.fontawesome.com/cfcaed50c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
-   
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         img {
         border: 1px solid #ddd;
@@ -74,7 +74,7 @@ if(!$user_id){
                 </div>
                 
                 <div class="data-container tab-content-wrapper container">
-                    <div data-tabcontent="unread-notifications" class="tabcontent" style="display: block;">
+                    <div data-tabcontent="unread-notifications" class="tabcontent" style="display: block;" id = "unreadnotification">
                         <?php for($i = 0 ; $i < count($newNotifications); $i++):
                                 if($newNotifications[$i]['post'] == null) continue; ?>
                             <div class="data-item d-flex">
@@ -101,7 +101,7 @@ if(!$user_id){
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a>
+                                <input type="checkbox" id="checkbox"  value="<?php echo $i?>" onClick="cbChanged(this)"/>    
                             </div>                        
                         <?php endfor;?>                        
                     </div>
@@ -149,15 +149,15 @@ if(!$user_id){
                                         <img src="<?php echo base_url();?>admin_assets/images/samples/sample_profile_4.png" alt="User icon">
                                     </div>
                                     <div class="user-info-content">
-                                        <p><a href="#">@HonestDec</a> has written a <a href="#">post</a> that included the keyword <a href="#">test</a>.</p>
+                                        <p><a href="#"><?php echo $keywords[$i]['keyword'];?></a></p>
                                         <div class="data-info ">
                                             <div class="data-info-item date">
                                                 <i class="fa-regular fa-calendar-day"></i>
-                                                <span>27/07/2021</span>
+                                                <span><?php echo date('d/m/Y', $keywords[$i]['created_at']);?></span>
                                             </div>
                                             <div class="data-info-item time">
                                                 <i class="fa-regular fa-clock"></i>
-                                                <span>17:07</span>
+                                                <span><?php echo date('H:i:s', $keywords[$i]['created_at']);?></span>
                                             </div>
                                         </div>
                                     </div>
@@ -166,7 +166,23 @@ if(!$user_id){
                             </div>
                             <?php endfor;?>
                             <div class="btn-footer top-shadow">
-                            <a href="#" class="btn btn-primary" data-modal="newAdminModal"><i class="fa-solid fa-user-plus"></i> New Alert</a>
+                            <button type="button" data-modal="newAdminModal" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i>New Keyword</button>
+
+                            <div class="modal" id="newAdminModal">
+                                <div class="closeModal" data-close="newAdminModal"><i class="fa-regular fa-circle-xmark"></i></div>
+                                <div class="text-center">
+                                    <div class="iconTitle"><i class="fa-solid fa-user-minus"></i></div>
+                                    <h3> Would you like to add new Alert?</h3>
+                                    <h4>If so, please input new keyword</h4>
+                                    <div id="screenHeight"></div>
+                                </div>
+                                <form                                    
+                                   action="<?php echo route('admin.notifications.keywordcreate');?>" method="get" enctype="multipart/form-data">
+                                    <textarea rows="5" id="inputKeyword"  name = "inputKeyword" placeholder="Please input keyword"></textarea>
+                                    <button type="submit"   class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add Keyword</button>
+
+                                </form>
+                            </div>
                         </div>
                     </div>
 
@@ -178,35 +194,40 @@ if(!$user_id){
                                     <img src="<?php echo $open_reports[$i]['reported_user']['profile']['pic_url'];?>" alt="User icon">
                                 </div>
                                 <div class="user-info-content">
-                                    <p><a href="<?php echo route('admin.signups.detail', $open_reports[$i]['reported_user']['profile']['id']);?>"> 
-                                       @<?php echo $open_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
-                                       <?php if ($open_reports[$i]['post_id'] != 0) { ?>
-                                                            the  <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['post']['user'][0]['id']);?>" > @<?php echo $open_reports[$i]['post']['user'][0]['user_name'];?> </a> post - <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post']['id']);?>" ><?php echo $open_reports[$i]['post']["title"];?> </a>
-                                                            <?php } else if ($open_reports[$i]['user_id'] != 0) { ?>
-                                                            the user <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user']['profile']['id']);?>"> @<?php echo $open_reports[$i]['user']['profile']['user_name'];?> </a>
-                                                            <?php } ?>
-                                    
-                                    </p>
-                                    <p><i class="fa-solid fa-quote-left"></i><?php echo $open_reports[$i]['content'];?></p>
-                                    <div class="data-info ">
-                                        <div class="data-info-item">
-                                            <i class="fa-regular fa-calendar-day"></i>
-                                            <span><?php echo date('d/m/Y', $open_reports[$i]['created_at']);?> </span>
-                                        </div>
-                                        <div class="data-info-item">
-                                            <i class="fa-regular fa-clock"></i>
-                                            <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
+                                  <div class = "data-item d-flex">
+                                    <div >
+                                        <p><a href="<?php echo route('admin.signups.detail', $open_reports[$i]['reported_user']['profile']['id']);?>"> 
+                                        @<?php echo $open_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
+                                        <?php if ($open_reports[$i]['post_id'] != 0) { ?>
+                                                                the  <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['post']['user'][0]['id']);?>" > @<?php echo $open_reports[$i]['post']['user'][0]['user_name'];?> </a> post - <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post']['id']);?>" ><?php echo $open_reports[$i]['post']["title"];?> </a>
+                                                                <?php } else if ($open_reports[$i]['user_id'] != 0) { ?>
+                                                                the user <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user']['profile']['id']);?>"> @<?php echo $open_reports[$i]['user']['profile']['user_name'];?> </a>
+                                                                <?php } ?>
+                                        
+                                        </p>
+                                        <p><i class="fa-solid fa-quote-left"></i><?php echo $open_reports[$i]['content'];?></p>
+                                        <div class="data-info ">
+                                            <div class="data-info-item">
+                                                <i class="fa-regular fa-calendar-day"></i>
+                                                <span><?php echo date('d/m/Y', $open_reports[$i]['created_at']);?> </span>
+                                            </div>
+                                            <div class="data-info-item">
+                                                <i class="fa-regular fa-clock"></i>
+                                                <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div > <input type="checkbox" id="checkbox"  value="<?php echo $i?>" onClick="onReadReport(this)"/> </div>      
+                                  </div >
                                     <?php 
                                     if($open_reports[$i]['post_id'] != 0) { ?>
                                         <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
                                     <?php } elseif($open_reports[$i]['user_id'] != 0) { ?>
                                         <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
                                     <?php } elseif($open_reports[$i]['comment_id'] != 0) { ?>
-                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
-                                            
+                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>                                            
                                     <?php }?>
+
                                 </div>
                             </div>
                         </div>
@@ -214,40 +235,36 @@ if(!$user_id){
                         
                     </div>
                     <div data-tabcontent="closed" class="tabcontent" style="display: block;">
-                      <?php for($i = 0 ; $i < count($open_reports); $i++):?>
+                      <?php for($i = 0 ; $i < count($closed_reports); $i++):?>
                         <div class="data-item">
                             <div class="user-info"> 
                                 <div class="user-icon online">
-                                    <img src="<?php echo $open_reports[$i]['reported_user']['profile']['pic_url'];?>" alt="User icon">
+                                    <img src="<?php echo $closed_reports[$i]['reported_user']['profile']['pic_url'];?>" alt="User icon">
                                 </div>
                                 <div class="user-info-content">
-                                    <p><a href="<?php echo route('admin.signups.detail', $open_reports[$i]['reported_user']['profile']['id']);?>"> 
-                                       @<?php echo $open_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
-                                       <?php if ($open_reports[$i]['post_id'] != 0) { ?>
-                                                            the  <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['post']['user'][0]['id']);?>" > @<?php echo $open_reports[$i]['post']['user'][0]['user_name'];?> </a> post - <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post']['id']);?>" ><?php echo $open_reports[$i]['post']["title"];?> </a>
-                                                            <?php } else if ($open_reports[$i]['user_id'] != 0) { ?>
-                                                            the user <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user']['profile']['id']);?>"> @<?php echo $open_reports[$i]['user']['profile']['user_name'];?> </a>
-                                                            <?php } ?>
+                                    <p><a href="<?php echo route('admin.signups.detail', $closed_reports[$i]['reported_user']['profile']['id']);?>"> 
+                                       @<?php echo $closed_reports[$i]['reported_user']['profile']['user_name'];?></a> has reported 
+                                     
                                     
                                     </p>
-                                    <p><i class="fa-solid fa-quote-left"></i><?php echo $open_reports[$i]['content'];?></p>
+                                    <p><i class="fa-solid fa-quote-left"></i><?php echo $closed_reports[$i]['content'];?></p>
                                     <div class="data-info ">
                                         <div class="data-info-item">
                                             <i class="fa-regular fa-calendar-day"></i>
-                                            <span><?php echo date('d/m/Y', $open_reports[$i]['created_at']);?> </span>
+                                            <span><?php echo date('d/m/Y', $closed_reports[$i]['created_at']);?> </span>
                                         </div>
                                         <div class="data-info-item">
                                             <i class="fa-regular fa-clock"></i>
-                                            <span><?php echo date('H:i:s', $open_reports[$i]['created_at']);?></span>
+                                            <span><?php echo date('H:i:s', $closed_reports[$i]['created_at']);?></span>
                                         </div>
                                     </div>
                                     <?php 
-                                    if($open_reports[$i]['post_id'] != 0) { ?>
-                                        <a href="<?php echo route('admin.signups.view_post', $open_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
-                                    <?php } elseif($open_reports[$i]['user_id'] != 0) { ?>
-                                        <a href="<?php echo route('admin.signups.detail', $open_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
-                                    <?php } elseif($open_reports[$i]['comment_id'] != 0) { ?>
-                                        <a href="<?php echo route('admin.reported_post.commentreport', $open_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
+                                    if($closed_reports[$i]['post_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.view_post', $closed_reports[$i]['post_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Post</a>
+                                    <?php } elseif($closed_reports[$i]['user_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.signups.detail', $closed_reports[$i]['user_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View User</a>
+                                    <?php } elseif($closed_reports[$i]['comment_id'] != 0) { ?>
+                                        <a href="<?php echo route('admin.reported_post.commentreport', $closed_reports[$i]['comment_id']);?>" class="btn btn-sm btn-primary"><i class="fa-regular fa-flag"></i> View Comment</a>
                                             
                                     <?php }?>
                                 </div>
@@ -370,6 +387,48 @@ if(!$user_id){
     </main>
     <script src="<?php echo base_url();?>admin_assets/js/main.js"></script>
    <script src="<?php echo base_url();?>admin_assets/js/config.js"></script>
+   <script>
+        var newNotifications = <?php echo json_encode($newNotifications);?>;
+        var open_reports = <?php echo json_encode($open_reports);?>;
 
+        function getbaseurl(){
+            return <?php echo "'".base_url()."'"?>;
+        }
+        function cbChanged(checkboxElem) {
+            if (checkboxElem.checked) {
+                var index = checkboxElem.value;
+                 var notification_id = newNotifications[index]['id']              
+                $.ajax({
+                    type:'POST',
+                    url:'<?php echo route('admin.notifications.readnotification') ?>',
+                    data:{'notification_id':notification_id},
+                    dataType:"json",
+                    success:function(data){     
+                         location.href = getbaseurl() + "admin/notifications";
+
+                    }
+                });
+
+            } 
+        }
+        function onReadReport(checkboxElem) {
+            if (checkboxElem.checked) {
+                var index = checkboxElem.value;
+                 var reportid = open_reports[index]['id']              
+                $.ajax({
+                    type:'POST',
+                    url:'<?php echo route('admin.notifications.ignoreReport') ?>',
+                    data:{'reportid':reportid},
+                    dataType:"json",
+                    success:function(data){     
+                         location.href = getbaseurl() + "admin/notifications";
+                        alert(reportid);
+                    }
+                });
+
+            } 
+        }
+        
+   </script>
 </body>
 </html>

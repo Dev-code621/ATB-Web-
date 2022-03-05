@@ -288,6 +288,9 @@
 
         Route::get('/action/{id}', 'NotificationsController@actionNotification')->name('admin.notifications.action');
         Route::get('/saveaction', 'NotificationsController@saveAction')->name('admin.notifications.saveaction');
+        Route::post('/readnotification', 'NotificationsController@readnotification')->name('admin.notifications.readnotification');
+        Route::post('/ignoreReport', 'NotificationsController@ignoreReport')->name('admin.notifications.ignoreReport');
+
     });
 	
 	Route::group('admin/chat', ['namespace' => 'admin'], function() {
@@ -295,6 +298,8 @@
         Route::get('/detail/{channelID}', 'ChatController@detail')->name('admin.chat.detail');
         Route::get('/newchat', 'ChatController@newchat')->name('admin.chat.newchat');
         Route::post('/sendmessage', 'ChatController@sendmessage')->name('admin.chat.sendmessage');
+        Route::post('/makegroup', 'ChatController@makeGroup')->name('admin.chat.makeGroup');
+
     });
 
     Route::group('admin/reported_post', ['namespace' => 'admin'], function() {
