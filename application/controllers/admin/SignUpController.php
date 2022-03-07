@@ -297,6 +297,36 @@ class SignUpController extends MY_Controller
 
         $this->PostReport_model->updateReport($setArray, $whereArray);
 
+
+        // send block postNotification
+        $post = $this->Post_model->getPostDetail($this->input->get('block_postid'), 0);
+
+
+        $this->NotificationHistory_model->insertNewNotification(
+            array(
+                'user_id' => $post['user_id'],
+                'type' => 30,
+                'related_id' => $this->input->get('block_postid'),
+                'read_status' => 0,
+                'send_status' => 0,
+                'visible' => 1,
+                'text' => "Sorry, the service submitted has been rejected, Please check your email for next steps",
+                'name' =>'',
+                'profile_image' => '',
+                'updated_at' => time(),
+                'created_at' => time()
+            )
+        );
+
+        $this->User_model->updateUserRecord($setArray, $whereArray);
+
+        $user = $this->User_model->getOnlyUser(array('id' => $post['user_id']));
+        $subject = 'Unblocked from ATB';
+        $content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$user[0]['first_name'].' you have been unblocked from ATB</span></p>
+        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('unblockReason').'</span></p>';
+
+        $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
+
         redirect('/admin/feeds');
     }
 
@@ -317,6 +347,26 @@ class SignUpController extends MY_Controller
         $whereArray = array('id' => $this->input->get('unblock_postid'));
 
         $this->Post_model->updatePostContent($setArray, $whereArray);
+        // send aprove postNotification
+        $post = $this->Post_model->getPostDetail($this->input->get('unblock_postid'), 0);
+
+
+        $this->NotificationHistory_model->insertNewNotification(
+            array(
+                'user_id' => $post['user_id'],
+                'type' => 30,
+                'related_id' => $this->input->get('unblock_postid'),
+                'read_status' => 0,
+                'send_status' => 0,
+                'visible' => 1,
+                'text' => " has approved by admin",
+                'name' =>'',
+                'profile_image' => '',
+                'updated_at' => time(),
+                'created_at' => time()
+            )
+        );
+
 
         redirect('/admin/feeds');
     }
