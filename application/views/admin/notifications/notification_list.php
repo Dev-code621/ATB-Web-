@@ -422,7 +422,6 @@ if(!$user_id){
                     dataType:"json",
                     success:function(data){     
                          location.href = getbaseurl() + "admin/notifications";
-                        alert(reportid);
                     }
                 });
 

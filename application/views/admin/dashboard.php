@@ -55,9 +55,11 @@ if(!$user_id){
                     <a href="<?php echo route('admin.notifications.index');?>">
                         <!-- <i class="fa-thin fa-bell-on"></i>
                         <span>Notifications</span> -->
+                        <?php if($this->session->userdata('notification_count')>0){ ?>
                         <span class="notification-icon"><?php echo ($this->session->userdata('notification_count')) ?></span>
                         
-                        <!-- <a href="<?php echo route('admin.notifications.index');?>"> -->
+                        <!-- <a href="<?php echo route('admin.notifications.index');?>"> -->                 
+                        <?php } ?>
                         <i class="fa-thin fa-bell-on"></i>
                         <span>Notification</span>
                     </a>
