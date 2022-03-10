@@ -94,7 +94,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="<?php echo route('admin.chat.detail', $open_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
+                                <a href="<?php echo route('admin.chat.detail', $open_reports[$i]['user']['profile']['id'].urlencode("#").$open_reports[$i]['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $open_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>
@@ -131,7 +131,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="<?php echo route('admin.chat.detail', $closed_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
+                            <a href="<?php echo route('admin.chat.detail', $closed_reports[$i]['user']['profile']['id'].urlencode("#").$closed_reports[$i]['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $closed_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>
@@ -167,7 +167,7 @@ if(!$user_id){
                                 </div>
                             </div>
                             <div class="btn-actions">
-                                <a href="<?php echo route('admin.chat.detail', $ignored_reports[$i]['user']['profile']['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
+                            <a href="<?php echo route('admin.chat.detail', $ignored_reports[$i]['user']['profile']['id'].urlencode("#").$ignored_reports[$i]['id']);?>" class="btn btn-outline-dark mr-10" >Message User</a>
                                 <a href="<?php echo route('admin.business.detail', $ignored_reports[$i]['id']);?>" class="btn btn-primary">View Business Details</a>
                             </div>
                         </div>

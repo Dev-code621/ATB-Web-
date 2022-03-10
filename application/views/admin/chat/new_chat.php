@@ -76,7 +76,7 @@ if(!$user_id){
         
                 </div>
                 <div data-tabcontent="group" class="tabcontent">
-                    <a href="<?php 
+                    <!-- <a href="<?php 
                         $chatUsers  = $users[0]['id'];
                         for($i =1 ; $i < count($users); $i++){
                             $chatUsers = $chatUsers."_".$users[$i]['id']; 
@@ -90,7 +90,7 @@ if(!$user_id){
                         </div>
                         <i class="fa-solid fa-chevron-right"></i>
                     </a>
-                    
+                     -->
                     <form  class="new-group-form" action="<?php echo route('admin.chat.makeGroup');?>" method="post">
                         <?php for($i = 0 ; $i < count($users); $i++):?>
                             <label class="contact-item">

@@ -76,7 +76,7 @@ if(!$user_id){
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.37.0.min.js"></script>
     <script>
         var pubnub = undefined;
-        var user_id = '<?php echo  $user_id; ?>';
+        var user_id = '1';
         var user_name = '<?php echo  $user_name; ?>';
         var profile_pic = '<?php echo  $profile_pic; ?>';
         var channelId = '<?php echo  $rooms['channel']; ?>';
@@ -92,7 +92,7 @@ if(!$user_id){
                 uuid: user_id + "#ADMIN"
             })
 
-
+          
             pubnub.addListener({
                 status: function(statusEvent) {
 
@@ -100,13 +100,33 @@ if(!$user_id){
                     }
                     
                 },
-                message: function(object) {
+                message: function(object) {                         
+                    var result = pubnub.objects.setMemberships({                        
+                        channel:channelId,
+                        channels: [ {
+                            id:channelId,
+                            custom: { "lastReadTimetoken": object.timetoken } 
+                        }],                    
+                    },                   
+                    );
+                    
+                    // var result = pubnub.objects.getMemberships({
+                    //     include: {
+                    //         customFields: true
+                    //     }
+                    // },
+                    // function (status, response) {
+                    //     console.log(channelId, JSON.stringify(response));
+
+                    // }
+                    // );
+
+            
                     if(channelId.localeCompare(object.channel)  == 0 ){
-                       
                  
                         try {
-                            var message =  object.message.text
 
+                            var message =  object.message.text
                             var sender = object.message.sender;
                             // alert(sender.id.localeCompare("ADMIN_" + user_id));
                             var div_pic = "";
@@ -139,8 +159,6 @@ if(!$user_id){
                           console.error(error);
                       
                         }
-
-                        
                     }
                 
                 },

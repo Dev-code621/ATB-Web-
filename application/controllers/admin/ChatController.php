@@ -61,7 +61,6 @@ class ChatController extends MY_Controller
         $rooms['channel'] = $channel;
         $rooms['last_message'] = "";
         $rooms['timesteapm'] = (int) (microtime(true) );
-        $userArray = array();
         $memberArray = array();    
 
         $member['id'] ="ADMIN_1";//$this->session->userdata('user_id');    
@@ -73,33 +72,54 @@ class ChatController extends MY_Controller
             $profile_pic = base_url(). $profile_pic;
         }
         $member['imageUrl'] = $profile_pic;    
-        $memberArray[0] = $member;     
+        $memberArray[0] = $member;   
+        $businessAccounts = $this->UserBusiness_model->getBusinessInfos();
+        $room_name = "";
+        $room_profile = "";
+        $room_online = 0;
         for($j = 1 ;$j<count($array);$j++){            
-            for($i = 0 ; $i<count( $wholeUsers);$i++){
-                $user = $wholeUsers[$i];
-                if($user['id'] == $array[$j]){
-                    $userArray[$j-1] = $user;
-                    $member['id'] = "user_".$user['id'];
-                    $member['name'] = $user['user_name'];
-                    $member['imageUrl'] = $user['pic_url'];
-                    $memberArray[$j] = $member;
-                    break;
-                }
-            }          
+            if(str_contains($array[$j],"#")){
+                $subArray = explode("#",$array[$j]);
+                $businessID = $subArray[1];
+                for($i = 0 ; $i<count( $businessAccounts);$i++){
+                    $business = $businessAccounts[$i];
+                  
+                    if($business['id'] == $businessID){
+                        $room_name = $business['business_name'];
+                        $room_profile = $business['business_logo'];
+                        $member['id'] = "business_".$business['id'];
+                        $member['businessName'] = $business['business_name'];
+                        $member['businessPicUrl'] = $business['business_logo'];
+                        $memberArray[$j] = $member;
+                        break;
+                    }
+                }          
+
+            }else{
+                for($i = 0 ; $i<count( $wholeUsers);$i++){
+                    $user = $wholeUsers[$i];
+                    if($user['id'] == $array[$j]){
+                        $room_name =  $user['user_name'];
+                        $room_profile = $user['pic_url'];
+                        $room_online = $user['online'];
+                        $member['id'] = "user_".$user['id'];
+                        $member['name'] = $user['user_name'];
+                        $member['imageUrl'] = $user['pic_url'];
+                        $memberArray[$j] = $member;
+                        break;
+                    }
+                }          
+            }
         }  
     
         if(count($array) == 2 ){            
-            if(count($userArray)>0){
-                $rooms['title']= $userArray[0]["user_name"];
-                $rooms['image']=  $userArray[0]["pic_url"];
-                if(abs($userArray[0]['online'] - time()) < 1800){
-                    $rooms['online'] = 0;
-                }else{
-                    $rooms['online'] = -1;
-                }
-            }
-          
-
+            $rooms['title']= $room_name;
+            $rooms['image']=   $room_profile;
+            if(abs($room_online - time()) < 1800){
+                $rooms['online'] = 0;
+            }else{
+                $rooms['online'] = -1;
+            }          
         }else if(count($array) >2){
             $rooms['title']= "ATB admin(group)";
             $rooms['image']= base_url()."admin_assets/logo.png";
@@ -127,20 +147,17 @@ class ChatController extends MY_Controller
         // $rooms['last_message'] = "";
        
             $pnHistoryResult = $result->getMessages();     
-       
-            if(count($pnHistoryResult)>0){
-                try{
+        
 
+            if(count(  $pnHistoryResult)>0){
+                try{
                     $messageModel = $pnHistoryResult[0]->getEntry();  
-                    // print_r( "aaaa". $pnHistoryResult[0]->getTimetoken());
-                    // exit;
                     if(str_contains(json_encode($messageModel), "text")){                        
                         $rooms['last_message'] = $messageModel['text'];  
                         if($messageModel['messageType'] == "Image" ){
                             $rooms['last_message'] = "Image Sent";
                         }                  
-                        $rooms['timesteapm'] = $result->getStartTimetoken()/10000000; 
-
+                        $rooms['timesteapm'] =$result->getStartTimetoken()/10000000; 
                     }
                    
                 }catch(Exception $e){
@@ -148,6 +165,7 @@ class ChatController extends MY_Controller
                 }
             
             }       
+
         return $rooms;
     }
     public function index() {
@@ -166,6 +184,7 @@ class ChatController extends MY_Controller
          
          for($i =0;$i<count($channelMetadata);++$i ){
             $channel = $channelMetadata[$i]->getId();
+            if(str_contains($channel,".json"))continue;
             if (str_contains($channel, $user_id."#ADMIN")) {
                 $rooms[$count] = $this-> getChannelDetail($channel, 0, $wholeUsers );
                 // print_r($channelMetadata[$i]);
@@ -183,9 +202,8 @@ class ChatController extends MY_Controller
     }
 
    
-    public function detail($channel) {        
+    public function detail($channel) {     
         $channel = urldecode($channel);
-       
         $wholeUsers = $this->User_model->getUsersListInDashboard();
         $user_id=1;  //$this->session->userdata('user_id');    
         if (!str_contains($channel, $user_id.'#ADMIN')) {    
@@ -194,7 +212,9 @@ class ChatController extends MY_Controller
         $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);
        // $booking = $this->Booking_model->getBooking($bookingid);
         $rooms = $this->getChannelDetail($channel,1,$wholeUsers);
-       
+
+        // print_r(json_encode($rooms));
+        // exit;
         $dataToBeDisplayed['rooms'] = $rooms;
         $this->load->view('admin/chat/chat', $dataToBeDisplayed);
     }

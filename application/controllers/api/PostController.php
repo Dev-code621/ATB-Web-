@@ -1652,6 +1652,7 @@ class PostController extends MY_Controller
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
 			$retVal[self::EXTRA_FIELD_NAME] = $addedReply[0];
+			
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
@@ -1684,11 +1685,12 @@ class PostController extends MY_Controller
 				}
 			}
 			$uploadedData = rtrim($uploadedData, ',');
+			$comment = $this->input->post('comment');
 			$reportContent = $this->PostComment_model->insertNewComment(
 				array(
 					'post_id' => $this->input->post('post_id'),
 					'commenter_user_id' => $verifyTokenResult['id'],
-					'comment' => $this->input->post('comment'),
+					'comment' => $comment,
 					'data' => $uploadedData,
 					'comment_type' => $replyType,
 					'created_at' => time()
@@ -1714,6 +1716,30 @@ class PostController extends MY_Controller
 					)
 				);
 			}
+
+			if (!empty($comment)) {
+				$comments = json_decode($comment, true);
+
+				for ($index = 0; $index < count($comments); $index++) {
+					if (!empty($comments[$index]['user_id'])) {
+						$this->NotificationHistory_model->insertNewNotification(
+							array(
+								'user_id' => $comments[$index]['user_id'],
+								'type' => 30,
+								'related_id' => $this->input->post('post_id'),
+								'read_status' => 0,
+								'send_status' => 0,
+								'visible' => 1,
+								'text' => " has tagged you",
+								'name' => $users[0]['user_name'],
+								'profile_image' => $users[0]['pic_url'],
+								'updated_at' => time(),
+								'created_at' => time()
+							)
+						);
+					}
+				}
+			}			
 
 			$addedComment = $this->PostComment_model->getComments(array('id' => $reportContent));
 
@@ -1953,6 +1979,43 @@ class PostController extends MY_Controller
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
 			$retVal[self::EXTRA_FIELD_NAME] = array();
 		}
+		echo json_encode($retVal);
+	}
+
+	public function sendFiles() {
+		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
+		
+		$retVal = array();
+		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
+			if (!empty($_FILES)) {
+				$uploadedUrls = array();
+				for ($fIndex = 0; $fIndex < count($_FILES['files']['name']); $fIndex++) {
+					$_FILES['chat']['name'] = $_FILES['files']['name'][$fIndex];
+					$_FILES['chat']['type'] = $_FILES['files']['type'][$fIndex];
+					$_FILES['chat']['tmp_name'] = $_FILES['files']['tmp_name'][$fIndex];
+					$_FILES['chat']['error'] = $_FILES['files']['error'][$fIndex];
+					$_FILES['chat']['size'] = $_FILES['files']['size'][$fIndex];		
+
+					$uploadFileName = $this->fileUpload('chat', 'chat_' . time(), 'chat');
+					if (!empty($uploadFileName)) {
+						array_push($uploadedUrls, $uploadFileName);
+					}
+				}
+
+				$retVal[self::RESULT_FIELD_NAME] = true;
+				$retVal[self::MESSAGE_FIELD_NAME] = "Uploaded Successfully";
+				$retVal[self::EXTRA_FIELD_NAME] = $uploadedUrls;
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Files";
+			}		
+
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
+		}
+
 		echo json_encode($retVal);
 	}
 }

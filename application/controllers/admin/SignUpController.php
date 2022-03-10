@@ -305,7 +305,7 @@ class SignUpController extends MY_Controller
         $this->NotificationHistory_model->insertNewNotification(
             array(
                 'user_id' => $post['user_id'],
-                'type' => 30,
+                'type' => 31,
                 'related_id' => $this->input->get('block_postid'),
                 'read_status' => 0,
                 'send_status' => 0,
@@ -354,12 +354,12 @@ class SignUpController extends MY_Controller
         $this->NotificationHistory_model->insertNewNotification(
             array(
                 'user_id' => $post['user_id'],
-                'type' => 30,
+                'type' => 32,
                 'related_id' => $this->input->get('unblock_postid'),
                 'read_status' => 0,
                 'send_status' => 0,
                 'visible' => 1,
-                'text' => " has approved by admin",
+                'text' => " has approved your service",
                 'name' =>'',
                 'profile_image' => '',
                 'updated_at' => time(),
