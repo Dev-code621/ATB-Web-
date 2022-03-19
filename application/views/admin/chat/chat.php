@@ -6,7 +6,7 @@ $profile_pic= $this->session->userdata('profile_pic');
 if(empty($profile_pic)){
     $profile_pic = base_url()."admin_assets/logo.png";
 } else{
-    $profile_pic = base_url(). $profile_pic;
+    $profile_pic = base_url()."admin_assets/logo.png";
 }
 
 $publish_key = $this->config->item('pubnub_publish_key');
@@ -270,8 +270,8 @@ if(!$user_id){
             var channelId = '<?php echo  $rooms['channel']; ?>';
             var messageType = "Text"
             var sender = new Object();
-                sender.id = "ADMIN_" + user_id;
-                sender.name  = user_name;
+                sender.id = "ADMIN_1" ;//+ user_id;
+                sender.name  = "Admin";//user_name;
                 sender.imageUrl = profile_pic;
             var publishPayload = {
                 channel : channelId,

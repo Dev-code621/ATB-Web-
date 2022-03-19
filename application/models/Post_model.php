@@ -99,8 +99,8 @@ class Post_model extends MY_Model
 			$searchKey = strtolower($searchKey);
 			$searchKey = preg_replace("/[^A-Za-z0-9 ]/", '', $searchKey);
 
-			$likeWhere = "(LOWER(users.user_name) LIKE '%".$searchKey."%' OR 
-                        LOWER(user_extend_infos.business_name) LIKE '%".$searchKey."%' OR 
+			$likeWhere = "((LOWER(users.user_name) LIKE '%".$searchKey."%' AND ".self::TABLE_POST_LIST.".poster_profile_type = '0') OR 
+                        (LOWER(user_extend_infos.business_name) LIKE '%".$searchKey."%' AND ".self::TABLE_POST_LIST.".poster_profile_type = '1') OR 
                         LOWER(".self::TABLE_POST_LIST.".title) LIKE '%".$searchKey."%' OR 
                         LOWER(".self::TABLE_POST_LIST.".description) LIKE '%".$searchKey."%' OR 
                         LOWER(post_comment.comment) LIKE '%".$searchKey."%' OR
@@ -152,7 +152,7 @@ class Post_model extends MY_Model
                 ->join('post_reply', 'post_comment.id = post_reply.comment_id', 'left outer')
                 ->where($where)
                 ->where($likeWhere)                             
-                ->distinct(self::TABLE_POST_LIST.'.id')
+                ->group_by(self::TABLE_POST_LIST.'.id')
                 ->order_by(self::TABLE_POST_LIST.'.id', 'DESC')
                 ->get()
                 ->result_array();
@@ -162,7 +162,12 @@ class Post_model extends MY_Model
             $posts[$i]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[$i]['id']));
             $post_likes = $this->PostLike_model->getLikes(array('post_id' => $posts[$i]['id']));
             $posts[$i]['likes'] = count($post_likes);
-            $post_comments = $this->PostComment_model->getComments(array('post_id' => $posts[$i]['id']));
+            $post_comments = $this->PostComment_model->getComments(
+                                                                    array(
+                                                                            'post_id' => $posts[$i]['id'], 
+                                                                            'status' => 1
+                                                                        )
+                                                                    );
             $commentCount = count($post_comments);
             foreach ($post_comments as $comment) {
             	$commentCount += count($comment["replies"]);
@@ -262,7 +267,10 @@ class Post_model extends MY_Model
         if(count($posts) == 0 )return null;
         $posts[0]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[0]['id']));
         $posts[0]['likes'] = $this->PostLike_model->getLikes(array('post_id' => $posts[0]['id']));
-        $commentors  =  $this->PostComment_model->getComments(array('post_id' => $posts[0]['id'])); 
+        $commentors  =  $this->PostComment_model->getComments(array(
+                                                                'post_id' => $posts[0]['id'], 
+                                                                'status' => 1
+                                                            )); 
 
         for ($i = 0; $i < count($commentors); $i++) {
             $liked = $this->PostLike_model->userLikedComment($userId, $commentors[$i]['id']);

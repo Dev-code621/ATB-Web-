@@ -127,7 +127,7 @@ class NotificationsController extends MY_Controller
                     $insertArray = array(
                         'user_id' => $comment["commenter_user_id"],
                         'type' => 0,
-                        'related_id' => $comment['id'],
+                        'related_id' => $comment['post_id'],
                         'read_status' => 0,
                         'notification_keyword_id' => $keyword['id'],
                         'updated_at' => time(),

@@ -69,7 +69,7 @@ class ChatController extends MY_Controller
         if(empty($profile_pic)){
             $profile_pic = base_url()."admin_assets/logo.png";
         } else{
-            $profile_pic = base_url(). $profile_pic;
+            $profile_pic = base_url()."admin_assets/logo.png";
         }
         $member['imageUrl'] = $profile_pic;    
         $memberArray[0] = $member;   

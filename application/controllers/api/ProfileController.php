@@ -453,7 +453,7 @@ class ProfileController extends MY_Controller
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
 			$this->load->model('UserBraintreeTransaction_model');
-			$transactions = $this->UserBraintreeTransaction_model->getTransactionHistory(array('user_id' => $this->input->post('user_id')));
+			$transactions = $this->UserBraintreeTransaction_model->getTransactionHistory(array('user_id' => $tokenVerifyResult['id']));
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = $transactions;

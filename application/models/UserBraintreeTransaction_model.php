@@ -32,20 +32,56 @@ class UserBraintreeTransaction_model extends MY_Model
     }
    
     public function getTransactionHistory($where  = array()) {
-        $transactions = $this->db->select('*')->from(self::TABLE_USER_BRAINTREE_TRANSACTION)->where($where)
-                ->order_by('created_at', 'ASC')
+        $transactions = $this->db->select('*')->from(self::TABLE_USER_BRAINTREE_TRANSACTION)
+                ->where($where)
+                ->order_by('created_at', 'DESC')
                 ->get()->result_array();
+        // old      
+        // for ($i = 0; $i<count($transactions); $i++) {
+        // 	if ($transactions[$i]["purchase_type"] == "product_variant") {
+        // 		$transactions[$i]["variant"] = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
+        // 	} else if ($transactions[$i]["purchase_type"] == "product") {
+        // 		$transactions[$i]["product"] = $this->Product_model->getProduct($transactions[$i]["target_id"]);
+        // 	} else if ($transactions[$i]["purchase_type"] == "service") {
+        // 		$transactions[$i]["variant"] = $this->UserService_model->getServiceInfo($transactions[$i]["target_id"]);
+        // 	} else if ($transactions[$i]["purchase_type"] == "post") {
+        // 		$transactions[$i]["variant"] = $this->Post_model->getPostDetail($transactions[$i]["target_id"]);
+        // 	} 
+        // }
+
+        // new updated 19th March, 2022 by YueXi
+        for ($i = 0; $i < count($transactions); $i ++) {
+            $purchaseType = $transactions[$i]['purchase_type'];
+
+            $items = array();
+
+            if ($purchaseType == "product") {
+                $items = $this->Product_model->getProduct($transactions[$i]["target_id"]);
                 
-        for ($i = 0; $i<count($transactions); $i++) {
-        	if ($transactions[$i]["purchase_type"] == "product_variant") {
-        		$transactions[$i]["variant"] = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
-        	} else if ($transactions[$i]["purchase_type"] == "product") {
-        		$transactions[$i]["product"] = $this->Product_model->getProduct($transactions[$i]["target_id"]);
-        	} else if ($transactions[$i]["purchase_type"] == "service") {
-        		$transactions[$i]["variant"] = $this->UserService_model->getServiceInfo($transactions[$i]["target_id"]);
-        	} else if ($transactions[$i]["purchase_type"] == "post") {
-        		$transactions[$i]["variant"] = $this->Post_model->getPostDetail($transactions[$i]["target_id"]);
-        	} 
+            } else if ($purchaseType == "product_variant") {
+                $variant = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
+                if (count($variant) > 0) {
+                    $items = $this->Product_model->getProduct($variant[0]["product_id"]);                    
+                }
+
+            } else if ($purchaseType == "service" || $purchaseType == "booking") {
+                $items = $this->UserService_model->getServiceInfo($transactions[$i]["target_id"]);                
+            }
+
+            if (count($items) > 0) {
+                $transactions[$i]['item'] = $items[0];
+            }
+
+            $from_to = $transactions[$i]['from_to'];
+            if (!empty($from_to)) {
+                $from_to_user = $this->User_model->getOnlyUser(array(
+                    'id' => $from_to
+                ));
+
+                if (count($from_to_user)) {
+                    $transactions[$i]['from_to_user'] = $from_to_user[0];
+                }
+            }
         }
                 
         return $transactions;
@@ -143,47 +179,5 @@ class UserBraintreeTransaction_model extends MY_Model
         }
                 
         return $transactions;
-    }
-
-
-    public function getPurchased(){
-    	$where = array();	    	
-         $transactions = $this->db->select('*')->from(self::TABLE_USER_BRAINTREE_TRANSACTION)->where($where)
-                ->order_by('created_at', 'ASC')
-                ->get()->result_array();
-            $returnArray = [];
-            for ($i = 0; $i<count($transactions); $i++) {
-
-
-                if($transactions[$i]["transaction_type"]=="Subscription" || $transactions[$i]["transaction_type"]=="Income") continue;
-                if ($transactions[$i]["purchase_type"] == "product_variant") {
-                    $variant = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
-                    $transactions[$i]["variant"] = $variant;
-                    if (count($variant) > 0) {
-                        $transactions[$i]["product"] = $this->Product_model->getProduct($variant[0]["product_id"]);
-                        $array = $this->Post_model->getPostInfo( array('product_id' => $variant[0]["product_id"]),"");
-                        if(!empty($array)){
-                            array_push($returnArray, $array[0] );
-
-                        }
-
-                    }    
-                } else if ($transactions[$i]["purchase_type"] == "product") {
-                    $transactions[$i]["product"] = $this->Product_model->getProduct($transactions[$i]["target_id"]);
-                    $array = $this->Post_model->getPostInfo( array('product_id' => $transactions[$i]["target_id"]),"");
-                    if(!empty($array)){
-                        array_push($returnArray, $array[0] );
-                    }
-
-                } else if ($transactions[$i]["purchase_type"] == "service") {
-                    $transactions[$i]["variant"] = $this->UserService_model->getServiceInfo($transactions[$i]["target_id"]);
-                    $array = $this->Post_model->getPostInfo( array('service_id' => $transactions[$i]["target_id"]),"");
-                    if(!empty($array)){
-                        array_push($returnArray, $array[0] );  
-                      }
-
-                }                                
-            }
-        return $returnArray;
     }
 }

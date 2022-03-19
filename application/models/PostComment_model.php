@@ -59,7 +59,7 @@ class PostComment_model extends MY_Model
 		return false;
 	}
 	
-		public function userHiddenReply($userid, $commentid) {
+    public function userHiddenReply($userid, $commentid) {
 		$liked =  $this->db->select('*')
                     ->from(self::POST_REPLY_HIDDEN)
                     ->where(array('user_id' => $userid, 'reply_id' => $commentid))
@@ -89,7 +89,17 @@ class PostComment_model extends MY_Model
 
                 $retVal[$x]['read_created'] = human_readable_date($retVal[$x]['created_at']);
 				$replyUser = $this->User_model->getOnlyUser(array('id' => $retVal[$x]['reply_user_id']));
-				$retVal[$x]['user_img'] = $replyUser[0]['pic_url'];
+
+                // updted 19 March, 2022
+                // for business comment ability
+                if ($retVal[$x]['is_business'] == 1) {
+                    $retVal[$x]['user_img'] = $replyUser[0]['business_info']['business_logo'];
+                    $retVal[$x]['user_name'] = $replyUser[0]['business_info']['business_name'];
+
+                } else {
+                    $retVal[$x]['user_name'] = $replyUser[0]['user_name'];
+				    $retVal[$x]['user_img'] = $replyUser[0]['pic_url'];
+                }
 				
 				if (strlen($retVal[$x]['data'])> 0){
 					$retVal[$x]['data'] = explode(",", $retVal[$x]['data']);
@@ -119,7 +129,12 @@ class PostComment_model extends MY_Model
 						
 			$retPostReply = $this->db->select('*')
                     ->from(self::TABLE_POST_REPLY)
-                    ->where(array('comment_id' => $retVal[$i]['id']))
+                    ->where(
+                        array(
+                            'comment_id' => $retVal[$i]['id'], 
+                            'status' => 1
+                        )
+                    )
                     ->order_by('created_at', 'DESC')
                     ->get()
                     ->result_array();
@@ -132,8 +147,18 @@ class PostComment_model extends MY_Model
 				$retPostReply[$x]['read_created'] = human_readable_date($retPostReply[$x]['created_at']);
 				$replyUser = $this->User_model->getOnlyUser(array('id' => $retPostReply[$x]['reply_user_id']));
 				$likes = $this->PostLike_model->getLikes(array('reply_id' => $retPostReply[$x]['id']));
-				$retPostReply[$x]['user_img'] = $replyUser[0]['pic_url'];
-				$retPostReply[$x]['user_name'] = $replyUser[0]['user_name'];
+
+                // updted 19 March, 2022
+                // for business comment ability
+                if ($retPostReply[$x]['is_business'] == 1) {
+                    $retPostReply[$x]['user_img'] = $replyUser[0]['business_info']['business_logo'];
+                    $retPostReply[$x]['user_name'] = $replyUser[0]['business_info']['business_name'];
+
+                } else {
+                    $retPostReply[$x]['user_img'] = $replyUser[0]['pic_url'];
+                    $retPostReply[$x]['user_name'] = $replyUser[0]['user_name'];
+                }                
+				
 				$retPostReply[$x]['like_count'] = count($likes);
 				if (strlen($retPostReply[$x]['data'])> 0){
 					$retPostReply[$x]['data'] = explode(",", $retPostReply[$x]['data']);
@@ -148,8 +173,18 @@ class PostComment_model extends MY_Model
 			}
 			$likes = $this->PostLike_model->getLikes(array('comment_id' => $retVal[$i]['id']));
 			$retVal[$i]['like_count'] = count($likes);
-			$retVal[$i]['user_img'] = $user[0]['pic_url'];
-			$retVal[$i]['user_name'] = $user[0]['user_name'];
+
+            // updted 19 March, 2022
+            // for business comment ability
+            if ($retVal[$i]['is_business'] == 1) {
+                $retVal[$i]['user_img'] = $user[0]['business_info']['business_logo'];
+                $retVal[$i]['user_name'] = $user[0]['business_info']['business_name'];
+
+            } else {
+                $retVal[$i]['user_img'] = $user[0]['pic_url'];
+                $retVal[$i]['user_name'] = $user[0]['user_name'];
+            }
+			
 			$retVal[$i]['replies'] = $retPostReply;
             $retVal[$i]['read_created'] = human_readable_date($retVal[$i]['created_at']);
         }
@@ -166,4 +201,14 @@ class PostComment_model extends MY_Model
       
         return $retVal;
 	}
+    
+    public function updateComment($set = array(), $where = array()) {
+        $this->db->where($where);
+        $this->db->update(self::TABLE_POST_COMMENT, $set);
+    }
+
+    public function updateReply($set = array(), $where = array()) {
+        $this->db->where($where);
+        $this->db->update(self::TABLE_POST_REPLY, $set);
+    }
 }

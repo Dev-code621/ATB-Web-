@@ -51,6 +51,10 @@
         Route::post('/cart_delete_items', 'PostController@cart_delete_items')->name('api.post.cart_delete_items');
         Route::post('/get_cart_products', 'PostController@get_cart_products')->name('api.post.get_cart_products');
         Route::post('/send_files', 'PostController@sendFiles')->name('api.post.sendFiles');
+
+        // new added on 19th March, 2022
+        Route::post('/delete_comment', 'PostController@delete_post_comment')->name('api.post.delete_comment');
+        Route::post('/delete_reply', 'PostController@delete_post_reply')->name('api.post.delete_reply');
     });
 
     Route::group('/api/auth', ['namespace' => 'api'], function() {

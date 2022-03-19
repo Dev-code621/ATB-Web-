@@ -1224,6 +1224,27 @@ class PostController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	public function delete_post_comment() {
+		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
+		
+		$retVal = array();
+		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
+			$this->PostComment_model->updateComment(
+				array('status' => 0),
+				array('id' => $this->input->post('comment_id'))
+			);
+
+			$retVal[self::RESULT_FIELD_NAME] = true;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
+		}
+
+		echo json_encode($retVal);
+	}
+
 	public function get_user_vote()
 	{
 		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
@@ -1308,6 +1329,25 @@ class PostController extends MY_Controller
 					'user_id' => $verifyTokenResult['id'],
 					'created_at' => time()
 				)
+			);
+
+			$retVal[self::RESULT_FIELD_NAME] = true;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
+		}
+		echo json_encode($retVal);
+	}
+
+	public function delete_post_reply() {
+		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
+
+		$retVal = array();
+		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
+			$reportContent = $this->PostComment_model->updateReply(
+				array('status' => 0),
+				array('id' => $this->input->post('reply_id'))
 			);
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
@@ -1515,7 +1555,12 @@ class PostController extends MY_Controller
 		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
 			$postID = $this->input->post('post_id');
 
-			$addedComments = $this->PostComment_model->getComments(array('post_id' => $postID));
+			$addedComments = $this->PostComment_model->getComments(
+				array(
+					'post_id' => $postID, 
+					'status' => 1 // only active comments
+				)
+			);
 
 			for ($i = 0; $i < count($addedComments); $i++) {
 				$liked = $this->PostLike_model->userLikedComment($verifyTokenResult['id'], $addedComments[$i]['id']);
@@ -1617,12 +1662,17 @@ class PostController extends MY_Controller
 
 			$uploadedData = rtrim($uploadedData, ',');
 
+			$reply = $this->input->post('reply');
+
+			$isBusiness = $this->input->post('is_business') ?? '0';
+
 			$reportContent = $this->PostComment_model->insertNewReply(
 				array(
 					'comment_id' => $this->input->post('comment_id'),
 					'reply_user_id' => $verifyTokenResult['id'],
-					'reply' => $this->input->post('reply'),
+					'reply' => $reply,
 					'reply_type' => $replyType,
+					'is_business' => $isBusiness,
 					'data' => $uploadedData,
 					'created_at' => time()
 				)
@@ -1631,23 +1681,54 @@ class PostController extends MY_Controller
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 			$comments = $this->PostComment_model->getComments(array('id' => $this->input->post('comment_id')));
 
-			$this->NotificationHistory_model->insertNewNotification(
-				array(
-					'user_id' => $comments[0]['commenter_user_id'],
-					'type' => 2,
-					'related_id' => $comments[0]['post_id'],
-					'read_status' => 0,
-					'send_status' => 0,
-					'visible' => 1,
-					'text' => " has replied to your comment",
-					'name' => $users[0]['user_name'],
-					'profile_image' => $users[0]['pic_url'],
-					'updated_at' => time(),
-					'created_at' => time()
-				)
-			);
+			$posts = $posts =  $this->Post_model->getPostInfo(array('id' => $comments[0]['post_id']));
+
+			$notificationUserName = $isBusiness == '1' ? $users[0]['business_info']['business_name'] : $users[0]['user_name'];
+			$notificationProfileImage = $isBusiness == '1' ? $users[0]['business_info']['business_logo'] : $users[0]['pic_url'];
+
+			if (intval($posts[0]['user_id']) != intval($verifyTokenResult['id'])) {
+				$this->NotificationHistory_model->insertNewNotification(
+					array(
+						'user_id' => $comments[0]['commenter_user_id'],
+						'type' => 2,
+						'related_id' => $comments[0]['post_id'],
+						'read_status' => 0,
+						'send_status' => 0,
+						'visible' => 1,
+						'text' => " has replied to your comment",
+						'name' => $notificationUserName,
+						'profile_image' => $notificationProfileImage,
+						'updated_at' => time(),
+						'created_at' => time()
+					)
+				);
+			}			
 
 			$addedReply = $this->PostComment_model->getReplies(array('id' => $reportContent));
+
+			if (!empty($reply)) {
+				$replies = json_decode($reply, true);
+
+				for ($index = 0; $index < count($replies); $index++) {
+					if (!empty($replies[$index]['user_id'])) {
+						$this->NotificationHistory_model->insertNewNotification(
+							array(
+								'user_id' => $replies[$index]['user_id'],
+								'type' => 30,
+								'related_id' => $comments[0]['post_id'],
+								'read_status' => 0,
+								'send_status' => 0,
+								'visible' => 1,
+								'text' => " has tagged you",
+								'name' => $notificationUserName,
+								'profile_image' => $notificationProfileImage,
+								'updated_at' => time(),
+								'created_at' => time()
+							)
+						);
+					}
+				}
+			}
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
@@ -1686,6 +1767,9 @@ class PostController extends MY_Controller
 			}
 			$uploadedData = rtrim($uploadedData, ',');
 			$comment = $this->input->post('comment');
+
+			$isBusiness = $this->input->post('is_business') ?? '0';
+
 			$reportContent = $this->PostComment_model->insertNewComment(
 				array(
 					'post_id' => $this->input->post('post_id'),
@@ -1693,12 +1777,18 @@ class PostController extends MY_Controller
 					'comment' => $comment,
 					'data' => $uploadedData,
 					'comment_type' => $replyType,
+					'is_business' => $isBusiness,
 					'created_at' => time()
 				)
 			);
 
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 
+			$notificationUserName = $isBusiness == '1' ? $users[0]['business_info']['business_name'] : $users[0]['user_name'];
+			$notificationProfileImage = $isBusiness == '1' ? $users[0]['business_info']['business_logo'] : $users[0]['pic_url'];
+
+			// $this->input->post('user_id) : poster user id
+			// Do not send notifications on their own post
 			if (intval($this->input->post('user_id')) != intval($verifyTokenResult['id'])) {
 				$this->NotificationHistory_model->insertNewNotification(
 					array(
@@ -1709,8 +1799,8 @@ class PostController extends MY_Controller
                         'send_status' => 0,
 						'visible' => 1,
 						'text' => " has commented on your post",
-						'name' => $users[0]['user_name'],
-						'profile_image' => $users[0]['pic_url'],
+						'name' => $notificationUserName,
+						'profile_image' => $notificationProfileImage,
 						'updated_at' => time(),
 						'created_at' => time()
 					)
@@ -1731,8 +1821,8 @@ class PostController extends MY_Controller
 								'send_status' => 0,
 								'visible' => 1,
 								'text' => " has tagged you",
-								'name' => $users[0]['user_name'],
-								'profile_image' => $users[0]['pic_url'],
+								'name' => $notificationUserName,
+								'profile_image' => $notificationProfileImage,
 								'updated_at' => time(),
 								'created_at' => time()
 							)
