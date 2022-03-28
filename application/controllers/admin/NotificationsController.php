@@ -229,7 +229,9 @@ class NotificationsController extends MY_Controller
 
         $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
         $dataToBeDisplayed['allposts'] = $allposts;
-
+        
+        $total_count = count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))) + count( $open_reports) + count(  $open_businesUsers) + count($allposts);
+        $this->session->set_userdata('notification_count',$total_count);
         $this->load->view('admin/notifications/notification_list', $dataToBeDisplayed);
     }
 
@@ -291,8 +293,28 @@ class NotificationsController extends MY_Controller
         $whereArray = array('id' => $notification_id);
 
         $this->AdminNotification_model->updateAdminNotificationRecord($setArray, $whereArray);
-        $this->session->set_userdata('notification_count',count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))));
 
+  
+        $open_reports = $this->PostReport_model->getReports(array("is_active" => 0));
+
+        for($i = 0 ; $i < count($open_reports); $i++) {
+            if ($open_reports[$i]['post_id'] != 0) {
+                $open_reports[$i]['post'] = $this->Post_model->getPostDetail($open_reports[$i]['post_id'], 0);
+            }
+			if ($open_reports[$i]['user_id'] != 0) {
+                $open_reports[$i]['user'] = $this->User_model->getUserProfileDTO($open_reports[$i]['user_id']);
+            }
+            $open_reports[$i]['reported_user'] = $this->User_model->getUserProfileDTO($open_reports[$i]['reporter_user_id']);
+        }
+
+
+        $open_businesUsers = $this->UserBusiness_model->getBusinessInfos(array("approved" => 0));
+        $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
+      
+        $total_count = count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))) + count( $open_reports) + count(  $open_businesUsers) + count($allposts);
+
+
+        $this->session->set_userdata('notification_count',$total_count);
         print json_encode( $data);
         exit;
     }

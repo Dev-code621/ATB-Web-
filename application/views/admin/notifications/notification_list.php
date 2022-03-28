@@ -34,6 +34,7 @@ if(!$user_id){
         img:hover {
            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
         }
+
         </style>
 </head>
 <body>
@@ -46,7 +47,7 @@ if(!$user_id){
         </header>
             
         <section class="notification-container multiple-items container">
-            <div class="notification-info">
+            <div class="notification-badge">
                 <span class="notification-qty"><?php echo(count($newNotifications));?></span>
                 <div>
                     <span class="notification-label">Alerts <br> pending <br> review</span>                    
@@ -60,16 +61,36 @@ if(!$user_id){
             </div>
         </section>
 
-
+     
             <div class="tabs-container">
                 <div class="navTabs position-relative scrollable mt-0">
-                     <button class="btn tablinks active" data-tab="unread-notifications">Unread</button>
+                     <button class="btn tablinks active" data-tab="unread-notifications">
+                     <span>Unread</span>
+                         <?php if(count($newNotifications)>0){ ?>
+                           <span style="color:red; width: 20px;height: 20px;line-height: 20px; border-radius: 50%;background-color: #F06D6D;text-align: center;color: #fff;font-size: 18px;font-weight: 500;position: absolute;right: 20px;top: 25px;"> <?php echo (count($newNotifications)) ?></span>
+                        <?php } ?>
+                    </button>
                     <button class="btn tablinks" data-tab="actioned-notifications">Actioned</button>
                     <button class=" btn tablinks" data-tab="keywords-alert">Keywords Reported</button>
-                    <button class="btn tablinks" data-tab="open">Unread Reported</button>
+                    <button class="btn tablinks" data-tab="open">Unread Reported
+                        <?php if(count($open_reports)>0){ ?>
+                           <span style="color:red; width: 20px;height: 20px;line-height: 20px; border-radius: 50%;background-color: #F06D6D;text-align: center;color: #fff;font-size: 18px;font-weight: 500;position: absolute;right: 20px;top: 25px;"> 
+                           <?php echo (count($open_reports)) ?></span>
+                        <?php } ?>
+                    </button>
                     <button class="btn tablinks" data-tab="closed">Actioned Reported</button>
-                    <button class=" btn tablinks" data-tab="new-business">New Business</button>
-                    <button class=" btn tablinks" data-tab="new-service">New Service</button>
+                    <button class=" btn tablinks" data-tab="new-business">New Business
+                       <?php if(count($open_businesUsers)>0){ ?>
+                           <span style="color:red; width: 20px;height: 20px;line-height: 20px; border-radius: 50%;background-color: #F06D6D;text-align: center;color: #fff;font-size: 18px;font-weight: 500;position: absolute;right: 20px;top: 25px;"> 
+                           <?php echo (count($open_businesUsers)) ?></span>
+                        <?php } ?>
+                    </button>
+                    <button class=" btn tablinks" data-tab="new-service">New Service
+                          <?php if(count($allposts)>0){ ?>
+                           <span style="color:red; width: 20px;height: 20px;line-height: 20px; border-radius: 50%;background-color: #F06D6D;text-align: center;color: #fff;font-size: 18px;font-weight: 500;position: absolute;right: 20px;top: 25px;"> 
+                           <?php echo (count($allposts)) ?></span>
+                        <?php } ?>
+                    </button>
 
                 </div>
                 
