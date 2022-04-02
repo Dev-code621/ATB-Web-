@@ -121,11 +121,23 @@ class BusinessController extends MY_Controller {
         $business = $business[0];
 
         $business['user'] = $this->User_model->getUserProfileDTO($business['user_id']);
-        $business['services'] = $this->UserService_model->getServiceInfoAllList($business['user_id']);
         $business['tags'] = $this->UserTag_model->getUserTags(array("user_id" => $business['user_id']));
+        $files  = $this->UserServiceFiles_model->getServiceFileList($business['user_id']);
+        $insurance = array();
+        $qualification = array();
+        for($i = 0;$i< count($files);$i++){
+            if($files[$i]['type'] == 0){
+                array_push($insurance,$files[$i]);
+            }else{
+                array_push($qualification,$files[$i]);
+            }          
+
+        }
+        $business['services']['insurance'] = $insurance;
+        $business['services']['qualification'] = $qualification;
 
         $dataToBeDisplayed['business'] = $business;
-
+ 
         $this->load->view('admin/business/business_detail', $dataToBeDisplayed);
     }
 

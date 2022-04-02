@@ -117,45 +117,42 @@ if(!$user_id){
                     <div class="business-info-content">
                         <h3 class="business-subtitle"><i class="fa-regular fa-shield"></i>Insurance</h3>
                         
-                        <?php for($i = 0 ; $i < count($business['services']); $i++){ ?>
-                            <?php for($a = 0 ; $a < count($business['services'][$i]["insurance"]); $a++){ ?>
-                                <a href="  <?php if (!empty($business['services'][$i]["insurance"][$a]["file"])) { ?> <?php echo $business['services'][$i]["insurance"][$a]["file"] ?> <?php  }?>" class="btn btn-bagde">
+                            <?php for($a = 0 ; $a < count($business['services']["insurance"]); $a++){ ?>
+                                <a href="  <?php if (!empty($business['services']["insurance"][$a]["file"])) { ?> <?php echo $business['services']["insurance"][$a]["file"] ?> <?php  }?>" class="btn btn-bagde">
                                     <i class="fa-regular fa-shield"></i>
                                     <p>
                                         <b><?php
-                                             echo $business['services'][$i]["insurance"][$a]["reference"];
+                                             echo $business['services']["insurance"][$a]["company"];
                                             ?>
                                         </b>
                                         Insurance Until 
                                         <?php
-                                            echo $business['services'][$i]["insurance"][$a]["expiry"];
+                                            echo $business['services']["insurance"][$a]["expiry"];
                                         ?>
                                     </p>
                                     <i class="fa-regular fa-chevron-right"></i>
                                 </a>     
                             <?php }?>
-                        <?php }?>               
                     </div>
 
                     <div class="business-info-content">
-                         <?php for($i = 0 ; $i < count($business['services']); $i++){ ?>
-                            <?php for($a = 0 ; $a < count($business['services'][$i]["qualification"]); $a++){ ?>
-                                <h3 class="business-subtitle"><i class="fa-solid fa-award"></i>Qualifications</h3>
-                                <a href=" <?php if (!empty($business['services'][$i]["qualification"][$a]["file"])) { ?> <?php echo $business['services'][$i]["qualification"][$a]["file"] ?> <?php  }?>" class="btn btn-bagde">
+                    <h3 class="business-subtitle"><i class="fa-solid fa-award"></i>Qualifications</h3>
+
+                            <?php for($a = 0 ; $a < count($business['services']["qualification"]); $a++){ ?>
+                                <a href=" <?php if (!empty($business['services']["qualification"][$a]["file"])) { ?> <?php echo $business['services']["qualification"][$a]["file"] ?> <?php  }?>" class="btn btn-bagde">
                                     <i class="fa-solid fa-award"></i>
                                     <p>
                                         <b><?php
-                                             echo $business['services'][$i]["qualification"][$a]["reference"];
+                                             echo $business['services']["qualification"][$a]["company"];
                                             ?></b>
                                         Valid Until         
                                         <?php
-                                            echo $business['services'][$i]["qualification"][$a]["expiry"];
+                                            echo $business['services']["qualification"][$a]["expiry"];
                                         ?>
                                     </p>
                                     <i class="fa-regular fa-chevron-right"></i>
                                 </a>
                             <?php }?>               
-                        <?php }?>               
                     </div>
 
                     <div class="business-info-content">
