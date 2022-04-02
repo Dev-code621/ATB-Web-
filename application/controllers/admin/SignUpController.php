@@ -318,7 +318,7 @@ class SignUpController extends MY_Controller
             )
         );
 
-        $this->User_model->updateUserRecord($setArray, $whereArray);
+        // $this->User_model->updateUserRecord($setArray, $whereArray);
 
         $user = $this->User_model->getOnlyUser(array('id' => $post['user_id']));
         $subject = 'Unblocked from ATB';
