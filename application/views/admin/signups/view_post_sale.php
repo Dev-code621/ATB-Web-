@@ -319,14 +319,28 @@ if(!$user_id){
                                 <div class="business-info-content">
                                     <h3 class="business-subtitle"><i class="fa-solid fa-comment-lines"></i>Comments</h3>
                                     <?php for($i = 0 ; $i < count($post['comments']); $i++):?>
+                                        <?php $str = ""; $json = json_decode($post['comments'][$i]['comment']);?>
+
                                         <div class="comments">
                                         <div class="comment-info">
                                             <p><i class="fa-solid fa-circle-user"></i> <?php echo $post['comments'][$i]['user_name'];?></p>
                                             <p><i class="fa-regular fa-calendar-clock"></i> <?php echo $post['comments'][$i]['read_created'];?></p>
                                         </div>
-                                              <p> <?php
-                                                    $json = json_decode($post['comments'][$i]['comment'], true);
-                                                     echo $json[0]['comment'];?> </p>
+                                        <p>
+                                                <?php for($j = 0 ; $j < count($json); $j++){  
+                                                    if(property_exists($json[$j],'user_id')){
+                                                    ?>  
+                                                         <a href="<?php echo route('admin.signups.detail', $json[$j]->user_id);?>" style="display: inline;" class="user-username"> <span style="font-size: 20px;"><?php echo  preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                                                            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+                                                        }, $json[$j]->comment); ?></span></a>
+                                                    <?php } else{
+                                                        echo  preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                                                            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+                                                        }, $json[$j]->comment);
+
+                                                    }                                               
+                                                }?>
+                                            <p>        
                                     </div>
                                     <?php endfor;?>                                 
                                 </div>

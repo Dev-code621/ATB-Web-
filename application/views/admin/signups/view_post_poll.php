@@ -191,6 +191,8 @@ function showDivs(n) {
                                             </thead>
                                             <tbody>
                                             <?php for($i = 0 ; $i < count($post['comments']); $i++):?>
+                                                <?php $str = ""; $json = json_decode($post['comments'][$i]['comment']);?>
+
                                                 <tr>
                                                     <td> <a href="<?php echo route('admin.signups.detail', $post['comments'][$i]['commenter_user_id']);?>" class="btn btn-link underlined margin-top-15"> <?php echo $post['comments'][$i]['user_name'];?></a> </td>
                                                     <td> <p class="padding-tb-10 font-grey-gallery">
@@ -198,7 +200,23 @@ function showDivs(n) {
                                                             echo $post['comments'][$i]['read_created'];?>
                                                         </p>
                                                     </td>
-                                                    <td> <p class="padding-tb-10 font-grey-salt"> <?php echo $post['comments'][$i]['comment'];?> </p></td>
+                                                    <td> 
+                                                    <p>
+                                                        <?php for($j = 0 ; $j < count($json); $j++){  
+                                                            if(property_exists($json[$j],'user_id')){
+                                                            ?>  
+                                                                <a href="<?php echo route('admin.signups.detail', $json[$j]->user_id);?>" style="display: inline;" class="user-username"> <span style="font-size: 20px;"><?php echo  preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                                                                    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+                                                                }, $json[$j]->comment); ?></span></a>
+                                                            <?php } else{
+                                                                echo  preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                                                                    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+                                                                }, $json[$j]->comment);
+
+                                                            }                                               
+                                                        }?>
+                                                    <p>        
+                                                    </td>
                                                 </tr>
                                             <?php endfor;?>
                                             </tbody>

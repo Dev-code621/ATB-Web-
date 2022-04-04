@@ -180,4 +180,47 @@ class UserBraintreeTransaction_model extends MY_Model
                 
         return $transactions;
     }
+    
+    public function getPurchased(){
+    	$where = array();	    	
+         $transactions = $this->db->select('*')->from(self::TABLE_USER_BRAINTREE_TRANSACTION)->where($where)
+                ->order_by('created_at', 'ASC')
+                ->get()->result_array();
+            $returnArray = [];
+            for ($i = 0; $i<count($transactions); $i++) {
+
+
+                if($transactions[$i]["transaction_type"]=="Subscription" || $transactions[$i]["transaction_type"]=="Income") continue;
+                if ($transactions[$i]["purchase_type"] == "product_variant") {
+                    $variant = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
+                    $transactions[$i]["variant"] = $variant;
+                    if (count($variant) > 0) {
+                        $transactions[$i]["product"] = $this->Product_model->getProduct($variant[0]["product_id"]);
+                        $array = $this->Post_model->getPostInfo( array('product_id' => $variant[0]["product_id"]),"");
+                        if(!empty($array)){
+                            array_push($returnArray, $array[0] );
+
+                        }
+
+                    }    
+                } else if ($transactions[$i]["purchase_type"] == "product") {
+                    $transactions[$i]["product"] = $this->Product_model->getProduct($transactions[$i]["target_id"]);
+                    $array = $this->Post_model->getPostInfo( array('product_id' => $transactions[$i]["target_id"]),"");
+                    if(!empty($array)){
+                        array_push($returnArray, $array[0] );
+                    }
+
+                } else if ($transactions[$i]["purchase_type"] == "service") {
+                    $transactions[$i]["variant"] = $this->UserService_model->getServiceInfo($transactions[$i]["target_id"]);
+                    $array = $this->Post_model->getPostInfo( array('service_id' => $transactions[$i]["target_id"]),"");
+                    if(!empty($array)){
+                        array_push($returnArray, $array[0] );  
+                      }
+
+                }                                
+            }
+        return $returnArray;
+    }
+
+
 }

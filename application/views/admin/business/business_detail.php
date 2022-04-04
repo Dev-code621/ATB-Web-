@@ -4,6 +4,14 @@ $user_id= $this->session->userdata('user_id');
 if(!$user_id){
     redirect(route('admin.auth.login'));
 }
+function getTime($time) {
+    $tz = new DateTimeZone('Europe/London');
+    $date = date_create_from_format('H:i:s', $time, new DateTimeZone('GMT'));
+    $date->setTimezone($tz);
+    return $date->format('H:i:s');
+
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,36 +86,38 @@ if(!$user_id){
                             <tbody>
                                 <tr>
                                     <td>Monday</td>
-                                    <td><?php echo $business['opening_times'][0]["start"] . " - " . $business['opening_times'][0]["end"]?></td>
+                                    <td><?php 
+                                       
+                                        echo getTime($business['opening_times'][0]["start"]) . " - " . getTime($business['opening_times'][0]["end"])?></td>
                                 </tr>
                                 <tr>
                                     <td>Tuesday</td>
-                                    <td><?php echo $business['opening_times'][1]["start"] . " - " . $business['opening_times'][1]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][1]["start"]) . " - " . getTime($business['opening_times'][1]["end"])?></td>
 
                                 </tr>
                                 <tr>
                                     <td>Wednesday</td>
-                                    <td><?php echo $business['opening_times'][2]["start"] . " - " . $business['opening_times'][2]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][2]["start"]) . " - " . getTime($business['opening_times'][2]["end"])?></td>
 
                                 </tr>
                                 <tr>
                                     <td>Thursday</td>
-                                    <td><?php echo $business['opening_times'][3]["start"] . " - " . $business['opening_times'][3]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][3]["start"]) . " - " . getTime($business['opening_times'][3]["end"])?></td>
 
                                 </tr>
                                 <tr>
                                     <td>Friday</td>
-                                    <td><?php echo $business['opening_times'][4]["start"] . " - " . $business['opening_times'][4]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][4]["start"]) . " - " . getTime($business['opening_times'][4]["end"])?></td>
 
                                 </tr>
                                 <tr>
                                     <td>Saturday</td>
-                                    <td><?php echo $business['opening_times'][5]["start"] . " - " . $business['opening_times'][5]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][5]["start"]) . " - " . getTime($business['opening_times'][5]["end"])?></td>
 
                                 </tr>
                                 <tr>
                                     <td>Sunday</td>
-                                    <td><?php echo $business['opening_times'][6]["start"] . " - " . $business['opening_times'][6]["end"]?></td>
+                                    <td><?php echo getTime($business['opening_times'][6]["start"]) . " - " . getTime($business['opening_times'][6]["end"])?></td>
 
                                 </tr>
                             </tbody>

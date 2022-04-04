@@ -60,6 +60,10 @@ if(!$user_id){
                     <button class=" btn tablinks" data-tab="kids">Kids</button>
                     <button class=" btn tablinks" data-tab="ladieswear">Ladieswear</button>
                     <button class=" btn tablinks" data-tab="miscellaneous">Miscellaneous</button>
+                    <button class="btn tablinks" data-tab="Menswear">Menswear</button>
+                    <button class="btn tablinks" data-tab="Hair">Hair</button>
+                    <button class="btn tablinks" data-tab="health">Health & Well-Being</button>
+
                 </div>
                 
                 <div class="data-container tab-content-wrapper container">
@@ -496,6 +500,207 @@ if(!$user_id){
                     <div data-tabcontent="miscellaneous" class="tabcontent">
                        <?php for($i = 0 ; $i < count($allposts); $i++):?>
                             <?php if ($allposts[$i]["category_title"] == "Miscellaneous") { ?>
+                                <div class="data-item d-flex">
+                                    <div class="user-info-content">
+                                    <?php 
+                                        $postType = 'Video Post';
+                                        $type = "Sales";
+                                        if($allposts[$i]['media_type'] == 0){
+                                            $postType = 'Text Post';
+                                        }elseif($allposts[$i]['media_type'] == 1){
+                                            $postType = 'Image Post';
+                                        }
+
+                                        if($allposts[$i]['post_type'] == 1){
+                                            $type = 'Advice';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
+                                        ?>
+                                        <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
+                                        <span class="post-info"><?php echo($postType);?></span>
+                                        <div class="post-content">
+                                            <p><?php echo $allposts[$i]['title'] ?></p>
+                                        </div>
+                                        <div class="data-info ">
+                                            <div class="data-info-item date">
+                                                <i class="fa-solid fa-circle-user"></i>
+                                                <span><a href="<?php echo route('admin.signups.detail', $allposts[$i]['user'][0]['id']);?>"><?php echo $allposts[$i]['user'][0]["user_name"]; ?></a></span>
+                                            </div>
+                                            <div class="data-info-item date">
+                                                <i class="fa-regular fa-calendar-day"></i>
+                                                <span><?php echo human_readable_date($allposts[$i]['created_at']);?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-heart"></i>
+                                                <span><?php echo $allposts[$i]['likes'];?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-comment"></i>
+                                                <span><?php echo $allposts[$i]['comments'];?> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a> -->
+
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
+                                </div>
+
+                                <?php } ?>
+                            <?php endfor;?> 
+                    </div>
+                    <div data-tabcontent="Menswear" class="tabcontent">
+                       <?php for($i = 0 ; $i < count($allposts); $i++):?>
+                            <?php if ($allposts[$i]["category_title"] == "Menswear") { ?>
+                                <div class="data-item d-flex">
+                                    <div class="user-info-content">
+                                    <?php 
+                                        $postType = 'Video Post';
+                                        $type = "Sales";
+                                        if($allposts[$i]['media_type'] == 0){
+                                            $postType = 'Text Post';
+                                        }elseif($allposts[$i]['media_type'] == 1){
+                                            $postType = 'Image Post';
+                                        }
+
+                                        if($allposts[$i]['post_type'] == 1){
+                                            $type = 'Advice';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
+                                        ?>
+                                        <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
+                                        <span class="post-info"><?php echo($postType);?></span>
+                                        <div class="post-content">
+                                            <p><?php echo $allposts[$i]['title'] ?></p>
+                                        </div>
+                                        <div class="data-info ">
+                                            <div class="data-info-item date">
+                                                <i class="fa-solid fa-circle-user"></i>
+                                                <span><a href="<?php echo route('admin.signups.detail', $allposts[$i]['user'][0]['id']);?>"><?php echo $allposts[$i]['user'][0]["user_name"]; ?></a></span>
+                                            </div>
+                                            <div class="data-info-item date">
+                                                <i class="fa-regular fa-calendar-day"></i>
+                                                <span><?php echo human_readable_date($allposts[$i]['created_at']);?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-heart"></i>
+                                                <span><?php echo $allposts[$i]['likes'];?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-comment"></i>
+                                                <span><?php echo $allposts[$i]['comments'];?> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a> -->
+
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
+                                </div>
+
+                                <?php } ?>
+                            <?php endfor;?> 
+                    </div>
+                    <div data-tabcontent="Hair" class="tabcontent">
+                       <?php for($i = 0 ; $i < count($allposts); $i++):?>
+                            <?php if ($allposts[$i]["category_title"] == "Hair") { ?>
+                                <div class="data-item d-flex">
+                                    <div class="user-info-content">
+                                    <?php 
+                                        $postType = 'Video Post';
+                                        $type = "Sales";
+                                        if($allposts[$i]['media_type'] == 0){
+                                            $postType = 'Text Post';
+                                        }elseif($allposts[$i]['media_type'] == 1){
+                                            $postType = 'Image Post';
+                                        }
+
+                                        if($allposts[$i]['post_type'] == 1){
+                                            $type = 'Advice';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 3){
+                                          $type = 'Service';
+                                        }
+                                        else if($allposts[$i]['post_type'] == 4){
+                                          $type = 'Poll';
+                                        }                             
+                                        ?>
+                                        <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
+                                        <span class="post-info"><?php echo($postType);?></span>
+                                        <div class="post-content">
+                                            <p><?php echo $allposts[$i]['title'] ?></p>
+                                        </div>
+                                        <div class="data-info ">
+                                            <div class="data-info-item date">
+                                                <i class="fa-solid fa-circle-user"></i>
+                                                <span><a href="<?php echo route('admin.signups.detail', $allposts[$i]['user'][0]['id']);?>"><?php echo $allposts[$i]['user'][0]["user_name"]; ?></a></span>
+                                            </div>
+                                            <div class="data-info-item date">
+                                                <i class="fa-regular fa-calendar-day"></i>
+                                                <span><?php echo human_readable_date($allposts[$i]['created_at']);?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-heart"></i>
+                                                <span><?php echo $allposts[$i]['likes'];?></span>
+                                            </div>
+                                            <div class="data-info-item time">
+                                                <i class="fa-solid fa-comment"></i>
+                                                <span><?php echo $allposts[$i]['comments'];?> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" class="nav-icon"><i class="fa-regular fa-chevron-right"></i></a> -->
+
+                                    <div style="width: 120px; min-width:120px;">
+                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    
+                                        <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
+                                            <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">
+                                        <?php } else{?>
+                                            <img style="border : initial;opacity:0" >
+                                        <?php }?>
+                                   
+                                        <i class="fa-regular fa-chevron-right" style = " margin-left:10px"></i>
+                                    </a>
+                                </div>
+                                </div>
+
+                                <?php } ?>
+                            <?php endfor;?> 
+                    </div>
+                    <div data-tabcontent="health" class="tabcontent">
+                       <?php for($i = 0 ; $i < count($allposts); $i++):?>
+                            <?php if ($allposts[$i]["category_title"] == "Health & Well-Being") { ?>
                                 <div class="data-item d-flex">
                                     <div class="user-info-content">
                                     <?php 
