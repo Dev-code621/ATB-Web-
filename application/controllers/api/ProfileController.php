@@ -2430,7 +2430,7 @@ class ProfileController extends MY_Controller
 
 				$followers = $this->LikeInfo_model->getFollowers('0', $tokenVerifyResult['id']);
 				$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-				$business = $this->UserBusiness_model->getBusinessInfo($verifyTokenResult['id'])[0];
+				$business = $this->UserBusiness_model->getBusinessInfo($tokenVerifyResult['id'])[0];
 				
 				for ($i = 0; $i < count($followers); $i ++) {
 					if ($followers[$i]['post_notifications'] == 1) {
