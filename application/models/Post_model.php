@@ -99,7 +99,8 @@ class Post_model extends MY_Model
 			$searchKey = strtolower($searchKey);
 			$searchKey = preg_replace("/[^A-Za-z0-9 ]/", '', $searchKey);
 
-			$likeWhere = "((LOWER(users.user_name) LIKE '%".$searchKey."%' AND ".self::TABLE_POST_LIST.".poster_profile_type = '0') OR 
+			$likeWhere = "(
+                        (LOWER(users.user_name) LIKE '%".$searchKey."%' AND ".self::TABLE_POST_LIST.".poster_profile_type = '0') OR 
                         (LOWER(user_extend_infos.business_name) LIKE '%".$searchKey."%' AND ".self::TABLE_POST_LIST.".poster_profile_type = '1') OR 
                         LOWER(".self::TABLE_POST_LIST.".title) LIKE '%".$searchKey."%' OR 
                         LOWER(".self::TABLE_POST_LIST.".description) LIKE '%".$searchKey."%' OR 
