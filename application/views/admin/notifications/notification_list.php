@@ -349,16 +349,8 @@ if(!$user_id){
                                         }elseif($allposts[$i]['media_type'] == 1){
                                             $postType = 'Image Post';
                                         }
-
-                                        if($allposts[$i]['post_type'] == 1){
-                                            $type = 'Advice';
-                                        }
-                                        else if($allposts[$i]['post_type'] == 3){
-                                          $type = 'Service';
-                                        }
-                                        else if($allposts[$i]['post_type'] == 4){
-                                          $type = 'Poll';
-                                        }                             
+                                        $type = 'Service';
+                                          
                                         ?>
                                         <span class="post-tag"><i class="fa-solid fa-star"></i> <?php echo($type);?></span> 
                                         <span class="post-info"><?php echo($postType);?></span>
@@ -374,18 +366,18 @@ if(!$user_id){
                                                 <i class="fa-regular fa-calendar-day"></i>
                                                 <span><?php echo human_readable_date($allposts[$i]['created_at']);?></span>
                                             </div>
-                                            <div class="data-info-item time">
+                                            <!-- <div class="data-info-item time">
                                                 <i class="fa-solid fa-heart"></i>
                                                 <span><?php echo $allposts[$i]['likes'];?></span>
                                             </div>
                                             <div class="data-info-item time">
                                                 <i class="fa-solid fa-comment"></i>
                                                 <span><?php echo $allposts[$i]['comments'];?> </span>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                     <div style="width: 120px; min-width:120px;">
-                                    <a href="<?php echo route('admin.signups.view_post', $allposts[$i]['id']);?>" >
+                                    <a href="<?php echo route('admin.notifications.view_service', $allposts[$i]['id']);?>" >
                                     
                                         <?php if (!empty($allposts[$i]['post_imgs'])) { ?>
                                             <img src="<?php echo $allposts[$i]['post_imgs'][0]['path'];?>" alt="Forest">

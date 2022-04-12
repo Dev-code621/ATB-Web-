@@ -294,6 +294,10 @@
         Route::get('/saveaction', 'NotificationsController@saveAction')->name('admin.notifications.saveaction');
         Route::post('/readnotification', 'NotificationsController@readnotification')->name('admin.notifications.readnotification');
         Route::post('/ignoreReport', 'NotificationsController@ignoreReport')->name('admin.notifications.ignoreReport');
+        Route::get('/view_service/{id}', 'NotificationsController@view_service')->name('admin.notifications.view_service');
+        Route::get('/unblock_service', 'NotificationsController@unblock_service') -> name('admin.notifications.unblock_service');
+        Route::get('/block_service', 'NotificationsController@block_service') -> name('admin.notifications.block_service');
+
 
     });
 	

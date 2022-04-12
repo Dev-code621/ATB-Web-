@@ -73,6 +73,8 @@ class UserService_model extends MY_Model
                     $services[$i]["insurance"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['insurance_id']);
                     $services[$i]["qualification"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['qualification_id']);
                     $services[$i]['post_imgs'] = $this->getPostImage(array('service_id' => $services[$i]['id']));
+                    $user = $this->User_model->getOnlyUser(array('id' => $services[$i]['user_id']));
+                    $services[$i]["user"] = $user;
         }            
         return $services; 
     }
@@ -101,4 +103,35 @@ class UserService_model extends MY_Model
             return -1;
         }
     }
+
+
+    public function getServiceInfos($where = array()) {
+        $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
+                    ->where($where)
+                    ->get()
+                    ->result_array();
+        for($i = 0 ; $i < count($services) ; $i++) {
+                    $services[$i]["insurance"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['insurance_id']);
+                    $services[$i]["qualification"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['qualification_id']);
+                    $services[$i]['post_imgs'] = $this->getPostImage(array('service_id' => $services[$i]['id']));
+                    $user = $this->User_model->getOnlyUser(array('id' => $services[$i]['user_id']));
+                    $services[$i]["user"] = $user;
+        }            
+        return $services; 
+    }
+
+    public function updatePostContent($set, $where) {
+        $this->db->where($where);
+        $this->db->update(self::TABLE_SERVICE_INFO_LIST, $set);
+       
+        $setArray = array(
+            'is_active' => $set['is_active'],
+            'status_reason' => $set['approval_reason'],
+            'updated_at' => time(),
+        );
+        $whereArray = array('service_id' =>$where['id']);
+        
+        $this->Post_model->updatePostContent($setArray, $whereArray);
+    }
+
 }

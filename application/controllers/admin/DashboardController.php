@@ -42,6 +42,8 @@ class DashboardController extends MY_Controller
         $open_businesUsers = $this->UserBusiness_model->getBusinessInfos(array("approved" => 0));
         $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
       
+        $allposts = $this->UserService_model->getServiceInfos(array('is_active' => 3));
+        $open_reports = $this->PostReport_model->getReports(array("is_active" => 0));
         $total_count = count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))) + count( $open_reports) + count(  $open_businesUsers) + count($allposts);
         $this->session->set_userdata('notification_count',$total_count);
 

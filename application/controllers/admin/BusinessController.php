@@ -316,16 +316,23 @@ class BusinessController extends MY_Controller {
             $cats[] = $post["category_title"];
         }
         $cats = array_unique($cats);
-        sort($cats);
-
+        sort($cats);        
         $dataToBeDisplayed['allposts'] = $allposts;
+        if($type == 3 ){            
+            $allposts = $this->UserService_model->getServiceInfos(array('user_id' =>$user_id));
+            $dataToBeDisplayed['allposts'] = $allposts;
+
+        }
         $dataToBeDisplayed["cats"] = $cats;
 
 
         if($type == 0){
             $this->load->view('admin/business/three_dot_booking_list', $dataToBeDisplayed);
+        }else if($type == 3){
+            $this->load->view('admin/business/user_services_list', $dataToBeDisplayed);
         }else{
             $this->load->view('admin/business/three_dot_detail_feed', $dataToBeDisplayed);
+
         }
     }
 }

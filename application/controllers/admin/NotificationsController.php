@@ -227,11 +227,10 @@ class NotificationsController extends MY_Controller
         $dataToBeDisplayed['open_businesUsers'] = $open_businesUsers;
 
 
-        $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
-        $dataToBeDisplayed['allposts'] = $allposts;
-        
+        $allposts = $this->UserService_model->getServiceInfos(array('is_active' => 3));
+        $dataToBeDisplayed['allposts'] = $allposts;        
         $total_count = count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))) + count( $open_reports) + count(  $open_businesUsers) + count($allposts);
-        $this->session->set_userdata('notification_count',$total_count);
+        $this->session->set_userdata('notification_count',$total_count);   
         $this->load->view('admin/notifications/notification_list', $dataToBeDisplayed);
     }
 
@@ -309,12 +308,10 @@ class NotificationsController extends MY_Controller
 
 
         $open_businesUsers = $this->UserBusiness_model->getBusinessInfos(array("approved" => 0));
-        $allposts = $this->Post_model->getPostInfo(array('is_active' => 3,'post_type' => 3 ),"");
-      
+        $allposts = $this->UserService_model->getServiceInfos(array('is_active' => 3));
         $total_count = count($this->AdminNotification_model->getAdminNotification(array('read_status' => 0))) + count( $open_reports) + count(  $open_businesUsers) + count($allposts);
+        $this->session->set_userdata('notification_count',$total_count);  
 
-
-        $this->session->set_userdata('notification_count',$total_count);
         print json_encode( $data);
         exit;
     }
@@ -342,5 +339,109 @@ class NotificationsController extends MY_Controller
         print json_encode( $data);
         exit;
     }    
+
+    public function view_service($serviceid) {
+        $dataToBeDisplayed = $this->makeComponentLayout(self::NOTIFICATION_LIST);
+
+        $services = $this->UserService_model->getServiceInfo($serviceid);
+        $dataToBeDisplayed['post'] = $services[0];
+        
+        $this->load->view('admin/notifications/view_service_post', $dataToBeDisplayed);
+
+    }
+
+    public function block_service() {
+
+        $setArray = array(
+            'is_active' => 2,
+            'approval_reason' => $this->input->get('blockReason'),
+            'updated_at' => time(),
+        );
+
+        $whereArray = array('id' => $this->input->get('block_postid'));
+
+        $this->UserService_model->updatePostContent($setArray, $whereArray);
+
+        $setArray = array("is_active" => 1);
+        $whereArray = array('post_id'=>$this->input->get('block_postid'));
+        // send block postNotification
+        $result = $this->UserService_model->getServiceInfo($this->input->get('block_postid'));
+        $post  = $result[0];
+
+
+        $this->NotificationHistory_model->insertNewNotification(
+            array(
+                'user_id' => $post['user_id'],
+                'type' => 33,
+                'related_id' => $this->input->get('block_postid'),
+                'read_status' => 0,
+                'send_status' => 0,
+                'visible' => 1,
+                'text' => "Sorry, the service submitted has been rejected, Please check your email for next steps",
+                'name' =>'',
+                'profile_image' => '',
+                'updated_at' => time(),
+                'created_at' => time()
+            )
+        );
+
+        // $this->User_model->updateUserRecord($setArray, $whereArray);
+
+        $user = $this->User_model->getOnlyUser(array('id' => $post['user_id']));
+        $subject = 'Unblocked from ATB';
+        $content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$post['title'].' you have been rejected from ATB</span></p>
+        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('unblockReason').'</span></p>';
+
+        $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
+
+        redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
+    }
+
+    public function unblock_service() {
+
+        $setArray = array(
+            'is_active' => 1,
+            'approval_reason' => $this->input->get('unblockReason'),
+            'updated_at' => time(),
+        );
+
+        $whereArray = array('id' => $this->input->get('unblock_postid'));
+
+        $this->UserService_model->updatePostContent($setArray, $whereArray);
+
+        $setArray = array("is_active" => 1);
+        $whereArray = array('post_id'=>$this->input->get('unblock_postid'));
+        // send block postNotification
+        $result = $this->UserService_model->getServiceInfo($this->input->get('unblock_postid'));
+        $post  = $result[0];
+
+        $this->NotificationHistory_model->insertNewNotification(
+            array(
+                'user_id' => $post['user_id'],
+                'type' => 34,
+                'related_id' => $this->input->get('unblock_postid'),
+                'read_status' => 0,
+                'send_status' => 0,
+                'visible' => 1,
+                'text' => "Sorry, the service submitted has been approved, Please check your email for next steps",
+                'name' =>'',
+                'profile_image' => '',
+                'updated_at' => time(),
+                'created_at' => time()
+            )
+        );
+
+        // $this->User_model->updateUserRecord($setArray, $whereArray);
+
+        $user = $this->User_model->getOnlyUser(array('id' => $post['user_id']));
+        $subject = 'Unblocked from ATB';
+        $content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$post['title'].' you have been approved from ATB</span></p>
+        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('unblockReason').'</span></p>';
+
+        $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
+
+        redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
+
+    }
 }
 
