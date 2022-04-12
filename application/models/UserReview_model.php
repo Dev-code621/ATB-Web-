@@ -24,7 +24,10 @@ class UserReview_model extends MY_Model
     public function getReviews($where = array()) {
         return $this->db->select('*')
             ->from(self::TABLE_USER_REVIEW)
-            ->where($where)->get()->result_array();
+            ->where($where)
+            ->order_by('id', 'DESC')
+            ->get()
+            ->result_array();
     }
 	
 	

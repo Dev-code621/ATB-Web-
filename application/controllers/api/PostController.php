@@ -954,26 +954,28 @@ class PostController extends MY_Controller
 			$user_radius = $users[0]['post_search_region'];
 
 			$searchResult = array();
-			if (empty($user_radius) || floatval($user_radius) >= 80) {
+			// April 11, 2022
+			// To remove the radius limitation
+			// if (empty($user_radius) || floatval($user_radius) >= 80) {
 				$searchResult = $postContent;
 
-			} else {
-				foreach ($postContent as $post) {
-					$post_lat = $post['lat'];
-					$post_lng = $post['lng'];
+			// } else {
+			// 	foreach ($postContent as $post) {
+			// 		$post_lat = $post['lat'];
+			// 		$post_lng = $post['lng'];
 
-					if (is_null($post_lat) || is_null($post_lng)) {
-						array_push($searchResult, $post);
+			// 		if (is_null($post_lat) || is_null($post_lng)) {
+			// 			array_push($searchResult, $post);
 
-					} else {
-						$distance =  $this->vincentyGreatCircleDistance($user_lat, $user_lng, $post_lat, $post_lng);
+			// 		} else {
+			// 			$distance =  $this->vincentyGreatCircleDistance($user_lat, $user_lng, $post_lat, $post_lng);
 
-						if ($distance <= floatval($user_radius)*1000) {
-							array_push($searchResult, $post);
-						}
-					}
-				}
-			}			
+			// 			if ($distance <= floatval($user_radius)*1000) {
+			// 				array_push($searchResult, $post);
+			// 			}
+			// 		}
+			// 	}
+			// }			
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
@@ -1179,6 +1181,11 @@ class PostController extends MY_Controller
             
             $product_id = $postContent['product_id'];                        
             if ($postContent['post_type'] == "2" && !is_null($product_id) && !empty($product_id)) {
+				$products = $this->Product_model->getProduct($product_id);
+				if (count($products) > 0) {
+					$postContent['stock_level'] = $products[0]['stock_level'];
+				}
+
                 $postContent["variations"] = $this->Product_model->getProductVariations(array('product_id' => $product_id));
             }
 			

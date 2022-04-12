@@ -270,7 +270,36 @@ class ProfileController extends MY_Controller
 					}
 
 					$multiPosts = array_values($multiPosts);
+					for ($x = 0; $x < count($multiPosts); $x++) {                        
+                        $product_id = $multiPosts[$x]['product_id']; 
+
+                        if ($multiPosts[$x]['post_type'] == "2" && !empty($product_id)) {
+							$products = $this->Product_model->getProduct($product_id);
+							
+							if (count($products) > 0) {
+								$postContent[$i]['stock_level'] = $products[0]['stock_level'];
+							}
+
+                            $multiPosts[$x]["variations"] = $this->Product_model->getProductVariations(array('product_id' => $product_id));
+                        }
+					}
+
 					$posts[$i]["group_posts"] = $multiPosts;
+				}
+
+				if ($posts[$i]['post_type'] == "2") {
+					// if the post is a sales post
+					$productId = $posts[$i]['product_id'];
+					if (!empty($productId)) {
+						$products = $this->Product_model->getProduct($productId);
+
+						if (count($products) > 0) {
+							$posts[$i]['stock_level'] = $products[0]['stock_level'];
+						}
+
+						$posts[$i]['variations'] = $this->Product_model->getProductVariations(
+							array('product_id' => $productId));
+					}
 				}
 			}
 
@@ -2401,7 +2430,8 @@ class ProfileController extends MY_Controller
 
 				$followers = $this->LikeInfo_model->getFollowers('0', $tokenVerifyResult['id']);
 				$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-
+				$business = $this->UserBusiness_model->getBusinessInfo($verifyTokenResult['id'])[0];
+				
 				for ($i = 0; $i < count($followers); $i ++) {
 					if ($followers[$i]['post_notifications'] == 1) {
 						$this->NotificationHistory_model->insertNewNotification(
@@ -2413,8 +2443,8 @@ class ProfileController extends MY_Controller
 								'send_status' => 0,
 								'visible' => 1,
 								'text' =>  " has uploaded a new service",
-								'name' => $users[0]['user_name'],
-								'profile_image' => $users[0]['pic_url'],
+								'name' => $business['business_name'],
+								'profile_image' => $business['business_logo'],
 								'updated_at' => time(),
 								'created_at' => time()
 							)
@@ -2423,12 +2453,13 @@ class ProfileController extends MY_Controller
 				}
 
 				$content = '
-		<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You have added a new service to your business. This will be reviewed by the admin team before it can be approved as a valid service.</span></p>
-		<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;"><b></b></span></p>';
+					<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You have added a new service to your business. This will be reviewed by the admin team before it can be approved as a valid service.</span></p>
+					<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;"><b></b></span></p>';
 
 				$subject = 'ATB Business account created';
 
 				$this->User_model->sendUserEmail($users[0]["user_email"], $subject, $content);
+
 			} else {
 				$retVal[self::RESULT_FIELD_NAME] = false;
 				$retVal[self::MESSAGE_FIELD_NAME] = "Failed to add new service.";
@@ -3030,8 +3061,16 @@ class ProfileController extends MY_Controller
 				);
 			}
 
+			$review = $this->UserReview_model->getReviews(
+				array('id' => $insResult[self::MESSAGE_FIELD_NAME])
+			)[0];
+
+			$profile = $this->User_model->getUserProfileDTO($verifyTokenResult['id']);
+			$review['rater'] = $profile['profile'];
+
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Successfully published";
+			$retVal[self::EXTRA_FIELD_NAME] = $review;
 
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
