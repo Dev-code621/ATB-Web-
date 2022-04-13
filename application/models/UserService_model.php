@@ -25,6 +25,7 @@ class UserService_model extends MY_Model
     public function getServiceInfoList($userId) {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('user_id' => $userId, 'approved'=>1))
+                    ->where('is_active !=', '99')
                     ->get()
                     ->result_array();
        
@@ -39,6 +40,7 @@ class UserService_model extends MY_Model
 	public function getServiceInfoAllList($userId) {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('user_id' => $userId))
+                    ->where('is_active !=', '99')
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {
@@ -52,6 +54,7 @@ class UserService_model extends MY_Model
 	public function getServiceInfoNotApprovedList() {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('approved'=>0))
+                    ->where('is_active !=', '99')
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {
@@ -108,6 +111,7 @@ class UserService_model extends MY_Model
     public function getServiceInfos($where = array()) {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where($where)
+                    ->where('is_active !=', '99')
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {

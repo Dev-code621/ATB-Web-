@@ -1970,7 +1970,7 @@ class ProfileController extends MY_Controller
 				$products = $this->Product_model->getProduct($productId);
 				if (count($products) > 0) {
 					$setArray = array(
-						'is_active' => 2,					// blocked
+						'is_active' => 99,					// blocked
 						'status_reason' => "User deleted",
 						'updated_at' => time(),
 					);
@@ -1984,7 +1984,7 @@ class ProfileController extends MY_Controller
 					for ($postIndex = 0; $postIndex < count($posts); $postIndex++) {
 						$this->Post_model->updatePostContent(
 							 array(
-								'is_active' => 2,
+								'is_active' => 99,
 								'status_reason' => "User deleted",
 								'updated_at' => time(),
 							),
@@ -2684,7 +2684,7 @@ class ProfileController extends MY_Controller
 				$services = $this->UserService_model->getServiceInfo($serviceId);
 				if (count($services) > 0) {
 					$setArray = array(
-						'is_active' => 2,					// blocked
+						'is_active' => 99,					// blocked
 						'approval_reason' => "User deleted",
 						'updated_at' => time(),
 					);
@@ -2698,7 +2698,7 @@ class ProfileController extends MY_Controller
 					for ($postIndex = 0; $postIndex < count($posts); $postIndex++) {
 						$this->Post_model->updatePostContent(
 							 array(
-								'is_active' => 2,
+								'is_active' => 99,
 								'status_reason' => "User deleted",
 								'updated_at' => time(),
 							),

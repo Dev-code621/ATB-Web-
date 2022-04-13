@@ -34,6 +34,7 @@ class Product_model extends MY_Model
         $products =  $this->db->select('*')
             -> from(self::TABLE_PRODUCT)
             ->where(array('user_id' => $id, 'poster_profile_type'=>$is_business))
+            ->where('is_active !=', '99')
             ->get()
             ->result_array();
             

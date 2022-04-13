@@ -36,7 +36,10 @@ class PostController extends MY_Controller
 			$insResult = 0;
 			$status = "1";
 			if ($this->input->post('type') == '3') {
-				$status = '3';
+				$serviceId = $this->input->post('service_id');
+				$service = $this->UserService_model->getServiceInfo($serviceId)[0];
+
+				$status = $service['is_active'];
 			}
 
 			if ($this->input->post('is_multi') == "1") {				
@@ -1973,7 +1976,7 @@ class PostController extends MY_Controller
 			$postId = $this->input->post('post_id');
 
 			$setArray = array(
-				'is_active' => 2,
+				'is_active' => 99,
 				'status_reason' => "User deleted",
 				'updated_at' => time(),
 			);
