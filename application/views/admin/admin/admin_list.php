@@ -38,10 +38,10 @@ if(!$user_id){
                 <div class="data-item d-flex" data-modal="removeModal<?php echo $i?>" data-id='<?php echo $i?>' >
                     <div>
                         <?php if(strlen($users[$i]['profile_pic']) == 0){?>
-                        <img  src="<?php echo base_url();?>admin_assets/images/upload.png" style="width: 50px;height: 50px;border-radius:50%" id="blashE" alt=""/> 
+                        <img  src="<?php echo base_url();?>admin_assets/images/upload.png" style="width: 50px;height: 50px;border-radius:50%"  alt=""/> 
                          <?php } ?>       
                         <?php  if(strlen($users[$i]['profile_pic'])> 0) { ?>                                 
-                            <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 50px;height: 50px;border-radius:50%" id="blashE" alt=""/> 
+                            <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 50px;height: 50px;border-radius:50%" id ="profile_pic<?php echo $i?>" alt=""/> 
                         <?php } ?> 
                     </div>
                      
@@ -56,13 +56,17 @@ if(!$user_id){
                 <div class="modal adminModal" id="removeModal<?php echo $i?>">
                     <div class="closeModal barIcon" data-close="removeModal<?php echo $i?>"><i class="fa-regular fa-minus"></i></div>
                     <div class="user-icon onModal">
-                          <?php if(strlen($users[$i]['profile_pic']) == 0){?>
-                            <i class="fa-solid fa-user-gear"></i>
-                         <?php } ?>       
-                        <?php  if(strlen($users[$i]['profile_pic'])> 0) { ?>                                 
-                            <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 80px;height: 80px;border-radius:10%" id="blashE" alt=""/> 
-                        <?php } ?> 
-                        
+                         <label for="file-input<?php echo $i?>"> 
+                                <?php if(strlen($users[$i]['profile_pic']) == 0){?>
+                                    <i class="fa-solid fa-user-gear"></i>
+                                <?php } ?>       
+                                <?php  if(strlen($users[$i]['profile_pic'])> 0) { ?>                                 
+                                    <img  src="<?php echo base_url().$users[$i]['profile_pic'];?>" style="width: 80px;height: 80px;border-radius:10%" id="blashE<?php echo $i?>" alt=""/> 
+                                <?php } ?> 
+                        </label>
+
+                            <input id="file-input<?php echo $i?>" type="file" style="display:none;" onchange="readURL(this,<?php echo $i?>);" accept="image/*" />
+                            <input type="hidden" name="owner_id" id="owner_id<?php echo $i?>" class="form-control" required="">
                     </div>
                     <div class="text-center">
                         <h2><?php echo $users[$i]['username'];?></h2>
@@ -86,7 +90,7 @@ if(!$user_id){
                     <img  src="<?php echo base_url();?>admin_assets/images/upload.png" style="width: 80px;height: 80px;border-radius:10%" id="blashE" alt=""/> 
                 </label>
 
-                <input id="file-input" type="file" style="display:none;" onchange="readURL(this,'edit');" accept="image/*" />
+                <input id="file-input" type="file" style="display:none;" onchange="readURL(this,-1);" accept="image/*" />
                 <input type="hidden" name="owner_id" id="owner_id" class="form-control" required="">
             </div>
             <div class="closeModal barIcon" data-close="newAdminModal"><i class="fa-regular fa-minus"></i></div>
@@ -107,7 +111,15 @@ if(!$user_id){
 
     <script>
         function readURL(input, type) {
-            var doc_file = $("#file-input").prop("files")[0];
+            var users = <?php echo json_encode($users);?>;
+            var doc_file 
+            if(type === -1){
+                doc_file = $("#file-input").prop("files")[0];
+            }else{
+                doc_file = $("#file-input"+type).prop("files")[0];
+
+            }
+            
             var form_data = new FormData();
             form_data.append("uploadedFile", doc_file)
             form_data.append("file_type", "owner")
@@ -122,16 +134,50 @@ if(!$user_id){
                 async: false,
                 success: function(data) {
                     var image_name = data['file_name'];
-                    var image_url = data['file_url'];
-                    $("#owner_id").val(image_name);
-                    $("#profile_pic").val(image_url);
-                    if(input.files && input.files[0]) {
-                        var reader = new FileReader();
-                        reader.onload = function(e) {
-                            $('#blashE').attr('src', e.target.result).width(85).height(85);
-                        };
-                        reader.readAsDataURL(input.files[0]);
+                    var image_url = data['file_url'];                   
+                    if(type === -1){
+                        if(input.files && input.files[0]) {
+                            $("#owner_id").val(image_name);
+                            $("#profile_pic").val(image_url);
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                $('#blashE').attr('src', e.target.result).width(85).height(85);
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }else{
+                        if(input.files && input.files[0]) {
+                            $("#owner_id"+type).val(image_name);
+                            $("#profile_pic"+type).val(image_url);
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                $('#blashE'+type).attr('src', e.target.result).width(85).height(85);
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                                           
+                            $.ajax({
+                                url: '<?php echo base_url();?>admin/admin/editAdmin',
+                                type : 'POST',
+                                dataType:"json",
+                                data: { 
+                                    id : users[type]['id'],
+                                    image: image_url,                                   
+                                    },
+                                
+                                success: function(data) {
+                                    var reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        $('#profile_pic' +type).attr('src', e.target.result).width(50).height(50);
+                                    };
+                                    reader.readAsDataURL(input.files[0]);
+
+                                }, error: function(data) {
+                                    console.log(data);
+                                }})
+
+                        }
                     }
+                
                 },
                 error: function(data) {
                     console.log(data);

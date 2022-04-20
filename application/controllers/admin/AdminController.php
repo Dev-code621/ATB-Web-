@@ -77,6 +77,24 @@ class AdminController extends MY_Controller
 
         redirect('/admin/admin');
     }
+    
+    public function editAdmin(){  
+      $id = $this->input->post('id');
+      $image = $this->input->post('image');
+      $setArray = array(
+        'profile_pic' =>  $image,
+        'updated_at' => time(),
+       );
+
+      $whereArray = array('id' =>  $id);
+      $this->Admin_model->updateAdminRecord($setArray, $whereArray);
+
+      $data['status']="0";
+      $data['id']= $id;
+      $data['image']= $image;
+      print json_encode( $data);
+      exit;
+    }
 
     public function deleteAdmin($userid) {
         $this->Admin_model->deleteAdmin(array('id' => $userid));

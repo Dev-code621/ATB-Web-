@@ -280,6 +280,7 @@
         Route::get('/create', 'AdminController@createAdmin') -> name('admin.admin.create');
         Route::get('/delete/{userid}', 'AdminController@deleteAdmin') -> name('admin.admin.delete');
         Route::post('/doUpload', 'AdminController@doUpload') -> name('admin.admin.doUpload');
+        Route::post('/editAdmin', 'AdminController@editAdmin') -> name('admin.admin.editAdmin');
 
     });
 
