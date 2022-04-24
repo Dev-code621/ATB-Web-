@@ -3010,6 +3010,7 @@ class ProfileController extends MY_Controller
 				array(
 					'user_id' => $verifyTokenResult['id'],
 					'business_id' => $this->input->post('business_id'),
+					'received_user' => $this->input->post('received_user'),
 					'rating' => $this->input->post('rating'),
 					'review' => $this->input->post('review'),
 					'created_at' => time()
@@ -3018,14 +3019,19 @@ class ProfileController extends MY_Controller
 
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 			
-			$businessId = $this->input->post('business_id');
-			$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
+			// commented on April 24, 2022
+			// business_id would be optional when users rate a normal user on their purchases
+			// $businessId = $this->input->post('business_id');
+			// $business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
 
 			$bookingId = $this->input->post('booking_id');
 
 			if (!empty($bookingId)) {
 				$bookings = $this->Booking_model->getBooking($bookingId);
 				$services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
+
+				$businessId = $this->input->post('business_id');
+				$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
 
 				$this->NotificationHistory_model->insertNewNotification(
 					array(
@@ -3044,21 +3050,30 @@ class ProfileController extends MY_Controller
 				);
 
 			} else {
-				$this->NotificationHistory_model->insertNewNotification(
-					array(
-						'user_id' => $business['user_id'],
-						'type' => 13,
-						'related_id' => $business['user_id'],
-						'read_status' => 0,
-						'send_status' => 0,
-						'visible' => 1,
-						'text' => " has left you a rating",
-						'name' => $users[0]['user_name'],
-						'profile_image' => $users[0]['pic_url'],
-						'updated_at' => time(),
-						'created_at' => time()
-					)
-				);
+				$businessId = $this->input->post('business_id');				
+
+				if (!empty($businessId)) {
+					$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
+					$this->NotificationHistory_model->insertNewNotification(
+						array(
+							'user_id' => $business['user_id'],
+							'type' => 13,
+							'related_id' => $business['user_id'],
+							'read_status' => 0,
+							'send_status' => 0,
+							'visible' => 1,
+							'text' => " has left you a rating",
+							'name' => $users[0]['user_name'],
+							'profile_image' => $users[0]['pic_url'],
+							'updated_at' => time(),
+							'created_at' => time()
+						)
+					);
+
+				} else {
+					// user has left a rating to a normal user
+					// please put a notification if it's required
+				}				
 			}
 
 			$review = $this->UserReview_model->getReviews(
