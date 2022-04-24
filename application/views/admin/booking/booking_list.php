@@ -68,7 +68,7 @@ if(!$user_id){
                         ?>
                         <p><strong class="mr-5"><?php echo $username; ?> </strong> booked at:</p>
                         <div class="business-flex">
-                            <p class="mr-10 color-blue"><strong><?php echo $allBookings[$i]['business'][0]["business_name"]; ?></strong></p>
+                            <p class="mr-10 color-blue"><strong><?php echo $allBookings[$i]['business'][0]["business_info"]["business_name"]; ?></strong></p>
                             <p>Service: <strong class="ml-5"><?php if(isset($allBookings[$i]["service"])){ echo $allBookings[$i]["service"][0]["title"]; } ?></strong></p>
                         </div>
                         <div class="business-flex">
