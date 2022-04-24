@@ -33,7 +33,10 @@ class Booking_model extends MY_Model {
         		$bookings[$i]['user'] = $this->User_model->getOnlyUser(array('id' => $bookings[$i]['user_id']));
         	}
         	if(!empty($bookings[$i]['business_user_id'])){
-        		$bookings[$i]['business'] = $this->UserBusiness_model->getBusinessInfo($bookings[$i]['business_user_id']);
+                // updated Apr 24, 2022
+                // open business profile (return the user including business profile)
+        		// $bookings[$i]['business'] = $this->UserBusiness_model->getBusinessInfo($bookings[$i]['business_user_id']);
+                $bookings[$i]['business'] = $this->User_model->getOnlyUser(array('id' => $bookings[$i]['business_user_id']));
         	}
         	if(!empty($bookings[$i]['service_id'])){
         		$bookings[$i]['service'] = $this->UserService_model->getServiceInfo($bookings[$i]['service_id']);
@@ -53,11 +56,14 @@ class Booking_model extends MY_Model {
             ->result_array();
             
          for($i = 0 ; $i < count($bookings) ; $i++) {
-                    if(!empty($bookings[$i]['user_id'])){
+            if(!empty($bookings[$i]['user_id'])){
         		$bookings[$i]['user'] = $this->User_model->getOnlyUser(array('id' => $bookings[$i]['user_id']));
         	}
         	if(!empty($bookings[$i]['business_user_id'])){
-        		$bookings[$i]['business'] = $this->UserBusiness_model->getBusinessInfo($bookings[$i]['business_user_id']);
+                // updated Apr 24, 2022
+                // open business profile (return the user including business profile)
+        		// $bookings[$i]['business'] = $this->UserBusiness_model->getBusinessInfo($bookings[$i]['business_user_id']);
+                $bookings[$i]['business'] = $this->User_model->getOnlyUser(array('id' => $bookings[$i]['business_user_id']));
         	}
         	if(!empty($bookings[$i]['service_id'])){
         		$bookings[$i]['service'] = $this->UserService_model->getServiceInfo($bookings[$i]['service_id']);
