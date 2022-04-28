@@ -32,11 +32,11 @@ if(!$user_id){
             <header>
                 <div class="user-info">
                     <div class="user-icon online">
-                        <img src="<?php echo $booking[0]["business"][0]['business_logo'];?>" alt="User icon">
+                        <img src="<?php echo $booking[0]["business"][0]["business_info"]['business_logo'];?>" alt="User icon">
                     </div>
                     <div class="user-info-content">
                         <h2 class="user-name"><?php echo $booking[0]["service"][0]['title'];?></h2>
-                        <a href="#" class="user-username"> @<?php echo $booking[0]["business"][0]['business_name'];?></a>
+                        <a href="#" class="user-username"> @<?php echo $booking[0]["business"][0]["business_info"]['business_name'];?></a>
                     </div>
                 </div>
                 <a href="<?php echo route('admin.business.detail', $booking[0]['business'][0]['id']);?>" class="nav-link-big"><i class="fa-solid fa-message-arrow-up-right"></i></a>

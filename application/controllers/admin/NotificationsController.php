@@ -394,7 +394,8 @@ class NotificationsController extends MY_Controller
 
         $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
 
-        redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
+        // redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
+        $this->index();
     }
 
     public function unblock_service() {
@@ -423,7 +424,7 @@ class NotificationsController extends MY_Controller
                 'read_status' => 0,
                 'send_status' => 0,
                 'visible' => 1,
-                'text' => "Sorry, the service submitted has been approved, Please check your email for next steps",
+                'text' => "Congratulations!, the service submitted has been approved, Please check your email for next steps",
                 'name' =>'',
                 'profile_image' => '',
                 'updated_at' => time(),
@@ -440,8 +441,8 @@ class NotificationsController extends MY_Controller
 
         $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
 
-        redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
-
+        // redirect('/admin/business/threedot?userid='.$post['user_id']."&type=3");
+        $this->index();
     }
 }
 

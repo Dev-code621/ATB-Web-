@@ -302,21 +302,21 @@ class SignUpController extends MY_Controller
         $post = $this->Post_model->getPostDetail($this->input->get('block_postid'), 0);
 
 
-        $this->NotificationHistory_model->insertNewNotification(
-            array(
-                'user_id' => $post['user_id'],
-                'type' => 31,
-                'related_id' => $this->input->get('block_postid'),
-                'read_status' => 0,
-                'send_status' => 0,
-                'visible' => 1,
-                'text' => "Sorry, the service submitted has been rejected, Please check your email for next steps",
-                'name' =>'',
-                'profile_image' => '',
-                'updated_at' => time(),
-                'created_at' => time()
-            )
-        );
+        // $this->NotificationHistory_model->insertNewNotification(
+        //     array(
+        //         'user_id' => $post['user_id'],
+        //         'type' => 31,
+        //         'related_id' => $this->input->get('block_postid'),
+        //         'read_status' => 0,
+        //         'send_status' => 0,
+        //         'visible' => 1,
+        //         'text' => "Sorry, the service submitted has been rejected, Please check your email for next steps",
+        //         'name' =>'',
+        //         'profile_image' => '',
+        //         'updated_at' => time(),
+        //         'created_at' => time()
+        //     )
+        // );
 
         // $this->User_model->updateUserRecord($setArray, $whereArray);
 
@@ -351,21 +351,21 @@ class SignUpController extends MY_Controller
         $post = $this->Post_model->getPostDetail($this->input->get('unblock_postid'), 0);
 
 
-        $this->NotificationHistory_model->insertNewNotification(
-            array(
-                'user_id' => $post['user_id'],
-                'type' => 32,
-                'related_id' => $this->input->get('unblock_postid'),
-                'read_status' => 0,
-                'send_status' => 0,
-                'visible' => 1,
-                'text' => " has approved your service",
-                'name' =>'',
-                'profile_image' => '',
-                'updated_at' => time(),
-                'created_at' => time()
-            )
-        );
+        // $this->NotificationHistory_model->insertNewNotification(
+        //     array(
+        //         'user_id' => $post['user_id'],
+        //         'type' => 32,
+        //         'related_id' => $this->input->get('unblock_postid'),
+        //         'read_status' => 0,
+        //         'send_status' => 0,
+        //         'visible' => 1,
+        //         'text' => " has approved your service",
+        //         'name' =>'',
+        //         'profile_image' => '',
+        //         'updated_at' => time(),
+        //         'created_at' => time()
+        //     )
+        // );
 
 
         redirect('/admin/feeds');
