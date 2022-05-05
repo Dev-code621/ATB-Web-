@@ -25,7 +25,8 @@ class UserService_model extends MY_Model
     public function getServiceInfoList($userId) {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('user_id' => $userId, 'approved'=>1))
-                    ->where('is_active !=', '99')
+                    ->where('is_active !=', '99') // deleted
+                    ->where('is_active !=', '98') // draft
                     ->get()
                     ->result_array();
        
@@ -36,11 +37,26 @@ class UserService_model extends MY_Model
         }            
         return $services;            
     }
+
+    public function getServiceDrafts($userId) {
+        $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
+                    ->where(array('user_id' => $userId, 'is_active'=>98))
+                    ->get()
+                    ->result_array();
+       
+        for($i = 0 ; $i < count($services) ; $i++) {
+                    $services[$i]["insurance"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['insurance_id']);
+                    $services[$i]["qualification"] = $this->UserServiceFiles_model->getServiceFile($services[$i]['qualification_id']);
+                    $services[$i]['post_imgs'] = $this->getPostImage(array('service_id' => $services[$i]['id']));
+        }            
+        return $services; 
+    }
 	
 	public function getServiceInfoAllList($userId) {
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('user_id' => $userId))
                     ->where('is_active !=', '99')
+                    ->where('is_active !=', '98') // draft
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {
@@ -55,6 +71,7 @@ class UserService_model extends MY_Model
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where(array('approved'=>0))
                     ->where('is_active !=', '99')
+                    ->where('is_active !=', '98') // draft
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {
@@ -112,6 +129,7 @@ class UserService_model extends MY_Model
         $services = $this->db->select('*') -> from(self::TABLE_SERVICE_INFO_LIST)
                     ->where($where)
                     ->where('is_active !=', '99')
+                    ->where('is_active !=', '98') // draft
                     ->get()
                     ->result_array();
         for($i = 0 ; $i < count($services) ; $i++) {

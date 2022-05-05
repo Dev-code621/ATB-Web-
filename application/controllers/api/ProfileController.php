@@ -1172,6 +1172,69 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	public function get_drafts() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		
+		$retVal = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			$returnItems = array();
+			$items = array();
+
+			$userId = $tokenVerifyResult['id'];
+			
+			$files = $this->UserService_model->getServiceDrafts($userId);
+			foreach ($files as $key => $value){
+				$tagids = $this->Tag_model->getServiceTags($value['id']);
+				$tags = array();
+				
+				foreach ($tagids as $tagid) {
+					$tags[] = $this->Tag_model->getTag($tagid['tag_id']);
+				}
+				
+				$files[$key]["tags"] = $tags;
+                $files[$key]["post_type"] = 3;
+			}
+			
+			$isBusiness = 0;
+			if ($this->input->post('is_business')) {
+				$isBusiness = $this->input->post('is_business');
+			}
+			$products = $this->Product_model->getUserDrafts($userId, $isBusiness);
+			
+			foreach ($products as $key => $value){
+				$tagids = $this->Tag_model->getProductTags($value['id']);
+				$tags = array();
+				
+				foreach ($tagids as $tagid) {
+					$tags[] = $this->Tag_model->getTag($tagid['tag_id']);
+				}
+				
+				$products[$key]["tags"] = $tags;
+                $products[$key]["post_type"] = 2;
+			}
+			
+			if ($isBusiness == 1) {
+				$items = array_merge($files, $products);
+
+			} else {
+				$items = $products;
+			}
+			
+			usort($items,function($first,$second){ return $first["created_at"] < $second["created_at"];});
+			
+			$returnItems["items"] = $items;
+
+			$retVal[self::EXTRA_FIELD_NAME] = $returnItems;
+			
+			$retVal[self::RESULT_FIELD_NAME] = true;
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+
+		echo json_encode($retVal);
+	}
+
 	public function get_services()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
@@ -1388,6 +1451,7 @@ class ProfileController extends MY_Controller
 					'multi_group' => $this->input->post("multi_group"),
 					'image' => $uploadFileName,
 					'stock_level' => $this->input->post("stock_level"),
+					'is_active' => $this->input->post('is_active') ? $this->input->post('is_active') : '1',
 					'created_at' => time(),                                  
 					'updated_at' => time()
 				)
@@ -1463,7 +1527,7 @@ class ProfileController extends MY_Controller
 					}
 				}
 				
-				if ($this->input->post("make_post") == 1){
+				if ($this->input->post("make_post") == 1) {
 					$multi_group = 0;
                     $insResult = 0;
 
@@ -1500,7 +1564,8 @@ class ProfileController extends MY_Controller
                                 'product_id' => $productId,
                                 'is_multi' => $this->input->post("is_multi"),
                                 'multi_pos' => $this->input->post("multi_pos"),
-                                'multi_group' => $multi_group,                                  
+                                'multi_group' => $multi_group,    
+								'is_active' => $this->input->post('is_active') ? $this->input->post('is_active') : '1',                              
                                 'updated_at' => time(),
                                 'created_at' => time()
                             )
@@ -1531,6 +1596,7 @@ class ProfileController extends MY_Controller
                                 'lat' => $this->input->post("lat"),
                                 'lng' => $this->input->post("lng"),
                                 'product_id' => $productId, 
+								'is_active' => $this->input->post('is_active') ? $this->input->post('is_active') : '1',
                                 'updated_at' => time(),
                                 'created_at' => time()
                             )
@@ -1701,29 +1767,37 @@ class ProfileController extends MY_Controller
             $product_id = $this->input->post("id");
             
 			$updateArray = array(
-					'poster_profile_type' => $this->input->post('poster_profile_type'),
-					'media_type' => $this->input->post('media_type'),
-					'title' => $this->input->post('title'),
-					'brand' => $this->input->post('brand'),
-					'price' => $this->input->post("price"),
-					'description' => $this->input->post("description"),
-					'category_title' => $this->input->post("category_title"),
-					'lat' => $this->input->post("lat"),
-					'lng' => $this->input->post("lng"),
-					'item_title' => $this->input->post("item_title"),
-					'size_title' => $this->input->post("size_title"),
-					'payment_options' => $this->input->post("payment_options"),
-					'location_id' => $this->input->post("location_id"),
-					'delivery_option' => $this->input->post("delivery_option"),
-                    'delivery_cost' => $this->input->post("delivery_cost"),
-					'post_brand' => $this->input->post("brand"),
-					'post_item' => $this->input->post("item_title"),
-					'post_condition' => $this->input->post("post_condition"),
-					'post_size' => $this->input->post("size_title"),
-					'post_location' => $this->input->post("location_id"),
-					'stock_level' => $this->input->post("stock_level"),
-					'updated_at' => time()
-				);
+				'poster_profile_type' => $this->input->post('poster_profile_type'),
+				'media_type' => $this->input->post('media_type'),
+				'title' => $this->input->post('title'),
+				'brand' => $this->input->post('brand'),
+				'price' => $this->input->post("price"),
+				'description' => $this->input->post("description"),
+				'category_title' => $this->input->post("category_title"),
+				'lat' => $this->input->post("lat"),
+				'lng' => $this->input->post("lng"),
+				'item_title' => $this->input->post("item_title"),
+				'size_title' => $this->input->post("size_title"),
+				'payment_options' => $this->input->post("payment_options"),
+				'location_id' => $this->input->post("location_id"),
+				'delivery_option' => $this->input->post("delivery_option"),
+				'delivery_cost' => $this->input->post("delivery_cost"),
+				'post_brand' => $this->input->post("brand"),
+				'post_item' => $this->input->post("item_title"),
+				'post_condition' => $this->input->post("post_condition"),
+				'post_size' => $this->input->post("size_title"),
+				'post_location' => $this->input->post("location_id"),
+				'stock_level' => $this->input->post("stock_level"),
+				'updated_at' => time()
+			);
+
+			$isUpdatingDraft = false;
+			if (!empty($this->input->post('is_draft')) && $this->input->post('is_draft') == "1") { 
+				$isUpdatingDraft = true;
+				// required to make it active when this is updating a draft
+				// otherwise keep 'is_active' as it was
+				$updateArray['is_active'] = '1';
+			}
 
 			$this->Product_model->updateProduct(
 				$updateArray,
@@ -1731,29 +1805,35 @@ class ProfileController extends MY_Controller
 			);
             
             $salesPosts = $this->Post_model->getPostInfo(array('product_id' => $product_id));
+
+			$updatePostArray = array(
+				'poster_profile_type' => $this->input->post('poster_profile_type'),
+				'media_type' => $this->input->post('media_type'),
+				'title' => $this->input->post('title'),
+				'description' => $this->input->post('description'),
+				'post_brand' => $this->input->post('brand'),
+				'price' => $this->input->post('price'),
+				'category_title' => $this->input->post('category_title'),
+				'post_condition' => $this->input->post('post_condition'),
+				'post_tags' => $this->input->post('post_tags'),
+				'post_item' => $this->input->post('item_title'),
+				'post_size' => $this->input->post('size_title'),
+				'payment_options' => $this->input->post('payment_options'),
+				'post_location' => $this->input->post('location_id'),
+				'delivery_option' => $this->input->post('delivery_option'),
+				'delivery_cost' => $this->input->post('delivery_cost'),
+				'lat' => $this->input->post("lat"),
+				'lng' => $this->input->post("lng"), 
+				'updated_at' => time()
+			);
+
+			if ($isUpdatingDraft) {
+				$updatePostArray['is_active'] = '1';
+			}
             
             for ($postIndex = 0; $postIndex < count($salesPosts); $postIndex ++) {
                 $this->Post_model->updatePostContent(
-                    array(
-                        'poster_profile_type' => $this->input->post('poster_profile_type'),
-                        'media_type' => $this->input->post('media_type'),
-                        'title' => $this->input->post('title'),
-                        'description' => $this->input->post('description'),
-                        'post_brand' => $this->input->post('brand'),
-                        'price' => $this->input->post('price'),
-                        'category_title' => $this->input->post('category_title'),
-                        'post_condition' => $this->input->post('post_condition'),
-                        'post_tags' => $this->input->post('post_tags'),
-                        'post_item' => $this->input->post('item_title'),
-                        'post_size' => $this->input->post('size_title'),
-                        'payment_options' => $this->input->post('payment_options'),
-                        'post_location' => $this->input->post('location_id'),
-                        'delivery_option' => $this->input->post('delivery_option'),
-                        'delivery_cost' => $this->input->post('delivery_cost'),
-                        'lat' => $this->input->post("lat"),
-                        'lng' => $this->input->post("lng"), 
-                        'updated_at' => time()
-                    ),
+                    $updatePostArray,
                     array('id' => $salesPosts[$postIndex]['id'])
                 );
             }
@@ -2215,7 +2295,6 @@ class ProfileController extends MY_Controller
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
-
 			$serviceId = $this->UserService_model->insertNewServiceInfo(
 				array(
 					'poster_profile_type' => $this->input->post('poster_profile_type'),
@@ -2245,6 +2324,7 @@ class ProfileController extends MY_Controller
 					'post_condition' => $this->input->post("post_condition"),
 					'post_size' => $this->input->post("size_title"),
 					'post_location' => $this->input->post("location_id"),
+					'is_active' => $this->input->post('is_active') ? $this->input->post('is_active') : '3',
 					'created_at' => time(),
 					'updated_at' => time()
 				)
@@ -2299,7 +2379,7 @@ class ProfileController extends MY_Controller
 							'lat' => $this->input->post("lat"),
 							'lng' => $this->input->post("lng"),
 							'service_id' => $serviceId, 
-							'is_active' => '3',      						
+							'is_active' => $this->input->post('is_active') ? $this->input->post('is_active') : '3',  						
 							'insurance_id' => $this->input->post('insurance_id'),
 							'qualification_id' => $this->input->post('qualification_id'),
 							'cancellations' => $this->input->post("cancellations"),
@@ -2481,35 +2561,43 @@ class ProfileController extends MY_Controller
             $service_id = $this->input->post('id');
             
 			$updateArray = array(
-                    'user_id' => $tokenVerifyResult['id'],
-					'poster_profile_type' => $this->input->post('poster_profile_type'),
-					'media_type' => $this->input->post('media_type'),
-					'title' => $this->input->post('title'),
-					'brand' => $this->input->post('brand'),
-                    'description' => $this->input->post("description"),
-                    'price' => $this->input->post("price"),
-					'duration' => $this->input->post('duration'),
-					'is_deposit_required' => $this->input->post('is_deposit_required'),					
-					'deposit_amount' => $this->input->post('deposit_amount'),
-					'insurance_id' => $this->input->post('insurance_id'),
-					'qualification_id' => $this->input->post('qualification_id'),
-					'cancellations' => $this->input->post("cancellations"),					    					
-					'category_title' => $this->input->post("category_title"),
-                    'location_id' => $this->input->post("location_id"),
-					'lat' => $this->input->post("lat"),
-					'lng' => $this->input->post("lng"),
-					'item_title' => $this->input->post("item_title"),
-					'size_title' => $this->input->post("size_title"),
-					'payment_options' => $this->input->post("payment_options"),					
-					'delivery_option' => $this->input->post("delivery_option"),
-                    'delivery_cost' => $this->input->post("delivery_cost"),
-					'post_brand' => $this->input->post("brand"),
-					'post_item' => $this->input->post("item_title"),
-					'post_condition' => $this->input->post("post_condition"),
-					'post_size' => $this->input->post("size_title"),
-					'post_location' => $this->input->post("location_id"),
-					'updated_at' => time()
-				);
+				'user_id' => $tokenVerifyResult['id'],
+				'poster_profile_type' => $this->input->post('poster_profile_type'),
+				'media_type' => $this->input->post('media_type'),
+				'title' => $this->input->post('title'),
+				'brand' => $this->input->post('brand'),
+				'description' => $this->input->post("description"),
+				'price' => $this->input->post("price"),
+				'duration' => $this->input->post('duration'),
+				'is_deposit_required' => $this->input->post('is_deposit_required'),					
+				'deposit_amount' => $this->input->post('deposit_amount'),
+				'insurance_id' => $this->input->post('insurance_id'),
+				'qualification_id' => $this->input->post('qualification_id'),
+				'cancellations' => $this->input->post("cancellations"),					    					
+				'category_title' => $this->input->post("category_title"),
+				'location_id' => $this->input->post("location_id"),
+				'lat' => $this->input->post("lat"),
+				'lng' => $this->input->post("lng"),
+				'item_title' => $this->input->post("item_title"),
+				'size_title' => $this->input->post("size_title"),
+				'payment_options' => $this->input->post("payment_options"),					
+				'delivery_option' => $this->input->post("delivery_option"),
+				'delivery_cost' => $this->input->post("delivery_cost"),
+				'post_brand' => $this->input->post("brand"),
+				'post_item' => $this->input->post("item_title"),
+				'post_condition' => $this->input->post("post_condition"),
+				'post_size' => $this->input->post("size_title"),
+				'post_location' => $this->input->post("location_id"),
+				'updated_at' => time()
+			);
+			
+			$isUpdatingDraft = false;
+			if (!empty($this->input->post('is_draft')) && $this->input->post('is_draft') == "1") {
+				$isUpdatingDraft = true;
+				// required to make it for pending approval when this is updating a draft
+				// otherwise keep 'is_active' as it was
+				$updateArray['is_active'] = '3';
+			}
 
 			$this->UserService_model->updateServiceRecord(
 				$updateArray,
@@ -2517,37 +2605,45 @@ class ProfileController extends MY_Controller
 			);
             
             $servicePosts = $this->Post_model->getPostInfo(array('service_id' => $service_id));
+
+			$updatePostArray = array(
+				'user_id' => $tokenVerifyResult['id'],
+				'poster_profile_type' => $this->input->post('poster_profile_type'),
+				'media_type' => $this->input->post('media_type'),
+				'title' => $this->input->post('title'),
+				'description' => $this->input->post('description'),
+				'price' => $this->input->post('price'),
+				'duration' => $this->input->post('duration'),
+				'post_brand' => $this->input->post('brand'),  
+				'location_id' => $this->input->post("location_id"),                      
+				'category_title' => $this->input->post('category_title'),
+				'post_condition' => $this->input->post('post_condition'),
+				'post_tags' => $this->input->post('post_tags'),
+				'post_item' => $this->input->post('item_title'),
+				'post_size' => $this->input->post('size_title'),
+				'payment_options' => $this->input->post('payment_options'),
+				'post_location' => $this->input->post('location_id'),
+				'delivery_option' => $this->input->post('delivery_option'),
+				'delivery_cost' => $this->input->post('delivery_cost'),
+				'deposit' => $this->input->post("deposit_amount"),
+				"is_deposit_required" => $this->input->post("is_deposit_required"),
+				'lat' => $this->input->post("lat"),
+				'lng' => $this->input->post("lng"),
+				'insurance_id' => $this->input->post('insurance_id'),
+				'qualification_id' => $this->input->post('qualification_id'),
+				'cancellations' => $this->input->post('cancellations'), 
+				'updated_at' => time()
+			);
+
+			if ($isUpdatingDraft) {
+				// required to put it for pending approval when this is updating a draft
+				// otherwise keep 'is_active' as it was
+				$updatePostArray['is_active'] = '3';
+			}
             
-            for ($postIndex = 0; $postIndex < count($servicePosts); $postIndex ++) {
+            for ($postIndex = 0; $postIndex < count($servicePosts); $postIndex ++) {				
                 $this->Post_model->updatePostContent(
-                    array(
-                        'user_id' => $tokenVerifyResult['id'],
-                        'poster_profile_type' => $this->input->post('poster_profile_type'),
-                        'media_type' => $this->input->post('media_type'),
-                        'title' => $this->input->post('title'),
-                        'description' => $this->input->post('description'),
-                        'price' => $this->input->post('price'),
-						'duration' => $this->input->post('duration'),
-                        'post_brand' => $this->input->post('brand'),  
-                        'location_id' => $this->input->post("location_id"),                      
-                        'category_title' => $this->input->post('category_title'),
-                        'post_condition' => $this->input->post('post_condition'),
-                        'post_tags' => $this->input->post('post_tags'),
-                        'post_item' => $this->input->post('item_title'),
-                        'post_size' => $this->input->post('size_title'),
-                        'payment_options' => $this->input->post('payment_options'),
-                        'post_location' => $this->input->post('location_id'),
-                        'delivery_option' => $this->input->post('delivery_option'),
-                        'delivery_cost' => $this->input->post('delivery_cost'),
-                        'deposit' => $this->input->post("deposit_amount"),
-                        "is_deposit_required" => $this->input->post("is_deposit_required"),
-                        'lat' => $this->input->post("lat"),
-                        'lng' => $this->input->post("lng"),
-                        'insurance_id' => $this->input->post('insurance_id'),
-                        'qualification_id' => $this->input->post('qualification_id'),
-                        'cancellations' => $this->input->post('cancellations'), 
-                        'updated_at' => time()
-                    ),
+                    $updatePostArray,
                     array('id' => $servicePosts[$postIndex]['id'])
                 );
             }
@@ -3010,6 +3106,7 @@ class ProfileController extends MY_Controller
 				array(
 					'user_id' => $verifyTokenResult['id'],
 					'business_id' => $this->input->post('business_id'),
+					'received_user' => $this->input->post('received_user'),
 					'rating' => $this->input->post('rating'),
 					'review' => $this->input->post('review'),
 					'created_at' => time()
@@ -3018,14 +3115,19 @@ class ProfileController extends MY_Controller
 
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 			
-			$businessId = $this->input->post('business_id');
-			$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
+			// commented on April 24, 2022
+			// business_id would be optional when users rate a normal user on their purchases
+			// $businessId = $this->input->post('business_id');
+			// $business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
 
 			$bookingId = $this->input->post('booking_id');
 
 			if (!empty($bookingId)) {
 				$bookings = $this->Booking_model->getBooking($bookingId);
 				$services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
+
+				$businessId = $this->input->post('business_id');
+				$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
 
 				$this->NotificationHistory_model->insertNewNotification(
 					array(
@@ -3044,21 +3146,30 @@ class ProfileController extends MY_Controller
 				);
 
 			} else {
-				$this->NotificationHistory_model->insertNewNotification(
-					array(
-						'user_id' => $business['user_id'],
-						'type' => 13,
-						'related_id' => $business['user_id'],
-						'read_status' => 0,
-						'send_status' => 0,
-						'visible' => 1,
-						'text' => " has left you a rating",
-						'name' => $users[0]['user_name'],
-						'profile_image' => $users[0]['pic_url'],
-						'updated_at' => time(),
-						'created_at' => time()
-					)
-				);
+				$businessId = $this->input->post('business_id');				
+
+				if (!empty($businessId)) {
+					$business = $this->UserBusiness_model->getBusinessInfoById($businessId)[0];
+					$this->NotificationHistory_model->insertNewNotification(
+						array(
+							'user_id' => $business['user_id'],
+							'type' => 13,
+							'related_id' => $business['user_id'],
+							'read_status' => 0,
+							'send_status' => 0,
+							'visible' => 1,
+							'text' => " has left you a rating",
+							'name' => $users[0]['user_name'],
+							'profile_image' => $users[0]['pic_url'],
+							'updated_at' => time(),
+							'created_at' => time()
+						)
+					);
+
+				} else {
+					// user has left a rating to a normal user
+					// please put a notification if it's required
+				}				
 			}
 
 			$review = $this->UserReview_model->getReviews(

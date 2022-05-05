@@ -204,6 +204,9 @@
 
         Route::post('/can_rate_business', 'ProfileController@canRateBusiness')->name('api.profile.can_rate_business');
         Route::post('/can_message_seller', 'ProfileController@canMessageSeller')->name('api.profile.can_message_seller');  
+
+        // 4th May, 2022
+        Route::post('/get_drafts', 'ProfileController@get_drafts')->name('api.profile.get_drafts');
     });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {
