@@ -34,7 +34,26 @@ class Product_model extends MY_Model
         $products =  $this->db->select('*')
             -> from(self::TABLE_PRODUCT)
             ->where(array('user_id' => $id, 'poster_profile_type'=>$is_business))
-            ->where('is_active !=', '99')
+            ->where('is_active !=', '99') // deleted
+            ->where('is_active !=', '98') // draft
+            ->get()
+            ->result_array();
+            
+            for($i = 0 ; $i < count($products) ; $i++) {
+                    $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
+                    $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+        }    
+        
+        return $products;
+    }
+
+    public function getUserDrafts($id, $is_business) {
+        $products =  $this->db->select('*')
+            -> from(self::TABLE_PRODUCT)
+            ->where(array(
+                'user_id' => $id, 
+                'poster_profile_type'=>$is_business, 
+                'is_active' => 98))
             ->get()
             ->result_array();
             
