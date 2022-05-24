@@ -394,8 +394,10 @@ class SignUpController extends MY_Controller
             $this->load->view('admin/signups/view_post_poll', $dataToBeDisplayed);
         } else if($dataToBeDisplayed['post']['post_type'] == 1){
             $this->load->view('admin/signups/view_post_advice', $dataToBeDisplayed);
-        } else {
+        } else if($dataToBeDisplayed['post']['post_type'] == 2){
             $this->load->view('admin/signups/view_post_sale', $dataToBeDisplayed);
+        }else if($dataToBeDisplayed['post']['post_type'] == 3){
+            $this->load->view('admin/signups/view_post_service', $dataToBeDisplayed);
         }
 
     }

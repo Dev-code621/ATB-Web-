@@ -4,11 +4,6 @@ $user_id= $this->session->userdata('user_id');
 if(!$user_id){
     redirect(route('admin.auth.login'));
 }
-$totalVotCount = 0;
-for($i = 0 ; $i < count($post['poll_options']); $i++)  {
-    $totalVotCount += count($post['poll_options'][$i]['votes']);
-}
-if($totalVotCount == 0 ) $totalVotCount = 1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +22,7 @@ if($totalVotCount == 0 ) $totalVotCount = 1;
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="<?php echo base_url();?>admin_assets/css/glide.core.min.css" />
-
+   
 
 </head>
 <body>
@@ -184,19 +179,65 @@ if($totalVotCount == 0 ) $totalVotCount = 1;
                                 <h3 class="business-subtitle"><i class="fa-regular fa-circle-user"></i>Posted by:</h3>
                                 <p><?php echo $post['user'][0]['first_name'];?> <?php echo $post['user'][0]['last_name'];?> <span> @<?php echo $post['user'][0]['user_name'];?></span></p>
                             </div>
-                            
                             <div class="business-info-content">
-                                <h3 class="business-subtitle"><i class="fa-solid fa-align-left"></i><?php echo $post['title']?></h3>
-                                <ul class="list-group list-unstyled poll">
-                                
-                                <?php for($i = 0 ; $i < count($post['poll_options']); $i++):?>
-                                    <li class="list-group-item">
-                                        <div class="bar counter" style="width: <?php echo round(count($post['poll_options'][$i]['votes'])/$totalVotCount * 100);?>%"></div>
-                                        <span class="option"><?php echo $post['poll_options'][$i]['poll_value'];?></span>
-                                        <span class="proegress"><?php echo round(count($post['poll_options'][$i]['votes'])/$totalVotCount * 100);?>%</span>
-                                    </li>    
-                                    <?php endfor;?>                                      
-                                </ul>
+                                <h3 class="business-subtitle"><i class="fa-solid fa-align-left"></i>Post Description</h3>
+                                <p ><?php echo $post['description'];?> </p>
+
+                                <div class="post-description"> 
+                                 
+                                    
+                                    <div class="content">
+                                        <span>Price,starting from</span>
+                                        <strong>£<?php echo $post["price"];?></strong>
+                                    </div>
+                                    <div class="content">
+                                        <span>Needs a depost of</span>
+                                        <strong>£<?php echo $post["deposit"];?></strong>
+                                    </div>
+                                    <div class="content">
+                                        <span>Cancellations Within</span>
+                                        <strong>  <?php echo $post["cancellations"];?> days    
+                                       </strong>
+                                    </div>
+                                    <div class="content">
+                                        <span>Duration of Service</span>
+                                        <strong>  <?php if ( $post["duration"] !=99) { ?><?php echo $post["duration"];?> hrs                                 
+                                                 <?php } else {?>
+                                                    All Day
+                                                <?php } ?>
+                                       </strong>
+                                    </div>
+                                    <?php if (!empty($post["post_location"])) { ?>
+                                        <div class="content">
+                                            <span>Location</span>
+                                            <strong><?php echo $post["post_location"];?></strong>
+                                        </div>
+                                    <?php } ?>
+                                    <div class="content">
+                                        <span>Insurance</span>
+                                        <strong><?php if (  !empty($post["insurance"])) { ?>
+                                                <a href=" <?php if (!empty($post["insurance"][0]["file"])) { ?> <?php echo $post["insurance"][0]["file"] ?> <?php  }?>" >
+                                                        Yes
+                                                       
+                                                </a>                               
+                                                 <?php } else {?>
+                                                    No
+                                                <?php } ?></strong>
+                                    </div>
+
+                                    <div class="content">
+                                        <span>Qualifications</span>
+                                        <strong><?php if ( !empty($post["qualification"])) { ?>
+                                            <a href=" <?php if (!empty($post["qualification"][0]["file"])) { ?> <?php echo $post["qualification"][0]["file"] ?> <?php  }?>" >
+                                                        Yes
+                                                       
+                                                </a>                              
+                                                 <?php } else {?>
+                                                    No
+                                                <?php } ?></strong>
+                                    </div>
+                                  
+                                </div>
                             </div>
                             <div class="business-info-content">
                                 <h3 class="business-subtitle"><i class="fa-regular fa-square-plus"></i>Posted:</h3>
@@ -239,7 +280,19 @@ if($totalVotCount == 0 ) $totalVotCount = 1;
                                 <h3 class="business-subtitle"><i class="fa-regular fa-border-all"></i>Category</h3>
                                 <p> <?php echo $post["category_title"];?></p>
                             </div>
-                      
+                            <!-- <div class="business-info-content">
+                                <h3 class="business-subtitle"><i class="fa-solid fa-heart"></i>Social Media</h3>
+                                <a href="#" class="social-link"><i class="fa-brands fa-twitter"></i> @me_store</a>
+                                <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i> …/me_store</a>
+                                <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i> @me_store</a>
+                            </div>
+                            <div class="business-info-content">
+                                <h3 class="business-subtitle"><i class="fa-regular fa-magnifying-glass"></i>Tags</h3>
+                                <div class="tags">                                   
+                                    <a href="#">lashes</a>, 
+                                    <a href="#">russianlashes</a>
+                                </div>
+                            </div> -->
                         </div>
                         
                     </div>

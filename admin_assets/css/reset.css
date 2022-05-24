@@ -163,6 +163,12 @@ button:-moz-focusring,
   background: linear-gradient(to right, #A6BFDE, #C5CFDD);
   color: #fff;
 }
+
+.btn.btn-danger {
+  background: #F06D6D;
+  color:white;
+}
+
 .btn.btn-outline-danger {
   color: #F06D6D;
   border-color: #F06D6D;
