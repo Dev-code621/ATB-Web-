@@ -248,9 +248,9 @@ class BusinessController extends MY_Controller {
         //$user =  $this->User_model->getUserProfileDTO($business[0]['user_id']);
         $user = $this->User_model->getOnlyUser(array('id' => $business[0]['user_id']));
 
-        $subject = 'Business Accepted for ATB';
-        $content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$user[0]['first_name'].' your business has been approved on ATB</span></p>
-<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('approveReason').'</span></p>';
+        $subject = 'ATB - Approved Business';
+        $content = '<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;"> Hi '.$business[0]['business_name'].',<br>You are now an ATB approved business! Thank you for joining our growing community.<br>Additional approval is required for each service you provide. If you haven\'t already started uploading your services, please do so ASAP.</span></p>
+                    <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">'.$this->input->get('approveReason').'</span></p>';
 
         $this->User_model->sendUserEmail($user[0]['user_email'], $subject, $content);
 

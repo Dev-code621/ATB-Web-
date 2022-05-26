@@ -3116,7 +3116,7 @@ class ProfileController extends MY_Controller
                       ]);
                 }*/
 
-																				$retVal[self::RESULT_FIELD_NAME] = true;
+				$retVal[self::RESULT_FIELD_NAME] = true;
 				$retVal[self::MESSAGE_FIELD_NAME] = "Successfully Upgraded";
 				$business = $this->UserBusiness_model->getBusinessInfoById($businessId);
 				$services = $this->UserService_model->getServiceInfoList($tokenVerifyResult['id']);
