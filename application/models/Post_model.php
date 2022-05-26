@@ -286,13 +286,13 @@ class Post_model extends MY_Model
                 $commentors[$i]['replies'][$x]['hidden'] = $hidden;
             }
             
-            $commentor_users = $this->User_model->getOnlyUser(array('id' => $commentors[$i]['commenter_user_id']));
-            if(count($commentors) > 0) {
-                $commentors[$i]['user_name'] = $commentor_users[0]['user_name'];
-            }
-            else {
-                $commentors[$i]['user_name'] = 'Unknown User';
-            }
+            // $commentor_users = $this->User_model->getOnlyUser(array('id' => $commentors[$i]['commenter_user_id']));
+            // if(count($commentors) > 0) {
+            //     $commentors[$i]['user_name'] = $commentor_users[0]['user_name'];
+            // }
+            // else {
+            //     $commentors[$i]['user_name'] = 'Unknown User';
+            // }
         } 
         
         $posts[0]['comments'] = $commentors;
