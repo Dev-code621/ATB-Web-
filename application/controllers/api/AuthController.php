@@ -122,7 +122,7 @@ class AuthController extends MY_Controller
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 			$user = $users[0];
 			
-			$subject = 'Welcome to ATB';
+			$subject = 'ATB - Welcome!';
 
 			$content ='
 			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -144,12 +144,11 @@ class AuthController extends MY_Controller
             <meta name="format-detection" content="telephone=no">
             <meta name="x-apple-disable-message-reformatting">
              <!--[if !mso]><!-->
-              <link href="https://test.myatb.co.uk/landing/WelcometoATB_files/css" rel="stylesheet">
+              <link href="'.base_url().'/landing/WelcometoATB_files/css" rel="stylesheet">
             <!--<![endif]-->
-            <title>Welcome to ATB</title>
+            <title>ATB - Welcome!</title> 
             
-            <style type="text/css"> 
-            
+            <style type="text/css">
               body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#F8F8F8; -webkit-text-size-adjust:none }
               p { padding:0 !important; margin:0 !important } 
               table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
@@ -169,11 +168,10 @@ class AuthController extends MY_Controller
               }
             </style>
             
-            
             </head>
             
             <body style="padding:0; margin:0">
-            <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it ll show on the clients email listing. If not, it ll take the first text of the email.</span>
+            <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;"></span>
             
             <table border="0" bgcolor="#F8F8F8" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
                 <tbody><tr>
@@ -229,10 +227,12 @@ class AuthController extends MY_Controller
                                           <td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
                                             <table border="0" cellspacing="0" cellpadding="0">
                                               <tbody><tr>
-                                                <td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; padding-bottom:50px;">Welcome to ATB</td>
+                                                <td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; padding-bottom:50px;">Welcome to ATB - we hope you enjoy using the app</td>
                                               </tr>
                                               <tr>
-                                                <td style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:28px; text-align:center; padding-bottom:20px;"><b>'.$user['first_name'].'!</b>, you have been successfully registered in our ATB social network!</td>
+                                                <td style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:28px; text-align:center; padding-bottom:20px;">
+                                                  Are you a small business? Click your profile picture located at the top right of the feed and look out for the briefcase symbol insert symbol to register as an ATB approved business!
+                                                </td>
                                               </tr>
                                             </tbody></table>
                                           </td>
@@ -309,12 +309,9 @@ class AuthController extends MY_Controller
                     </td>
                 </tr>
             </tbody></table>
-            
-            
-            
-            </body></html>';				
-			
-			
+          </body>
+        </html>';
+
 			$this->sendEmail(
 				$user['user_email'],
 				$subject,
