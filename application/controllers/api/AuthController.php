@@ -124,195 +124,162 @@ class AuthController extends MY_Controller
 			
 			$subject = 'Welcome to ATB';
 
-			$content ='
-			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-            <!-- saved from url=(0049)http://sg-lab.co/dev/atb/email/welcome/index.html -->
-            <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-              <!--[if gte mso 9]>
-              <xml>
-                <o:OfficeDocumentSettings>
-                <o:AllowPNG/>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-                </o:OfficeDocumentSettings>
-              </xml>
-              <![endif]-->
-            
-            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-            <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-            <meta name="format-detection" content="date=no">
-            <meta name="format-detection" content="address=no">
-            <meta name="format-detection" content="telephone=no">
-            <meta name="x-apple-disable-message-reformatting">
-             <!--[if !mso]><!-->
-              <link href="https://test.myatb.co.uk/landing/WelcometoATB_files/css" rel="stylesheet">
-            <!--<![endif]-->
-            <title>Welcome to ATB</title>
-            
-            <style type="text/css"> 
-            
-              body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#F8F8F8; -webkit-text-size-adjust:none }
-              p { padding:0 !important; margin:0 !important } 
-              table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
-              .container {width: 100%; max-width: 650px;}
-              .ExternalClass { width: 100%;}
-              .ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%; }
-            
-              @media screen and (max-width: 650px) {
-                .wrapper {padding: 0 !important;}
-                .container { width: 100% !important; min-width: 100% !important; }
-                .border {display: none !important;}
-                .content {padding: 0 20px 50px !important;}
-                .box1 {padding: 55px 40px 50px !important;}
-                .social-btn {height: 35px; width: auto;}
-                .bottomNav a {font-size: 12px !important; line-height: 16px !important;}
-                .spacer {height: 61px !important;}
-              }
-            </style>
-            
-            
-            </head>
-            
-            <body style="padding:0; margin:0">
-            <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it ll show on the clients email listing. If not, it ll take the first text of the email.</span>
-            
-            <table border="0" bgcolor="#F8F8F8" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
-                <tbody><tr>
-                    <td align="center" valign="top" style="padding: 80px 0;" class="wrapper">
-                  <!--[if (gte mso 9)|(IE)]>
-                  <table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
+      $content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+      <head>
+        <!--[if gte mso 9]>
+        <xml>
+          <o:OfficeDocumentSettings>
+          <o:AllowPNG/>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+        <![endif]-->
+      <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+      <meta name="vi	ewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+      <meta name="format-detection" content="date=no" />
+      <meta name="format-detection" content="address=no" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta name="x-apple-disable-message-reformatting" />
+       <!--[if !mso]><!-->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet" />
+      <!--<![endif]-->
+      <title>Welcome to ATB</title>
+      
+      <style type="text/css"> 
+      
+        body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#F8F8F8; -webkit-text-size-adjust:none }
+        p { padding:0 !important; margin:0 !important } 
+        table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
+        .container {width: 100%; max-width: 650px;}
+        .ExternalClass { width: 100%;}
+        .ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%; }
+      
+        @media screen and (max-width: 650px) {
+          .wrapper {padding: 0 !important;}
+          .container { width: 100% !important; min-width: 100% !important; }
+          .border {display: none !important;}
+          .content {padding: 0 20px 50px !important;}
+          .box1 {padding: 55px 40px 50px !important;}
+          .social-btn {height: 35px; width: auto;}
+          .bottomNav a {font-size: 12px !important; line-height: 16px !important;}
+          .spacer {height: 61px !important;}
+        }
+      </style>
+      
+      
+      </head>
+      
+      <body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
+      <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it will show on the clients email listing. If not, it will take the first text of the email.</span>
+      
+      <table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
+          <tr>
+              <td align="center" valign="top" class="wrapper">   
+                  <table border="0" cellspacing="0" cellpadding="0" class="container">
+              <tr>
+                <td>
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                    <td>
-                  <![endif]-->    
-                        <table border="0" cellspacing="0" cellpadding="0" class="container">
-                    <tbody><tr>
-                      <td>
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                          <tbody><tr>
-                            <td style="background-image:url(http://sg-lab.co/dev/atb/email/welcome/images/background.jpg); padding: 0 50px 50px" bgcolor="#ABC1DE" valign="top" align="center" class="content">
-                              <!--[if gte mso 9]>
-                              <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
-                                <v:fill type="frame" src="http://sg-lab.co/dev/atb/email/welcome/images/background.jpg" color="#ABC1DE" />
-                                <v:textbox inset="0,0,0,0">
-                              <![endif]-->
-            
+                      <td style="background-color: #A6BFDE;" valign="top" align="center" class="content">					
+      
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td align="center" style="padding: 53px 20px 40px">
+                                <a href="#" target="_blank"><img src="https://test.myatb.co.uk/landing/assets/img/logo.png" width="153" height="47" border="0" alt="" /></a>
+                              </td>
+                            </tr>
+                          </table>
+      
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td valign="bottom" >
                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                  <tbody><tr>
-                                    <td align="center" style="padding: 53px 20px 40px">
-                                      <a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" target="_blank"><img src="https://test.myatb.co.uk/landing/WelcometoATB_files/logo.png" width="153" height="47" border="0" alt=""></a>
+                                  <tr>
+                                    <td height="98">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+                                        <tr><td  height="38" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">&nbsp;</td></tr>
+                                        <tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
+                                      </table>
+                                    </td>
+                                    <td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="https://test.myatb.co.uk/landing/assets/img/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
+                                    <td height="98">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0"  style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
+                                        <tr><td  height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
+                                        <tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;border-radius: 0 5px 0 0;">&nbsp;</td></tr>
+                                      </table>
                                     </td>
                                   </tr>
-                                </tbody></table>
-            
+                                </table>
                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                  <tbody><tr>
-                                    <td valign="bottom">
-                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                        <tbody><tr>
-                                          <td height="98">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tbody><tr><td height="38" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">&nbsp;</td></tr>
-                                              <tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
-                                            </tbody></table>
-                                          </td>
-                                          <td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="https://test.myatb.co.uk/landing/WelcometoATB_files/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;"></td>
-                                          <td height="98">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
-                                              <tbody><tr><td height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
-                                              <tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;border-radius: 0 5px 0 0;">&nbsp;</td></tr>
-                                            </tbody></table>
-                                          </td>
-                                        </tr>
-                                      </tbody></table>
-            
-                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                        <tbody><tr>
-                                          <td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
-                                            <table border="0" cellspacing="0" cellpadding="0">
-                                              <tbody><tr>
-                                                <td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; padding-bottom:50px;">Welcome to ATB</td>
-                                              </tr>
-                                              <tr>
-                                                <td style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:28px; text-align:center; padding-bottom:20px;"><b>'.$user['first_name'].'!</b>, you have been successfully registered in our ATB social network!</td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
-                                        </tr>
-                                      </tbody></table>
-            
-                                      <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
-                                        <tbody><tr>
-                                          <td bgcolor="#F8F8F8">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tbody><tr>
-                                                <td bgcolor="#ffffff" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F8F8F8"><tbody><tr><td bgcolor="#F8F8F8" height="25" style="font-size:0pt; line-height:0pt;">&nbsp;</td></tr></tbody></table></td>
-                                                <td width="210" height="50" align="center" style="background:#ABC1DE; color:#F5F5F5;border-radius:7px;">
-                                                  <a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" target="_blank" style="color:#ffffff; text-decoration:none; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; width: 210px; height: 50px;line-height:50px; display: block; text-align: center;"><img src="https://test.myatb.co.uk/landing/WelcometoATB_files/download.png" width="20" height="20" alt=""> <span style="color:#ffffff; text-decoration:none; padding-left: 5px">Download the app</span></a>
-                                                </td>
-                                                <td bgcolor="#ffffff" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F8F8F8"><tbody><tr><td bgcolor="#F8F8F8" height="25" style="font-size:0pt; line-height:0pt;">&nbsp;</td></tr></tbody></table></td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
-                                        </tr>
-                                      </tbody></table>
-            
-                                      <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="border-radius: 0 0 5px 5px ">
-                                        <tbody><tr>
-                                          <td width="100%" style="padding: 40px 0;">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tbody><tr>
-                                                <td align="right" style="padding: 0 10px;"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#"><img class="social-btn" src="https://test.myatb.co.uk/landing/WelcometoATB_files/google-play.png" width="148" height="44" border="0" alt=""></a></td>
-                                                <td align="left" style="padding: 0 10px;"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#"><img class="social-btn" src="https://test.myatb.co.uk/landing/WelcometoATB_files/apple-store.png" width="132" height="44" border="0" alt=""></a></td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
+                                  <tr>
+                                    <td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
+                                      <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                          <td><h1 style="color:#787F82; font-family:Roboto, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">Welcome to ATB</h1><br><h2 style="margin: 0; color:#787F82; font-family:Roboto, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;">We hope you enjoy using the app.</h2><br></td>
                                         </tr>
                                         <tr>
-                                          <td width="100%" style="padding: 0px 20px;">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bottomNav">
-                                              <tbody><tr>
-                                                <td align="center"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
-                                                <td align="center"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
-                                                <td align="center"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
+                                          <td style="font-family:Roboto, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">Are you a small business? Click your profile picture located at the top right of the feed and look out for the <img src="https://test.myatb.co.uk/landing/assets/img/briefcase.png" alt="briefcase" width="20px" style="vertical-align: middle; width: 15px;"> symbol briefcase to register as an ATB approved business!</td>
                                         </tr>
-                                        <tr>
-                                          <td width="100%" style="padding: 20px 20px 45px;">
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tbody><tr>
-                                                <td align="center"><a href="http://sg-lab.co/dev/atb/email/welcome/index.html#" style="color:#AEC3DE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:28px; text-align:center; text-decoration: none;">ATB All rights reserved</a> </td>
-                                              </tr>
-                                            </tbody></table>
-                                          </td>
-                                        </tr>
-                                      </tbody></table>
+                                      </table>
                                     </td>
                                   </tr>
-                                </tbody></table>
-            
-                              <!--[if gte mso 9]>
-                                </v:textbox>
-                                </v:rect>
-                              <![endif]-->
-                            </td>
-                          </tr>
-                        </tbody></table>
+                                </table>
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="border-radius: 0 0 5px 5px ">
+                                  <tr>
+                                    <td width="100%" style="padding: 0px 20px;">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bottomNav">
+                                        <tr><br></tr>
+                                        <tr>
+                                          <td colspan="3"><a href="#" target="_blank" style="color: #ffffff; text-decoration: none; font-family: Roboto, Arial, sans-serif; font-size: 15px; width: 210px; height: 50px; line-height: 50px; display: block; text-align: center; background: #ABC1DE; border-radius: 5px; margin: auto;" ><img src="https://test.myatb.co.uk/landing/assets/img/Briefcasex2white.png" width="20" height="20" style="vertical-align: middle ;"/> <span style="color:#ffffff; text-decoration:none; padding-left: 5px">Business Sign Up</span></a></td>
+                                        </tr>
+                                        <tr><td colspan="3" style="padding-top: 30px; padding-bottom: 10px"></td></tr>
+                                        <tr>
+                                          <td align="center"><a href="#" style="color:#A2A2A2;font-family:Roboto, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
+                                          <td align="center"><a href="#" style="color:#A2A2A2;font-family:Roboto, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
+                                          <td align="center"><a href="#" style="color:#A2A2A2;font-family:Roboto, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
+                                        </tr>
+                                        
+                                      </table>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td width="100%" style="padding: 20px 20px 45px;">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                          <td align="center"><a href="#" style="color:#AEC3DE;font-family:Roboto, Arial, sans-serif;font-size:15px; line-height:28px; text-align:center; text-decoration: none;">ATB All rights reserved</a> </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+      
+                        <!--[if gte mso 9]>
+                          </v:textbox>
+                          </v:rect>
+                        <![endif]-->
                       </td>
                     </tr>
-                  </tbody></table>
-                  <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                    </tr>
                   </table>
-                  <![endif]-->
-                    </td>
-                </tr>
-            </tbody></table>
-            
-            
-            
-            </body></html>';				
+                </td>
+              </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+              </td>
+              </tr>
+            </table>
+            <![endif]-->
+              </td>
+          </tr>
+      </table>
+      
+      </body>
+      </html>
+      ';		
 			
 			
 			$this->sendEmail(

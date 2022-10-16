@@ -18,22 +18,26 @@
        
     function sendEmail($firstname, $surname,$email, $title,$body,$altbody) {
         $mail = new PHPMailer(true);
+
         try {
+
             //Server settings
             $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output :SMTP::DEBUG_SERVER // off : SMTP::DEBUG_OFF
             $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host = "smtp.gmail.com";                             //Set the SMTP server to send through
+            $mail->Host = "email-smtp.eu-west-2.amazonaws.com";                             //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'dpuja2071@gmail.com';                     //SMTP username
-            $mail->Password   = 'qsaianeggvdurgmy';                               //SMTP password
+            $mail->Username   = 'AKIAUJ7A46K5F3H2C6O6';                     //SMTP username
+            $mail->Password   = 'BM8MGaKSSUEuN7SvhwfY+fshlTcUpW74uMuhoQFDZhmo';                               //SMTP password
             
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
             $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom('noreply@myatb.co.uk', 'ATB');
-            $mail->addAddress($email, $firstname + ' ' + $surname);     //Add a recipient
-            $mail->addAddress($email);               //Name is optional
+            $mail->setfrom('noreply@myatb.co.uk', 'ATB');
+            // function_alert( $surname);
+            
+            $mail->addAddress($email, $firstname . ' ' . $surname);     //Add a recipient
+            // $mail->addAddress($email);               //Name is optional
             //$mail->addReplyTo('honestdeveloper10@gmail.com', 'Information');
             //$mail->addCC('honestdeveloper10@gmail.com');
             //$mail->addBCC('honestdeveloper10@gmail.com');
@@ -46,14 +50,20 @@
             $mail->isHTML(true);                                  //Set email format to HTML
             $mail->Subject = $title;
             $mail->Body    = $body;
-            $mail->AltBody = $altbody;
+            // $mail->AltBody = $altbody;
             $mail->send();
+
              //echo 'Message has been sent';
-             //echo '<script type="text/javascript">toastr.success("Email sent Successfully!")</script>';
+            //  echo '<script type="text/javascript">toastr.success("Email sent Successfully!")</script>';
+
 
         } catch (Exception $e) {
-            //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-
+    }
+    function function_alert($message) {
+      
+        // Display the alert box 
+        echo "<script>alert('$message');</script>";
     }
     ?>

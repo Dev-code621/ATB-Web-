@@ -264,270 +264,235 @@ class BookingController extends MY_Controller {
 	private function emailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit) {
 		$subject = "New Booking Request";
 
-		$content = '
-					<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-					<!-- saved from url=(0053)http://sg-lab.co/dev/atb/email/new-booking/index.html -->
-					<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-					<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-						<!--[if gte mso 9]>
-						<xml>
-							<o:OfficeDocumentSettings>
-							<o:AllowPNG/>
-							<o:PixelsPerInch>96</o:PixelsPerInch>
-							</o:OfficeDocumentSettings>
-						</xml>
-						<![endif]-->
-						
-						<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-						<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-						<meta name="format-detection" content="date=no">
-						<meta name="format-detection" content="address=no">
-						<meta name="format-detection" content="telephone=no">
-						<meta name="x-apple-disable-message-reformatting">
-						<!--[if !mso]><!-->
-						<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-						<!--<![endif]-->
-						<title>Welcome to ATB</title>
-						
-						<style type="text/css"> 				
-							body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#F8F8F8; -webkit-text-size-adjust:none }
-							p { padding:0 !important; margin:0 !important } 
-							table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
-							.container {width: 100%; max-width: 650px;}
-							.ExternalClass { width: 100%;}
-							.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%; }
-							
-							@media (max-width: 650px) {
-								.wrapper {padding: 0 !important;}
-								.container { width: 100% !important; min-width: 100% !important; }
-								.content {padding-left: 30px !important; padding-right: 30px !important;}
-								.social-btn {height: 35px; width: auto;}
-								.p100 { display: block !important; width: 100% !important; min-width: 100%; padding-bottom: 10px !important; padding-left: 0px !important; float: left !important; }
-								.mleft {float: left !important;;}
-								.p100 table {width: 100% !important;}
-								.mfont {font-size: 20px !important;}
-								.mfont2 {font-size: 16px !important;}
-								.t100 {width: 50% !important; float: left !important}
-								.t100 tr td { display: block !important; float: left !important;}
-								.black {color: #000000 !important;}
-								.mnone {display: none !important;}
-							}
-						</style>
-					</head>
-					
-					<body style="padding:0; margin:0">			
-					<table border="0" bgcolor="#F8F8F8" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
-						<tbody><tr>
-							<td align="center" valign="top" style="padding: 80px 0;" class="wrapper">
-								<!--[if (gte mso 9)|(IE)]>
-								<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
+		$content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+		<head>
+			<!--[if gte mso 9]>
+			<xml>
+				<o:OfficeDocumentSettings>
+				<o:AllowPNG/>
+				<o:PixelsPerInch>96</o:PixelsPerInch>
+				</o:OfficeDocumentSettings>
+			</xml>
+			<![endif]-->
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		<meta name="format-detection" content="date=no" />
+		<meta name="format-detection" content="address=no" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="x-apple-disable-message-reformatting" />
+		 <!--[if !mso]><!-->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet" />
+		<!--<![endif]-->
+		<title>Subject: ATB - New Booking</title>
+		
+		<style type="text/css"> 
+		
+			body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#A6BFDE; -webkit-text-size-adjust:none }
+			p { padding:0 !important; margin:0 !important } 
+			table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
+			.container {width: 100%; max-width: 650px;}
+			.ExternalClass { width: 100%;}
+			.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%; }
+			
+			@media (max-width: 650px) {
+				.wrapper {padding: 0 !important;}
+				.container { width: 100% !important; min-width: 100% !important; }
+				.content {padding-left: 30px !important; padding-right: 30px !important;}
+				.social-btn {height: 35px; width: auto;}
+				.p100 { display: block !important; width: 100% !important; min-width: 100%; padding-bottom: 10px !important; padding-left: 0px !important; float: left !important; }
+				.mleft {float: left !important;;}
+				.p100 table {width: 100% !important;}
+				.mfont {font-size: 20px !important;}
+				.mfont2 {font-size: 16px !important;}
+				.t100 {width: 50% !important; float: left !important}
+				.t100 tr td { display: block !important; float: left !important;}
+				.black {color: #000000 !important;}
+				.mnone {display: none !important;}
+			}
+		</style>
+		
+		
+		</head>
+		
+		<body style="padding:0; margin:0; background: #A6BFDE;">
+		
+		<table border="0" bgcolor="#A6BFDE" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
+			<tr>
+				<td align="center" valign="top" style="padding: 80px 0;" class="wrapper">   
+					<table border="0" cellspacing="0" cellpadding="0" class="container">
+						<tr>
+							<td>
+								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 									<tr>
-									<td>
-								<![endif]-->    
-								<table border="0" cellspacing="0" cellpadding="0" class="container">
-									<tbody><tr>
-										<td>
-											<table width="100%" border="0" cellspacing="0" cellpadding="0">
-												<tbody><tr>
-													<td style="background-image:url('.base_url().'assets/email/welcome/background.jpg); padding: 0 0px 50px; box-shadow: 0px 3px 6px #b3b3b3;" bgcolor="#ABC1DE" valign="top" align="center">
-														<!--[if gte mso 9]>
-														<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
-															<v:fill type="frame" src="'.base_url().'assets/email/welcome/background.jpg" color="#ABC1DE" />
-															<v:textbox inset="0,0,0,0">
-														<![endif]-->
-					
-															<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																<tbody><tr>
-																	<td align="right" style="padding: 50px 30px" class="mleft">
-																		<a href="#" target="_blank"><img src="'.base_url().'assets/email/logo.png" width="153" height="47" border="0" alt="ATB Logo"></a>
-																	</td>
-																</tr>
-															</tbody></table>
-					
-															<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																<tbody><tr>
-																	<td>
-																		<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F8F8F8">
-																			<tbody><tr>
-																				<td style="padding: 30px 40px" class="content">
-																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																						<tbody><tr>
-																							<td style="color: #787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:23px; line-height:30px;" class="mfont">
-																							<img src="'.base_url().'assets/email/booking/email.png" width="23" height="24" alt="Email icon" style="display: inline !important;padding-right: 3px"> NEW BOOKING Request</td>
-																						</tr>
-																						<tr>
-																							<td style="color:#575757;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:25px;padding-bottom:20px;">#'.$bookingId.'</td>
-																						</tr>
-																					</tbody></table>
-																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																						<tbody><tr>
-																							<td>
-																								<table border="0" cellspacing="0" cellpadding="0" width="100%">
-																									<tbody><tr>
-																										<td class="p100">
-																											<table border="0" cellspacing="0" cellpadding="0" align="left" class="t100" width="100%">
-																												<tbody>
-																													<tr>
-																														<td style="border-radius: 50%;" width="73" valign="baseline">
-																															<img src="'.$profile.'" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;">
-																														</td>
-																														<td style="padding-left: 10px;">
-																															<table border="0" cellspacing="0" cellpadding="0">
-																																<tbody>
-																																	<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:27px; line-height:31px;">'.$name.'</td></tr>
-																																	<tr><td><a href="#" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: underline;">@'.$username.'</a> </td></tr>																													
-																																</tbody>
-																															</table>
-																														</td>
-																													</tr>
-																												</tbody>
-																											</table>
-																										</td>
-																										<td class="p100" align="right" width="200">
-																											<table border="0" cellspacing="0" cellpadding="0" align="right" class="t100" width="100%">
-																												<tbody>
-																													<tr>
-																														<td><a href="#" style="color:#535353;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;">
-																														<img src="'.base_url().'assets/email/booking/message.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;"> Message User</a> </td>
-																													</tr>
-																													<tr>
-																														<td valign="middle"><a href="#" style="color:#535353;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700">
-																														<img src="'.base_url().'assets/email/booking/booking.png" width="20" height="16" alt="Booking icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;"> Manage this booking</a> </td>
-																													</tr>
-																												</tbody>
-																											</table>
-																										</td>
-																									</tr>
-																								</tbody></table>
-																							</td>
-																						</tr>
-																					</tbody></table>
-																				</td>
-																			</tr>
-																		</tbody></table>
-					
-																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																			<tbody><tr>
-																				<td style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3; padding: 10px 40px 80px" bgcolor="#ffffff" class="content">
-																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																						<tbody><tr>
-																							<td>
-																								<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																									<tbody><tr>
-																										<td class="p100">
-																											<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service:</p>
-																											<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">'.$title.'</p>
-																										</td>
-																										<td class="p100" width="200">
-																											<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
-																											<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">
-																												<span><img src="'.base_url().'assets/email/booking/calendar_blue.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$date.'</span> &nbsp;
-																												<span><img src="'.base_url().'assets/email/booking/clock_blue.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$time.'</span></p>
-																										</td>
-																										<td class="p100" style="padding: 15px 10px">
-																											<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
-																												<tbody><tr>
-																													<td bgcolor="#A6BFDE" width="180" align="center" valign="middle" height="30" style="border-radius: 7px;padding: 5px 0px;">
-																														<a href="#" target="_blank" bgcolor="#A6BFDE" style="color:#ffffff; text-decoration:none !important; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; height: 30px;width: 100%;line-height:30px; display: inline-block; text-align: center;">
-																														<img src="'.base_url().'assets/email/booking/addcalendar.png" width="14" height="16" alt="" style="display: inline !important;vertical-align: middle;"> <span style="color:#ffffff; text-decoration:none; padding: 0 5px">Add to calendar</span></a>
-																													</td>
-																												</tr>
-																											</tbody></table>
-																										</td>
-																									</tr>
-																								</tbody></table>
-																							</td>
-																						</tr>
-																						<tr>
-																							<td style="padding-top: 20px;">
-																								<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																									<tbody><tr>
-																										<td style="color: #787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:50px">Invoice</td>
-																									</tr>
-																									<tr style="border-top: 1px solid #E3E3E3;">
-																										<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Total Per Booking</td>
-																										<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">£'.number_format($total, 2).'</td>
-																									</tr>
-																									<tr style="border-top: 1px solid #E3E3E3;">
-																										<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit</td>
-																										<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">-£'.number_format($deposit, 2).'</td>
-																									</tr>
-																									<tr style="border-top: 1px solid #E3E3E3;">
-																										<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																										<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">£'.number_format($total-$deposit, 2).'</td>
-																									</tr>
-																								</tbody></table>
-																							</td>
-																						</tr>
-																					</tbody></table>
-																				</td>
-																			</tr>
-																		</tbody></table>
-																	</td>
-																</tr>
-															</tbody></table>
-					
-															<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																<tbody><tr>
-																	<td style="padding: 30px 40px 0px" class="content">
-																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																			<tbody><tr>
-																				<td class="p100">
-																					<table border="0" align="left" cellspacing="0" cellpadding="0" class="bottomNav">
-																						<tbody>
-																						<tr><td align="left">
-																							<a href="'.base_url().'landing#" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Terms and conditions</a></td></tr>
-																						<tr><td align="left">
-																							<a href="'.base_url().'landing#" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;" class="black">Privacy Policy</a> </td></tr>
-																						<tr><td align="left">
-																							<a href="'.base_url().'landing#" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Contact Us</a> </td></tr>
-																					</tbody></table>
-																				</td>
-																				<td class="p100" align="right" width="400">
-																					<table border="0" cellspacing="0" cellpadding="0">
-																						<tbody><tr>
-																							<td style="padding-right:10px">
-																								<a href="#">
-																								<img class="social-btn" src="'.base_url().'assets/email/google-play.png" width="148" height="44" border="0" alt=""></a></td>
-																							<td>
-																								<a href="#">
-																								<img class="social-btn" src="'.base_url().'assets/email/apple-store.png" width="132" height="44" border="0" alt=""></a></td>
-																						</tr>
-																					</tbody></table>
-																					<table border="0" cellspacing="0" cellpadding="0">
-																						<tbody><tr>
-																							<td align="right" class="p100" style="padding-top: 10px">
-																							<a href="#" class="mleft" style="color:#ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:right; text-decoration: none !important;display: block !important;">ATB All rights reserved</a> </td>
-																						</tr>
-																					</tbody></table>
-																				</td>
-																			</tr>
-																		</tbody></table>
-																	</td>
-																</tr>
-															</tbody></table>
-					
-														<!--[if gte mso 9]>
-															</v:textbox>
-															</v:rect>
-														<![endif]-->
+										<td style="padding: 0 0px 50px; box-shadow: 0px 3px 6px #b3b3b3;" bgcolor="#ABC1DE" valign="top" align="center">
+								
+												<table width="100%" border="0" cellspacing="0" cellpadding="35">
+												<tr>
+													<td width="65%">
+														<h1 style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: bold;font-size: 30px;line-height: 31px;text-align: left;color: #fff; margin:0;">Hi '.$name.',</h1>
+														<h2 style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 20px;text-align: left;color: #fff; margin:0;">Please find below details of your booking:</h2>
 													</td>
+													<td width="35%" style=""><a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/logo.png" width="153" height="47" border="0" alt="ATB Logo" /></a></td>	
 												</tr>
-											</tbody></table>
+												</table>
+												<table width="100%" border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<td>
+															<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F8F8F8">
+																<tr>
+																	<td style="padding: 30px 40px" class="content">
+																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																			<tr>
+																				<td>
+																					<table border="0" cellspacing="0" cellpadding="0" width="100%" >
+																						<tr>
+																							<td class="p100">
+																								<table border="0" cellspacing="0" cellpadding="0" align="left" class="t100" width="100%">
+																									<tr>
+																										<td style="border-radius: 50%;" width="73" valign="baseline">
+																											<img src="'.base_url().'assets/email/booking/user.png" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;"/>
+																										</td>
+																										<td style="padding-left: 10px;">
+																											<table width="100%" border="0" cellpadding="0" cellspacing="0">
+																												<tr><td style="color:#454b4d; font-family:&#39Roboto&#39, Arial, sans-serif; font-size:15px; line-height:20px;">Business name</td></tr>
+																												<tr><td style="color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;">'.$username.'</td></tr>
+																											</table>
+																										</td>
+																									</tr>
+																								</table>
+																							</td>
+																							<td class="p100" align="right" width="200">
+																								<table border="0" cellspacing="0" cellpadding="0" align="right" class="t100" width="100%">
+																									<tr>
+																									  <td><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;"><img src="'.base_url().'assets/email/booking/message.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Message Business</a> </td></tr>
+																									<tr><td valign="middle"><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700"><img src="'.base_url().'assets/email/booking/booking.png" width="20" height="16" alt="Booking icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Manage this booking</a> </td></tr>
+																								</table>
+																							</td>
+																						</tr>
+																					</table>
+																				</td>
+																			</tr>
+																		</table>
+																	</td>
+																</tr>
+															</table>
+		
+															<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																<tr>
+																	<td style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3; padding: 10px 40px 80px" bgcolor="#ffffff" class="content">
+																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																			<tr>
+																				<td>
+																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																						<tr>
+																							<td width="" class="">
+																								<p style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service:</p>
+																								<p style="color: #787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">'.$title.'</p>
+																							</td>
+																						  <td class="" width="187">
+																								<p style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
+																								<p style="color: #787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">
+																									<span><img src="'.base_url().'assets/email/booking/calendar.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" /> '.$date.'</span> &nbsp;
+																									<span><img src="'.base_url().'assets/email/booking/clock.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" /> '.$time.'</span></p>
+																							</td>
+																							<td width="" class="p100">
+																								<p style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Order Number:</p>
+																								<p style="color: #787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">#'.$bookingId.'</p>
+																						  </td>
+																							<td width="" class="" style="">
+																								<a href="#" target="_blank" style="font-family: &#39Roboto&#39, Arial, sans-serif; font-weight: normal; font-size: 13px; line-height: 13px; color: #fff; border-radius: 5px; background: #a6bfde; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16); display: block; padding: 10px; text-decoration: none; text-align: center; width: 100%;" ><img src="'.base_url().'assets/email/booking/addcalendar.png" width="14" height="16" alt="" style="display: inline !important; vertical-align: middle; margin-right: 5px;"/> Add to calendar</a>
+																							</td>
+																						</tr>
+																					</table>
+																				</td>
+																			</tr>
+																			<tr>
+																				<td style="padding-top: 20px;">
+																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																						<tr>
+																							<td style="color: #787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:50px">Invoice</td>
+																						</tr>
+																						<tr style="border-top: 1px solid #E3E3E3;">
+																							<td align="left" style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
+																							<td align="right"  style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">£'.number_format($total, 2).'</td>
+																						</tr>
+																						<tr style="border-top: 1px solid #E3E3E3;">
+																							<td align="left" style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
+																							<td align="right" style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">-£'.number_format($deposit, 2).'</td>
+																						</tr>
+																						<tr style="border-top: 1px solid #E3E3E3;">
+																							<td align="left" class="mfont2" style="color:#787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
+																							<td align="right" style="color:#787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">£'.number_format($total-$deposit, 2).'</td>
+																						</tr>
+																					</table>
+																				</td>
+																			</tr>
+																			<tr>
+																				<td>
+																					<br>
+																					<hr>
+																					<p style="font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px;font-weight: normal;font-size: 15px;line-height: 18px;text-align: left;color: #787f82;">If you can no longer attend or need to make amendments to the appointment, please get in touch with [business name] at the earliest.</p>
+																				</td>
+																			</tr>
+																		</table>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</table>
+		
+												<table width="100%" border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<td style="padding: 30px 40px 0px" class="content">
+															<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																<tr>
+																	<td class="p100">
+																		<table border="0" align="left" cellspacing="0" cellpadding="0" class="bottomNav">
+																			<tr><td align="left"><a href="#" style="color: #ffffff;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Terms and conditions</a></td></tr>
+																			<tr><td align="left"><a href="#" style="color: #ffffff;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;" class="black">Privacy Policy</a> </td></tr>
+																			<tr><td align="left"><a href="#" style="color: #ffffff;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Contact Us</a> </td></tr>
+																		</table>
+																	</td>
+																	<td class="p100" align="right" width="400">
+																		<table border="0" cellspacing="0" cellpadding="0" >
+																		</table>
+																		<table border="0" cellspacing="0" cellpadding="0" >
+																			<tr>
+																				<td align="right" class="p100" style="padding-top: 10px"><a href="#" class="mleft" style="color:#ffffff;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:right; text-decoration: none !important;display: block !important;">ATB All rights reserved</a> </td>
+																			</tr>
+																		</table>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</table>
+		
+											<!--[if gte mso 9]>
+												</v:textbox>
+												</v:rect>
+											<![endif]-->
 										</td>
 									</tr>
-								</tbody></table>
-								<!--[if (gte mso 9)|(IE)]>
-									</td>
-									</tr>
 								</table>
-								<![endif]-->
 							</td>
 						</tr>
-					</tbody></table>
-					</body>
-					</html>';
+					</table>
+					<!--[if (gte mso 9)|(IE)]>
+						</td>
+						</tr>
+					</table>
+					<![endif]-->
+				</td>
+			</tr>
+		</table>
+		
+		</body>
+		</html>
+		';
 
 		$this->sendEmail(
 			$to,

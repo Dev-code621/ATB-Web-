@@ -265,7 +265,7 @@ class CronController extends MY_Controller
 				</body>
 			</html>';
 
-		$this->sendEmail("elitesolution1031@gmail.com", $subject, $content);                
+		$this->sendEmail("honestdeveloper10@gmail.com", $subject, $content);                
 	}
 
 	public function run_notification() {

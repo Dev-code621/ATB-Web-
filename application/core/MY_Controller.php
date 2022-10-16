@@ -208,17 +208,17 @@ class MY_Controller extends CI_Controller
         $mail = new PHPMailer(true);
         try {
             // Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_OFF;                         // Enable verbose debug output :SMTP::DEBUG_SERVER // off : SMTP::DEBUG_OFF
-            $mail->isSMTP();                                            // Send using SMTP
-            $mail->Host = "smtp.gmail.com";                             // Set the SMTP server to send through
-            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-            $mail->Username   = 'dpuja2071@gmail.com';                  // SMTP username
-            $mail->Password   = 'qsaianeggvdurgmy';                     // SMTP password
+            $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output :SMTP::DEBUG_SERVER // off : SMTP::DEBUG_OFF
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->Host = "email-smtp.eu-west-2.amazonaws.com";                             //Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mail->Username   = 'AKIAUJ7A46K5F3H2C6O6';                     //SMTP username
+            $mail->Password   = 'BM8MGaKSSUEuN7SvhwfY+fshlTcUpW74uMuhoQFDZhmo';                               //SMTP password
             
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable implicit TLS encryption
-        $mail->Port       = 587;                                        // TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
+            $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-            // Recipients
+            //Recipients
             $mail->setFrom('noreply@myatb.co.uk', 'ATB');
             // $mail->addAddress($email, $name);                           // Add a recipient
             $mail->addAddress($email);                                  // Name is optional
