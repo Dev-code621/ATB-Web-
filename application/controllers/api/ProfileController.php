@@ -558,50 +558,105 @@ class ProfileController extends MY_Controller
 	public function generate_ephemeral_key()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
-		$retVal = array();
+
 		require_once('application/libraries/stripe-php/init.php');
 		\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
-		$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-		//2019-10-17
-		$key = \Stripe\EphemeralKey::create(
-			["customer" => $customerToken[0]['stripe_customer_token']],
-			["stripe_version" => "2019-10-17"]
-		);
-		$retVal["key"] = $key;
-		echo json_encode($retVal);
+		// $customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+		$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+		if(count($users)) {
+			$user = $users[0];
+			
+			$customerToken = $user['stripe_customer_token'];
+			if(is_null($customerToken) || empty($customerToken)) {
+				$stripeCustomer = \Stripe\Customer::create([
+					'email' => $user['user_email'], 
+					'name' => $user['user_name']
+				]);
+
+				if(!empty($stripeCustomer)) {
+					$customerToken = $stripeCustomer->id;
+
+					$this->User_model->updateUserRecord(
+						array('stripe_customer_token' => $customerToken),
+						array('id' => $tokenVerifyResult['id'])
+					);
+				}
+			}
+
+			//2019-10-17
+			$key = \Stripe\EphemeralKey::create(
+				["customer" => $customerToken],
+				["stripe_version" => "2019-10-17"]
+			);
+
+			echo json_encode($key);
+		}		
 	}
 
+	/**
+	 * Stripe subscription
+	 */
 	public function add_subscription()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		$source = $this->input->post('source');
+		
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
 			require_once('application/libraries/stripe-php/init.php');
 			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
-			$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
 
-			$subscription = \Stripe\Subscription::create(
-				[
-					'customer' => $customerToken[0]['stripe_customer_token'],
-					'items' => [
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				$user = $users[0];
+				
+				$customerToken = $user['stripe_customer_token'];
+
+				if(is_null($customerToken) || empty($customerToken)) {
+					$retVal[self::RESULT_FIELD_NAME] = false;
+					$retVal[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";
+	
+				} else {
+					$subscription = \Stripe\Subscription::create(
 						[
-							'plan' => 'plan_FUSAHhAO4rxF17',
-						],
-					],
-					'expand' => ['latest_invoice.payment_intent'],
-				]
-			);
+							'customer' => $customerToken,
+							'items' => [
+								[
+									'plan' => $this->config->item('stripe_price_id'),
+								],
+							],
+							'default_payment_method'=> $source,
+							'expand' => ['latest_invoice.payment_intent']
+						]
+					);
+					
+					if(empty($subscription)) {
+						$retVal[self::RESULT_FIELD_NAME] = false;
+						$retVal[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";						
 
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $tokenVerifyResult['id'],
-					'transaction_id' => $subscription->id,
-					'amount' => -$subscription->plan->amount,
-					'created_at' => time()
-				)
-			);
+					} else {
+						$this->UserTransaction_model->insertNewTransaction(
+							array(
+								'user_id' => $tokenVerifyResult['id'],
+								'transaction_id' => $subscription->id,
+								'amount' => -$subscription->plan->amount,
+								'created_at' => time()
+							)
+						);
 
-			$retVal[self::RESULT_FIELD_NAME] = true;
+						$retVal[self::RESULT_FIELD_NAME] = true;
+						$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for your subscription.";
+					}
+				}
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
@@ -817,6 +872,9 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	/**
+	 * Adding a card
+	 */
 	public function add_payment()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
