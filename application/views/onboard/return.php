@@ -13,15 +13,15 @@
         <meta name="author" content="">    
     </head>
 
-    <body>  
-        <div onload="deepLink()">
+    <body onload="deepLink()">  
+        <div>
             <h2>Redirecting you to ATB...</h2>            
         </div>
     </body>
 
     <script type="text/javascript">
         function deepLink() {
-            window.location = 'myatb://onboard/success';
+            window.location = 'myatb://onboard/return';
         }
     </script>
 </html>
