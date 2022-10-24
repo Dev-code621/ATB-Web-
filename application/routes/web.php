@@ -209,6 +209,7 @@
         Route::post('/get_drafts', 'ProfileController@get_drafts')->name('api.profile.get_drafts');
 
         Route::post('/onboard_user', 'ProfileController@onboard_user')->name('api.profile.onboard_user');
+        Route::post('/retrieve_connect_user', 'ProfileController@retrieve_connect_user')->name('api.profile.retrieve_connect_user');
     });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {

@@ -559,40 +559,51 @@ class ProfileController extends MY_Controller
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 
-		require_once('application/libraries/stripe-php/init.php');
-		\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
-		// $customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			require_once('application/libraries/stripe-php/init.php');
+			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+			// $customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
 
-		$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-
-		if(count($users)) {
-			$user = $users[0];
-			
-			$customerToken = $user['stripe_customer_token'];
-			if(is_null($customerToken) || empty($customerToken)) {
-				$stripeCustomer = \Stripe\Customer::create([
-					'email' => $user['user_email'], 
-					'name' => $user['user_name']
-				]);
-
-				if(!empty($stripeCustomer)) {
-					$customerToken = $stripeCustomer->id;
-
-					$this->User_model->updateUserRecord(
-						array('stripe_customer_token' => $customerToken),
-						array('id' => $tokenVerifyResult['id'])
-					);
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+		
+			if(count($users)) {
+				$user = $users[0];
+				
+				$customerToken = $user['stripe_customer_token'];
+				if(is_null($customerToken) || empty($customerToken)) {
+					$stripeCustomer = \Stripe\Customer::create([
+						'email' => $user['user_email'], 
+						'name' => $user['user_name']
+					]);
+	
+					if(!empty($stripeCustomer)) {
+						$customerToken = $stripeCustomer->id;
+	
+						$this->User_model->updateUserRecord(
+							array('stripe_customer_token' => $customerToken),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					}
 				}
+	
+				//2019-10-17
+				$return = \Stripe\EphemeralKey::create(
+					["customer" => $customerToken],
+					["stripe_version" => "2019-10-17"]
+				);
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
 			}
 
-			//2019-10-17
-			$key = \Stripe\EphemeralKey::create(
-				["customer" => $customerToken],
-				["stripe_version" => "2019-10-17"]
-			);
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
 
-			echo json_encode($key);
-		}		
+		echo json_encode($return);
 	}
 
 	/**
@@ -723,6 +734,165 @@ class ProfileController extends MY_Controller
 		}
 
 		echo json_encode($retVal);
+	}
+
+	public function onboard_user() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		
+		$token = $this->input->post('token');
+
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			require_once('application/libraries/stripe-php/init.php');
+			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+			
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				$user = $users[0];
+
+				$connectId = $user['stripe_connect_account'];
+
+				// $businessProfile = array();
+				// if ($user['account_type']== '1') {
+				// 	$business = $this->UserBusiness_model->getBusinessInfo($user['id'])[0];
+				// 	$businessProfile = array(
+				// 		'name' => $business['business_name'],
+				// 		'product_description' => $business['business_bio'],
+				// 		'url' => $business['business_website']
+				// 	);
+				// }
+
+				if(is_null($connectId) || empty($connectId)) {					
+					// creating a merchant account
+					$account = \Stripe\Account::create([
+						'type' => 'express',
+						'email' => $user['user_email'],
+						'business_type' => 'individual',						
+						'capabilities' => [
+							'card_payments' => [
+								'requested' => true
+							], 
+							'transfers' => [
+								'requested' => true
+							]
+						]
+					]);
+		
+					if(!empty($account) && !is_null($account->id)) {	
+						$connectId = $account->id;
+
+						$this->User_model->updateUserRecord(
+							array('stripe_connect_account' => $connectId),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					} 
+				}
+
+				if(!empty($connectId)) {
+					// set this on when SSL issue is fixed
+					$baseUrl = base_url();
+
+					// test
+					$baseUrl = "https://test.myatb.co.uk/";
+
+					$accountLink = \Stripe\AccountLink::create([
+						'account' => $connectId, 
+						'refresh_url' => $baseUrl.'payment/onboard?action=re-auth&token='.$token,
+						'return_url' => $baseUrl.'payment/onboard?action=return',
+						'type' => 'account_onboarding'
+					]);
+
+					$return[self::RESULT_FIELD_NAME] = true;
+					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB platform. Please use the link to complete your onboarding with Stripe.";
+					$return[self::EXTRA_FIELD_NAME] = array(
+						'account_link' => $accountLink->url,
+						'connect_id' => $connectId
+					);
+					
+				} else {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "It's been failed to proceed your onboarding program.";
+				}
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+			
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Authorization is required";
+		}
+
+		echo json_encode($return);
+	}
+
+	/**
+	 * retrieve a stripe account & check capailities
+	 */
+	public function retrieve_connect_user() {
+		$return = array();
+
+		try {
+			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
+			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+				$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+				if (count($users)) {
+					$user = $users[0];
+
+					$connect = $user['stripe_connect_account'];
+					if (!is_null($connect) && !empty($connect)) {
+						require_once('application/libraries/stripe-php/init.php');
+						\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+
+						try {
+							$account = \Stripe\Account::retrieve($connect);
+
+							if (!is_null($account)) {
+								$return[self::RESULT_FIELD_NAME] = true;
+								$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB.";
+								
+								$extra = array(
+									'charges_enabled' => $account->charges_enabled ?? false,
+									'payouts_enabled' => $account->payouts_enabled ?? false
+								);
+
+								$return[self::EXTRA_FIELD_NAME] = $extra;
+
+							} else {
+								$return[self::RESULT_FIELD_NAME] = false;
+								$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+							}
+
+						} catch (Exception $ex) {
+							$return[self::RESULT_FIELD_NAME] = false;
+							$return[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+						}
+
+					} else {
+						$return[self::RESULT_FIELD_NAME] = false;
+						$return[self::MESSAGE_FIELD_NAME] = "Please complete your onboarding to receive paymnets on ATB.";
+					}
+
+				} else {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+				}
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "The session has been expired.";
+			}
+
+		} catch (Exception $ex) {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Authorization is required.";
+		}
+		
+		echo json_encode($return);
 	}
 
 	public function add_connect_account()
