@@ -31,11 +31,11 @@ class PaymentController extends MY_Controller {
                             $user = $users[0];
                             $connect = $user['stripe_connect_account'];
 
-                            if (is_null($connect) && empty($connect)) {
-                                show_error("The public access has been denied.");                                
+                            if (!is_null($connect) && !empty($connect)) {
+                                $this->createLoginLink($connect, $this->input->get('token'));                                                              
 
                             } else {
-                                $this->createLoginLink($connect, $this->input->get('token'));
+                                show_error("The public access has been denied.");  
                             }
 
                         } else {
