@@ -207,6 +207,8 @@
 
         // 4th May, 2022
         Route::post('/get_drafts', 'ProfileController@get_drafts')->name('api.profile.get_drafts');
+
+        Route::post('/onboard_user', 'ProfileController@onboard_user')->name('api.profile.onboard_user');
     });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {
@@ -220,6 +222,8 @@
     Route::group('/payment', ['namespace' => 'payment'], function() {
         Route::get('/success', 'PaymentController@success')->name('payment.payment.success');
         Route::get('/cancel', 'PaymentController@cancel')->name('payment.payment.cancel');
+
+        Route::get('/onboard', 'PaymentController@onboard')->name('payment.payment.onboard');
     });
     
     Route::group('api/search', ['namespace' => 'api'], function() {
