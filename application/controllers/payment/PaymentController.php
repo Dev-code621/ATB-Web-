@@ -61,11 +61,15 @@ class PaymentController extends MY_Controller {
         \Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
 
         try {
-            $baseUrl = $_SERVER['SERVER_NAME'];
+            // set this on when SSL issue is fixed
+            $baseUrl = base_url();
+
+            // test
+            $baseUrl = "https://test.myatb.co.uk/";
             $accountLink = \Stripe\AccountLink::create([
                 'account' => $account, 
-                'refresh_url' => $baseUrl.'/payment/onboard?action=re-auth&user='.$token,
-                'return_url' => $baseUrl.'/payment/onboard?action=return',
+                'refresh_url' => $baseUrl.'payment/onboard?action=re-auth&token='.$token,
+                'return_url' => $baseUrl.'payment/onboard?action=return',
                 'type' => 'account_onboarding'
             ]);
 
