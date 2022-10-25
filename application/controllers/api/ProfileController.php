@@ -676,6 +676,78 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	/**
+	 * new Stripe subscription using payment intent
+	 */
+	public function subscribe() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				require_once('application/libraries/stripe-php/init.php');
+				\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+
+				$user = $users[0];
+
+				/**
+				 * create a new stripe user or retrieve the one associated with the user
+				 */
+				$customer = $user['stripe_customer_token'];
+				try {
+					if(is_null($customer) || empty($customer)) {
+						$newCustomer = \Stripe\Customer::create([
+							'email' => $user['user_email'], 
+							'name' => $user['user_name']
+						]);
+	
+						$customer = $newCustomer->id;	
+						$this->User_model->updateUserRecord(
+							array('stripe_customer_token' => $customer),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					}
+	
+					$ephemeralKey = \Stripe\EphemeralKey::create(
+						["customer" => $customer],
+						["stripe_version" => "2019-11-05"]
+					);
+
+					$subscription = \Stripe\Subscription::create([
+						'customer' => $customer,
+						'items' => [
+							['plan' => $this->config->item('stripe_price_id')]
+						],
+						'payment_behavior'=> 'default_incomplete',
+						'expand' => ['latest_invoice.payment_intent']
+					]);
+
+					$return[self::RESULT_FIELD_NAME] = true;
+					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+					$return[self::EXTRA_FIELD_NAME] = array(
+						'customer_id' => $customer,
+						'ephemeral_key_secret' => $ephemeralKey->secret, 
+						'payment_intent_client_secret' => $subscription->latest_invoice->payment_intent->client_secret
+					);
+
+				} catch (Exception $ex) {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";
+				}				
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+	}
+
 	public function like_notifications()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
