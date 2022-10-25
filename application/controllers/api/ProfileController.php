@@ -746,6 +746,8 @@ class ProfileController extends MY_Controller
 			$return[self::RESULT_FIELD_NAME] = false;
 			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
 		}
+
+		echo json_encode($return);
 	}
 
 	public function like_notifications()
