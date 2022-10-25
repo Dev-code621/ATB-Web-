@@ -587,10 +587,10 @@ class ProfileController extends MY_Controller
 					}
 				}
 	
-				//2019-10-17
+				//2019-11-05
 				$return = \Stripe\EphemeralKey::create(
 					["customer" => $customerToken],
-					["stripe_version" => "2019-10-17"]
+					["stripe_version" => "2019-11-05"]
 				);
 
 			} else {
@@ -928,112 +928,224 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
-	public function make_payment()
-	{
+	public function checkout() {
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
-			$chargeAmount = $this->input->post('amount');
+			/**
+			 * validate the user/buyer
+			 */
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+			if (count($users)) {
+				$user = $users[0];
 
-			$fee = round((($chargeAmount / 100) * 5));
+				$customer = $user['stripe_customer_token'];
+				if (!is_null($customer) && !empty($customer)) {
+					$toUserID = $this->input->post('toUserId');
+					$toUsers = $this->User_model->getOnlyUser(array('id' => $toUserID));
 
-			$toUserID = $this->input->post('toUserId');
+					if (count($toUsers)) {
+						$toUser = $toUsers[0];
 
-			require_once('application/libraries/stripe-php/init.php');
-			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+						$connectedAccount = $toUser['stripe_connect_account'];				
+						if (!is_null($connectedAccount) && !empty($connectedAccount)) {
+							$paymentMethod = $this->input->post('source');
 
-			$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-			$touser = $this->User_model->getOnlyUser(array('id' => $toUserID));
+							require_once('application/libraries/stripe-php/init.php');
+							\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+							
+							try  {	
+								//2019-10-17
+								$ephemeralKey = \Stripe\EphemeralKey::create(
+									["customer" => $customer],
+									["stripe_version" => "2019-11-05"]
+								);
+								/**
+								 *	We are now using a payment method rather than source & token 
+								 */	
 
-			$token = \Stripe\Token::create(
-				["customer" => $customerToken[0]['stripe_customer_token']],
-				["stripe_account" => $touser[0]['stripe_connect_account']]
-			);
+								/**
+								 * You should be cloning the Payment method on the platform to a payment method on the connected account
+								 * https://stripe.com/docs/connect/cloning-customers-across-accounts
+								 * https://stripe.com/docs/payments/payment-methods/connect#cloning-payment-methods
+								 */
+								// clone the payment method to a connected account to create direct charges
+								/*
+								$cloned = \Stripe\PaymentMethod::create([
+									'customer' => $customer, 
+									'payment_method' => $paymentMethod
+								], ['stripe_account' => $connectedAccount]);*/
 
-			$charge = \Stripe\Charge::create(
-				[
-					"amount" => $chargeAmount,
-					"currency" => "gbp",
-					"source" => $token->id,
-					"application_fee_amount" => $fee,
-				],
-				["stripe_account" => $touser[0]['stripe_connect_account']]
-			);
+								$paymentIntent = \Stripe\PaymentIntent::create([
+									'amount' => 1000,
+									'currency' => 'usd', 
+									'application_fee_amount' => 123,
+									'customer' => $customer,
+									'payment_method_types' => ['card'],
+									'transfer_data' => [
+										'destination' => $connectedAccount
+									]
+								]);
 
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $tokenVerifyResult['id'],
-					'transaction_id' => $charge->id,
-					'amount' => -$charge->amount,
-					'post_id' => $this->input->post('postId'),
-					'product_id' => $this->input->post('product_id'),
-					'variation_id' => $this->input->post('variation_id'),
-					'created_at' => time()
-				)
-			);
+								$retVal[self::RESULT_FIELD_NAME] = true;
+								$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+								$retVal[self::EXTRA_FIELD_NAME] = array(
+									'customer_id' => $customer,
+									'ephemeral_key_secret' => $ephemeralKey->secret, 
+									'payment_intent_client_secret' => $paymentIntent->client_secret
+								);
 
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $toUserID,
-					'transaction_id' => $charge->id,
-					'amount' => $charge->amount - $charge->application_fee_amount,
-					'post_id' => $this->input->post('postId'),
-					'product_id' => $this->input->post('product_id'),
-					'variation_id' => $this->input->post('variation_id'),
-					'created_at' => time()
-				)
-			);
+							} catch (Exception $ex) {
+								$retVal[self::RESULT_FIELD_NAME] = false;
+								$retVal[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+
+								echo json_encode($retVal);
+								exit(0);
+							}
+							
+
+							// if (!is_null($source) && !empty($source)) {
+							// 	require_once('application/libraries/stripe-php/init.php');
+							// 	\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+
+							// 	$productId = $this->input->post('product_id');
+							// 	$variantId = $this->input->post('varaition_id');
+							// 	$deliveryOption = $this->input->post('delivery_option');
+
+							// 	$serviceId = $this->input->post('service_id');
+							// 	$bookingId = $this->input->post('booking_id');
+
+							// 	if (is_null($product_id) && is_null($variantId) && is_null($serviceId) && is_null($bookingId)) {
+							// 		$retVal[self::RESULT_FIELD_NAME] = false;
+							// 		$retVal[self::MESSAGE_FIELD_NAME] = "Invalid request.";
+
+							// 	} else {
+							// 		/**
+							// 		 * adding a delivery cost 
+							// 		 */
+							// 		$amount = $this->input->post('amount');
+							// 		$fee = round((($amount / 100) * 5));
+
+							// 		$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+								
+					
+							// 		$token = \Stripe\Token::create(
+							// 			["customer" => $customerToken[0]['stripe_customer_token']],
+							// 			["stripe_account" => $toUser[0]['stripe_connect_account']]
+							// 		);
+						
+							// 		$charge = \Stripe\Charge::create(
+							// 			[
+							// 				"amount" => $chargeAmount,
+							// 				"currency" => "gbp",
+							// 				"source" => $token->id,
+							// 				"application_fee_amount" => $fee,
+							// 			],
+							// 			["stripe_account" => $touser[0]['stripe_connect_account']]
+							// 		);
+						
+							// 		$this->UserTransaction_model->insertNewTransaction(
+							// 			array(
+							// 				'user_id' => $tokenVerifyResult['id'],
+							// 				'transaction_id' => $charge->id,
+							// 				'amount' => -$charge->amount,
+							// 				'post_id' => $this->input->post('postId'),
+							// 				'product_id' => $this->input->post('product_id'),
+							// 				'variation_id' => $this->input->post('variation_id'),
+							// 				'created_at' => time()
+							// 			)
+							// 		);
+						
+							// 		$this->UserTransaction_model->insertNewTransaction(
+							// 			array(
+							// 				'user_id' => $toUserID,
+							// 				'transaction_id' => $charge->id,
+							// 				'amount' => $charge->amount - $charge->application_fee_amount,
+							// 				'post_id' => $this->input->post('postId'),
+							// 				'product_id' => $this->input->post('product_id'),
+							// 				'variation_id' => $this->input->post('variation_id'),
+							// 				'created_at' => time()
+							// 			)
+							// 		);
+									
+							// 		$title = "";
+							// 		$related_id = 0;
+							// 		$type = 0;
+									
+							// 		if (!is_null($this->input->post('postId')) && $this->input->post('postId') != 0) {
+							// 			$title = $this->Post_model->getPostDetail($this->input->post('postId'))["title"];
+							// 			$related_id = $this->input->post('product_id'); 
+							// 			$updateResult = $this->Post_model->updatePostContent(
+							// 				array(
+							// 					'is_sold' => 1
+							// 				),
+							// 				array('id' => $this->input->post('postId'), 'post_type' => 2)
+							// 			);
+							// 		}
+									
+							// 		if (!is_null($this->input->post('product_id')) && $this->input->post('product_id') != 0) {
+							// 			$title = $this->Product_model->getProduct($this->input->post('product_id'))[0]["title"];
+							// 			$related_id = $this->input->post('postId'); 
+							// 			$this->Product_model->updateProduct(
+							// 				array(
+							// 					"stock_level" => $this->Product_model->getProduct($this->input->post('product_id'))[0]["stock_level"] - 1
+							// 				),
+							// 				array('id' => $this->input->post('id'))
+							// 			);
+							// 		}
+									
+							// 		if (!is_null($this->input->post('variation_id')) && $this->input->post('variation_id') != 0) {
+										
+							// 			$related_id = $this->input->post('variation_id'); 
+							// 		}
+						
+							// 		$postContent = $this->Post_model->getPostDetail($this->input->post('postId'));
+						
+							// 		$this->NotificationHistory_model->insertNewNotification(
+							// 			array(
+							// 				'user_id' => $toUserID,
+							// 				'type' => 6,
+							// 				'related_id' => $related_id,
+							// 				'read_status' => 0,
+							// 				'send_status' => 0,
+							// 				'visible' => 1,
+							// 				'text' => "Bought " . $title,
+							// 				'name' => $customerToken[0]['user_name'],
+							// 				'profile_image' => $customerToken[0]['pic_url'],
+							// 				'updated_at' => time(),
+							// 				'created_at' => time()
+							// 			)
+							// 		);
+						
+							// 		$retVal[self::RESULT_FIELD_NAME] = true;
+									
+
+							// } else {
+							// 	$retVal[self::RESULT_FIELD_NAME] = false;
+							// 	$retVal[self::MESSAGE_FIELD_NAME] = "We cannot send a payment to the seller at the moment as they don't have a payment source.";
+							// }						
+
+						} else {
+							$retVal[self::RESULT_FIELD_NAME] = false;
+							$retVal[self::MESSAGE_FIELD_NAME] = "We cannot send a payment to the seller at the moment as they don't have a payment source.";
+						}
+
+					} else {
+						$retVal[self::RESULT_FIELD_NAME] = false;
+						$retVal[self::MESSAGE_FIELD_NAME] = "The seller is unavailable.";
+					}
+
+				} else {
+					$retVal[self::RESULT_FIELD_NAME] = false;
+					$retVal[self::MESSAGE_FIELD_NAME] = "Please add a payment method to proceed further.";
+				}
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "We can't find you in the user record.";
+			}			
 			
-			$title = "";
-			$related_id = 0;
-			$type = 0;
-			
-			if (!is_null($this->input->post('postId')) && $this->input->post('postId') != 0) {
-				$title = $this->Post_model->getPostDetail($this->input->post('postId'))["title"];
-				$related_id = $this->input->post('product_id'); 
-				$updateResult = $this->Post_model->updatePostContent(
-					array(
-						'is_sold' => 1
-					),
-					array('id' => $this->input->post('postId'), 'post_type' => 2)
-				);
-			}
-			
-			if (!is_null($this->input->post('product_id')) && $this->input->post('product_id') != 0) {
-				$title = $this->Product_model->getProduct($this->input->post('product_id'))[0]["title"];
-				$related_id = $this->input->post('postId'); 
-				$this->Product_model->updateProduct(
-					array(
-						"stock_level" => $this->Product_model->getProduct($this->input->post('product_id'))[0]["stock_level"] - 1
-					),
-					array('id' => $this->input->post('id'))
-				);
-			}
-			
-			if (!is_null($this->input->post('variation_id')) && $this->input->post('variation_id') != 0) {
-				
-				$related_id = $this->input->post('variation_id'); 
-			}
-
-			$postContent = $this->Post_model->getPostDetail($this->input->post('postId'));
-
-			$this->NotificationHistory_model->insertNewNotification(
-				array(
-					'user_id' => $toUserID,
-					'type' => 6,
-					'related_id' => $related_id,
-					'read_status' => 0,
-                    'send_status' => 0,
-					'visible' => 1,
-					'text' => "Bought " . $title,
-					'name' => $customerToken[0]['user_name'],
-					'profile_image' => $customerToken[0]['pic_url'],
-					'updated_at' => time(),
-					'created_at' => time()
-				)
-			);
-
-			$retVal[self::RESULT_FIELD_NAME] = true;
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";

@@ -149,7 +149,7 @@
         Route::post('/getbusinessreview', 'ProfileController@getbusinessreview')->name('api.profile.getbusinessreview');
  	    Route::post('/add_connect_account', 'ProfileController@add_connect_account')->name('api.profile.add_connect_account');
 	    
-        Route::post('/make_payment', 'ProfileController@make_payment')->name('api.profile.make_payment');
+        Route::post('/checkout', 'ProfileController@checkout')->name('api.profile.checkout');
         Route::post('/make_cash_payment', 'ProfileController@make_cash_payment')->name('api.profile.make_cash_payment');
 
 	    Route::post('/get_transactions', 'ProfileController@getTransactions')->name('api.profile.getTransactions');
@@ -225,6 +225,8 @@
         Route::get('/cancel', 'PaymentController@cancel')->name('payment.payment.cancel');
 
         Route::get('/onboard', 'PaymentController@onboard')->name('payment.payment.onboard');
+
+        Route::post('/stripe_hook', 'PaymentController@stripe_hook')->name('payment.payment.stripe_hook');
     });
     
     Route::group('api/search', ['namespace' => 'api'], function() {
