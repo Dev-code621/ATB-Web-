@@ -730,7 +730,7 @@ class ProfileController extends MY_Controller
 						'customer_id' => $customer,
 						'ephemeral_key_secret' => $ephemeralKey->secret, 
 						'payment_intent_client_secret' => $subscription->latest_invoice->payment_intent->client_secret,
-						'publishable_key' => $this->config->item['stripe_key']
+						'publishable_key' => $this->config->item('stripe_key')
 					);
 
 				} catch (Exception $ex) {
@@ -842,8 +842,9 @@ class ProfileController extends MY_Controller
 					// creating a merchant account
 					$account = \Stripe\Account::create([
 						'type' => 'express',
-						'email' => $user['user_email'],
-						'business_type' => 'individual',						
+						'email' => $user['user_email'],						
+						'business_type' => 'individual',
+						'country'=> 'GB',					
 						'capabilities' => [
 							'card_payments' => [
 								'requested' => true
@@ -1063,10 +1064,13 @@ class ProfileController extends MY_Controller
 								'payment_method' => $paymentMethod
 							], ['stripe_account' => $connectedAccount]);*/
 
+							$amount = round($this->input->post('amount')*100);
+							$fee = round((($amount / 100) * 5));
+
 							$paymentIntent = \Stripe\PaymentIntent::create([
-								'amount' => 1000,
-								'currency' => 'usd', 
-								'application_fee_amount' => 123,
+								'amount' => $amount,
+								'currency' => 'gbp', 
+								'application_fee_amount' => $fee,
 								'customer' => $customer,
 								'payment_method_types' => ['card'],
 								'transfer_data' => [
@@ -1080,7 +1084,7 @@ class ProfileController extends MY_Controller
 								'customer_id' => $customer,
 								'ephemeral_key_secret' => $ephemeralKey->secret, 
 								'payment_intent_client_secret' => $paymentIntent->client_secret,
-								'publishable_key' => $this->config->item['stripe_key']
+								'publishable_key' => $this->config->item('stripe_key')
 							);
 
 						} catch (Exception $ex) {
