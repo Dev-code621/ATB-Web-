@@ -157,85 +157,114 @@ class PaymentController extends MY_Controller {
 
         if (count($transactions)) {
             $transaction = $transactions[0];
+            
             $userId = $transaction['user_id'];
+            $users = $this->User_model->getOnlyUser(array('id' => $userId));
 
-            $subject = null;
-            $content = null;
+            if (count($users)) {
+                // update payment details
+                // update status to payment completed('1')
+                $paymentDetails = $paymentIntent->charges->data[0]->payment_method_details;
+                $update = array(
+                    'invoice' => $paymentIntent->invoice,
+                    'payment_method' => $paymentDetails->type,
+                    'payment_brand' => $paymentDetails->card->brand,
+                    'payment_source' => $paymentDetails->card->last4,
+                    'status' => 1,
+                    'updated_at' => time()
+                );            
 
-            $paymentDetails = $paymentIntent->charges->data[0]->payment_method_details;
-            $update = array(
-                'invoice' => $paymentIntent->invoice,
-                'payment_method' => $paymentDetails->type,
-                'payment_brand' => $paymentDetails->card->brand,
-                'payment_source' => $paymentDetails->card->last4,
-                'status' => 1,
-                'updated_at' => time()
-            );
+                $this->UserTransaction_model->update($update,
+                    array(
+                        'transaction_id' => $paymentIntentId
+                    ));
 
-            $purchaseType = $transaction['purchase_type'];
-            if ($purchaseType === 'subscription') {
-                $this->UserBusiness_model->updateBusinessRecord(
-                    array('paid' => 1, 'updated_at' => time()),
-                    array('user_id' => $userId)
-                );
-                
-                $subject = 'ATB Business account created';
-                $content = '
-                    <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">
-                        Your business account has now been created. Please find the terms and conditions below</span>
-                    </p>
-                    <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
-                        <span style="color: #808080; font-size: 18px;"><b></b></span>
-                    </p>';
+                // email properties
+                $subject = null;
+                $content = null;
 
-            } else if ($purchaseType === 'service' || $purchaseType === 'booking') {
-                $bookingId = $transaction['target_id'];
-
-                if ($purchaseType === 'service') {                    
-                    $this->Booking_model->updateBooking(
-                        array('state' => 'active'),
-                        array('id' => $bookingId)
+                $purchaseType = $transaction['purchase_type'];
+                if ($purchaseType === 'subscription') {
+                    $this->UserBusiness_model->updateBusinessRecord(
+                        array('paid' => 1, 'updated_at' => time()),
+                        array('user_id' => $userId)
                     );
+                    
+                    $subject = 'ATB Business account created';
+                    $content = '
+                        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">
+                            Your business account has now been created. Please find the terms and conditions below</span>
+                        </p>
+                        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
+                            <span style="color: #808080; font-size: 18px;"><b></b></span>
+                        </p>';
 
+                } else if ($purchaseType === 'service' || $purchaseType === 'booking') {
+                    $bookingId = $transaction['target_id'];
                     $bookings = $this->Booking_model->getBooking($bookingId);
+
                     if (count($bookings)) {
                         $services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
-                        $users = $this->User_model->getOnlyUser(array('id' => $userId));
-				        $amount = (float)$services[0]['deposit_amount'];
-
-                        $this->NotificationHistory_model->insertNewNotification(
-                            array(
-                                'user_id' => $services[0]['user_id'],
-                                'type' => 6,
-                                'related_id' => $bookingId,
-                                'read_status' => 0,
-                                'send_status' => 0,
-                                'visible' => 1,
-                                'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of £" . number_format($amount, 2),
-                                'name' => $users[0]['user_name'],
-                                'profile_image' => $users[0]['pic_url'],
-                                'updated_at' => time(),
-                                'created_at' => time()
-                            )
-                        );
+                        
+                        if(count($services) && count($users)) {
+                            if ($purchaseType === 'service') {                    
+                                $this->Booking_model->updateBooking(
+                                    array('state' => 'active'),
+                                    array('id' => $bookingId)
+                                );
+                                
+                                $amount = (float)$services[0]['deposit_amount'];
+        
+                                $this->NotificationHistory_model->insertNewNotification(
+                                    array(
+                                        'user_id' => $services[0]['user_id'],
+                                        'type' => 6,
+                                        'related_id' => $bookingId,
+                                        'read_status' => 0,
+                                        'send_status' => 0,
+                                        'visible' => 1,
+                                        'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of £" . number_format($amount, 2),
+                                        'name' => $users[0]['user_name'],
+                                        'profile_image' => $users[0]['pic_url'],
+                                        'updated_at' => time(),
+                                        'created_at' => time()
+                                    )
+                                );
+        
+                            } else {
+                                $this->NotificationHistory_model->insertNewNotification(
+                                    array(
+                                        'user_id' => $services[0]['user_id'], // $transaction['destination'],
+                                        'type' => 12,
+                                        'related_id' => $bookingId,
+                                        'read_status' => 0,
+                                        'send_status' => 0,
+                                        'visible' => 1,
+                                        'text' => " has completed the payment for " . $services[0]['title'],
+                                        'name' => $users[0]['user_name'],
+                                        'profile_image' => $users[0]['pic_url'],
+                                        'updated_at' => time(),
+                                        'created_at' => time()
+                                    )
+                                );
+                            }
+                        }
                     }
+
+                } else {
+                    /** product or product_variant */
                 }
 
-             } else {
-                /** product or product_variant */
-            }
-
-            $this->UserTransaction_model->update($update,
-                array(
-                    'transaction_id' => $paymentIntentId
-                ));
-
-            if ($subject && $content) {
-                $users = $this->User_model->getOnlyUser(array('id' => $userId));
-                $this->sendEmail($users[0]["user_email"], $subject, $content);
-            }
+                if ($subject && $content) {
+                    $users = $this->User_model->getOnlyUser(array('id' => $userId));
+                    $this->sendEmail($users[0]["user_email"], $subject, $content);
+                }
 
             echo 'payment intent successful:' . $paymentIntentId;
+
+            } else {
+                echo 'Not found the user: ' . $paymentIntentId;
+            }
 
         } else {
             echo 'Not found the transaction:' . $paymentIntentId;
