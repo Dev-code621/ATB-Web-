@@ -104,58 +104,92 @@ class PaymentController extends MY_Controller {
       * webhook to handle post-payment events
       */
      public function stripe_hook() {
-        $endpoint_secret = 'whsec_uvMiVZYS4Du58Y2sCZgjjWkT6I7qvUzJ';
+        $endpoint_secret = $this->config->item('webhook_secret');
 
         $payload = @file_get_contents('php://input');
+        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $event = null;
 
         require_once('application/libraries/stripe-php/init.php');
         \Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
 
         try {
-            $event = \Stripe\Event::constructFrom(
-                json_decode($payload, true)
+            $event = \Stripe\Webhook::constructEvent(
+              $payload, $sig_header, $endpoint_secret
             );
         } catch(\UnexpectedValueException $e) {
-            // Invalid payload
-            echo '⚠️  Webhook error while parsing basic request.';
-            http_response_code(400);
-            exit();
+        // Invalid payload
+        http_response_code(400);
+        exit();
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        // Invalid signature
+        http_response_code(400);
+        exit();
         }
-
-        if ($endpoint_secret) {
-            // Only verify the event if there is an endpoint secret defined
-            // Otherwise use the basic decoded event
-            $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-            try {
-              $event = \Stripe\Webhook::constructEvent(
-                $payload, $sig_header, $endpoint_secret
-              );
-            } catch(\Stripe\Exception\SignatureVerificationException $e) {
-              // Invalid signature
-              echo '⚠️  Webhook error while validating signature.';
-              http_response_code(400);
-              exit();
-            }
-          }
-
+        
         // Handle the event
         switch ($event->type) {
-            case 'payment_intent.succeeded':
-            $paymentIntent = $event->data->object; // contains a \Stripe\PaymentIntent
-            // Then define and call a method to handle the successful payment intent.
-            // handlePaymentIntentSucceeded($paymentIntent);
+        case 'payment_intent.canceled':
+            $paymentIntent = $event->data->object;
+        case 'payment_intent.processing':
+            $paymentIntent = $event->data->object;
+        case 'payment_intent.succeeded':
+            $paymentIntent = $event->data->object;
+            
+        case 'invoice.payment_succeeded':
+            $invoice = $event->data->object;
+            $this->handleInvoice($invoice);
             break;
-            case 'payment_method.attached':
-            $paymentMethod = $event->data->object; // contains a \Stripe\PaymentMethod
-            // Then define and call a method to handle the successful attachment of a PaymentMethod.
-            // handlePaymentMethodAttached($paymentMethod);
-            break;
-            default:
-            // Unexpected event type
-            error_log('Received unknown event type');
-        }
 
+        // ... handle other event types
+        default:
+            echo 'Received unknown event type ' . $event->type;
+        }
+        
         http_response_code(200);
+     }
+
+     private function handleInvoice($invoice) {        
+        $subscription = $invoice->subscription;
+
+        if (!is_null($subscription) && !empty($subscription)) {
+            $transactions = $this->UserTransaction_model->getTransactionHistory(
+                array('transaction_id' => $subscription)
+            );
+
+            if (count($transactions)) {
+                $userId = $transactions[0]['user_id'];
+
+                $this->UserBusiness_model->updateBusinessRecord(
+                    array('paid' => 1, 'updated_at' => time()),
+                    array('user_id' => $userId)
+                );
+
+                $this->UserTransaction_model->update(
+                    array(                        
+                        'invoice' => $invoice->id,
+                        'updated_at' => time()
+                    ),
+                    array(
+                        'transaction_id' => $subscription
+                    ));
+
+                $users = $this->User_model->getOnlyUser(array('id' => $userId));
+
+                $content = '
+                    <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">
+                        Your business account has now been created. Please find the terms and conditions below</span>
+                    </p>
+                    <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
+                        <span style="color: #808080; font-size: 18px;"><b></b></span>
+                    </p>';
+
+                $subject = 'ATB Business account created';
+
+                $this->User_model->sendEmail($users[0]["user_email"], $subject, $content);
+            }
+            
+            echo 'subscription handled ' . $subscription;
+        }
      }
 }

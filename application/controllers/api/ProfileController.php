@@ -13,7 +13,7 @@ class ProfileController extends MY_Controller
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 		$retVal = array();
-		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+		if ($tokenVerifyResulft[self::RESULT_FIELD_NAME]) {
 			$bookingId = $this->input->post('booking_id');
 			$this->UserBraintreeTransaction_model->updateTransactionRecord(
 				array(
@@ -723,6 +723,18 @@ class ProfileController extends MY_Controller
 						'payment_behavior'=> 'default_incomplete',
 						'expand' => ['latest_invoice.payment_intent']
 					]);
+
+					$this->UserTransaction_model->insertNewTransaction(
+						array(
+							'user_id' => $tokenVerifyResult['id'],
+							'transaction_id' => $subscription->id,
+							'transaction_type' => 'Subscription',
+							'amount' => $subscription->plan->amount,
+							'purchase_type' => 'subscription',
+							'created_at' => time(),
+							'updated_at' => time()
+						)
+					);
 
 					$return[self::RESULT_FIELD_NAME] = true;
 					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";

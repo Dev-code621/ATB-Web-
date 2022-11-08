@@ -14,6 +14,7 @@ class UserTransaction_model extends MY_Model
                 ->order_by('created_at', 'DESC')
                 ->get()->result_array();
     }
+
     public function insertNewTransaction($insArr) {
         if($this->db->insert(self::TABLE_USER_TRANSACTION, $insArr)) {
             $result[MY_Controller::RESULT_FIELD_NAME] = $this->db->insert_id();
@@ -22,5 +23,10 @@ class UserTransaction_model extends MY_Model
             $result[MY_Controller::RESULT_FIELD_NAME] = -1;
         }
         return $result;
+    }
+
+    public function update($set, $where) {
+        $this->db->where($where);
+        $this->db->update(self::TABLE_USER_TRANSACTION, $set);
     }
 }
