@@ -53,7 +53,7 @@ class TransactionController extends MY_Controller
 		$retVal = array();
 
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
-			$transactions = $this->UserTransaction_model->getTransactions(array('user_id' => $tokenVerifyResult['id']));
+			$transactions = $this->UserTransaction_model->getTransactions($tokenVerifyResult['id']);
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = $transactions;

@@ -103,10 +103,18 @@ class UserTransaction_model extends MY_Model
     }
 
     /** updated 9 Nov, 2022 */
-    public function getTransactions($where = array()) {
+    /**
+     * $this->db->where(array('book_code'=>$book_code,'poi_num IS NOT NULL' => NULL));
+     * $this->db->where(array('book_code'=>$book_code,'poi_num <>' => NULL));
+     * $this->db->where(array('book_code'=>$book_code,'poi_num !=' => NULL)); 
+     */
+    public function getTransactions($user_id) {
         $transactions = $this->db->select('*')
             ->from(self::TABLE_USER_TRANSACTION)
-            ->where($where)
+            ->where(array(
+                'status' => 1,
+                'target_id IS NOT NULL' => NULL))            
+            ->where('(user_id = '. $user_id .' OR destination = '. $user_id .')')
             ->order_by('created_at', 'DESC')
             ->get()->result_array();
 
@@ -134,14 +142,23 @@ class UserTransaction_model extends MY_Model
                 $transactions[$i]['item'] = $items[0];
             }
 
-            $destination = $transactions[$i]['destination'];
-            if (!is_null($destination) && !empty($destination)) {
-                $users = $this->User_model->getOnlyUser(array(
-                    'id' => $destination
-                ));
+            $userId = $transactions[$i]['user_id'];
+            if ($userId == $user_id) {
+                // pay out
+                $destination = $transactions[$i]['destination'];
+                if (!is_null($destination) && !empty($destination)) {
+                    $sellers = $this->User_model->getOnlyUser(array('id' => $destination));
 
-                if (count($users)) {
-                    $transactions[$i]['from_to_user'] = $users[0];
+                    if (count($sellers)) {
+                        $transactions[$i]['from_to_user'] = $sellers[0];
+                    }
+                }
+
+            } else {
+                // income
+                $buyers = $this->User_model->getOnlyUser(array('id' => $userId));
+                if (count($buyers)) {
+                    $transactions[$i]['from_to_user'] = $buyers[0];
                 }
             }
         }
