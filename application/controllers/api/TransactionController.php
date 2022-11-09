@@ -48,4 +48,21 @@ class TransactionController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	public function get_transactions() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		$retVal = array();
+
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			$transactions = $this->UserTransaction_model->getTransactions(array('user_id' => $tokenVerifyResult['id']));
+
+			$retVal[self::RESULT_FIELD_NAME] = true;
+			$retVal[self::MESSAGE_FIELD_NAME] = $transactions;
+
+		} else {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+
+		echo json_encode($retVal);
+	}
 }

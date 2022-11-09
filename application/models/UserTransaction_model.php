@@ -101,4 +101,51 @@ class UserTransaction_model extends MY_Model
 
         return $transactions;
     }
+
+    /** updated 9 Nov, 2022 */
+    public function getTransactions($where = array()) {
+        $transactions = $this->db->select('*')
+            ->from(self::TABLE_USER_TRANSACTION)
+            ->where($where)
+            ->order_by('created_at', 'DESC')
+            ->get()->result_array();
+
+        for ($i = 0; $i < count($transactions); $i ++) {
+            $purchaseType = $transactions[$i]['purchase_type'];
+
+            $items = array();
+            if ($purchaseType == "product") {
+                $items = $this->Product_model->getProduct($transactions[$i]["target_id"]);
+                
+            } else if ($purchaseType == "product_variant") {
+                $variant = $this->Product_model->getProductVariation($transactions[$i]["target_id"]);
+                if (count($variant) > 0) {
+                    $items = $this->Product_model->getProduct($variant[0]["product_id"]);                    
+                }
+
+            } else if ($purchaseType == "service" || $purchaseType == "booking") {
+                $bookings = $this->Booking_model->getBooking($transactions[$i]['target_id']);
+                if (count($bookings) > 0) {
+                    $items = $this->UserService_model->getServiceInfo($bookings[0]["service_id"]);
+                }                             
+            }
+
+            if (count($items) > 0) {
+                $transactions[$i]['item'] = $items[0];
+            }
+
+            $destination = $transactions[$i]['destination'];
+            if (!is_null($destination) && !empty($destination)) {
+                $users = $this->User_model->getOnlyUser(array(
+                    'id' => $destination
+                ));
+
+                if (count($users)) {
+                    $transactions[$i]['from_to_user'] = $users[0];
+                }
+            }
+        }
+
+        return $transactions;
+    }
 }
