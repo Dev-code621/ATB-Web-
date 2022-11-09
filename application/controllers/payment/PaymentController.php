@@ -131,9 +131,11 @@ class PaymentController extends MY_Controller {
         switch ($event->type) {
         case 'payment_intent.canceled':
             $paymentIntent = $event->data->object;
+            break;
 
         case 'payment_intent.processing':
             $paymentIntent = $event->data->object;
+            break;
 
         case 'payment_intent.succeeded':
             $paymentIntent = $event->data->object;
@@ -146,9 +148,9 @@ class PaymentController extends MY_Controller {
         }
         
         http_response_code(200);
-     }
+    }
 
-     private function handlePayment($paymentIntent) {
+    private function handlePayment($paymentIntent) {
         $paymentIntentId = $paymentIntent->id;
 
         $transactions = $this->UserTransaction_model->getTransactionHistory(
@@ -158,6 +160,7 @@ class PaymentController extends MY_Controller {
         if (count($transactions)) {
             $transaction = $transactions[0];
             
+            // buyer
             $userId = $transaction['user_id'];
             $users = $this->User_model->getOnlyUser(array('id' => $userId));
 
@@ -172,102 +175,267 @@ class PaymentController extends MY_Controller {
                     'payment_source' => $paymentDetails->card->last4,
                     'status' => 1,
                     'updated_at' => time()
-                );            
+                );
 
-                $this->UserTransaction_model->update($update,
+                $this->UserTransaction_model->update(
+                    $update,
                     array(
                         'transaction_id' => $paymentIntentId
                     ));
 
-                // email properties
+                // Email properties
                 $subject = null;
                 $content = null;
 
                 $purchaseType = $transaction['purchase_type'];
-                if ($purchaseType === 'subscription') {
-                    $this->UserBusiness_model->updateBusinessRecord(
-                        array('paid' => 1, 'updated_at' => time()),
-                        array('user_id' => $userId)
-                    );
-                    
-                    $subject = 'ATB Business account created';
-                    $content = '
-                        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">
-                            Your business account has now been created. Please find the terms and conditions below</span>
-                        </p>
-                        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
-                            <span style="color: #808080; font-size: 18px;"><b></b></span>
-                        </p>';
-
-                } else if ($purchaseType === 'service' || $purchaseType === 'booking') {
-                    $bookingId = $transaction['target_id'];
-                    $bookings = $this->Booking_model->getBooking($bookingId);
-
-                    if (count($bookings)) {
-                        $services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
+                switch ($purchaseType) {
+                    case 'subscription':
+                        $this->UserBusiness_model->updateBusinessRecord(
+                            array('paid' => 1, 'updated_at' => time()),
+                            array('user_id' => $userId)
+                        );
                         
-                        if(count($services) && count($users)) {
-                            if ($purchaseType === 'service') {                    
-                                $this->Booking_model->updateBooking(
-                                    array('state' => 'active'),
-                                    array('id' => $bookingId)
-                                );
-                                
-                                $amount = (float)$services[0]['deposit_amount'];
-        
-                                $this->NotificationHistory_model->insertNewNotification(
-                                    array(
-                                        'user_id' => $services[0]['user_id'],
-                                        'type' => 6,
-                                        'related_id' => $bookingId,
-                                        'read_status' => 0,
-                                        'send_status' => 0,
-                                        'visible' => 1,
-                                        'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of £" . number_format($amount, 2),
-                                        'name' => $users[0]['user_name'],
-                                        'profile_image' => $users[0]['pic_url'],
-                                        'updated_at' => time(),
-                                        'created_at' => time()
-                                    )
-                                );
-        
+                        $subject = 'ATB Business account created';
+                        $content = '
+                            <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">
+                                Your business account has now been created. Please find the terms and conditions below</span>
+                            </p>
+                            <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
+                                <span style="color: #808080; font-size: 18px;"><b></b></span>
+                            </p>';
+
+                        $this->sendEmail($users[0]["user_email"], $subject, $content);                        
+                        break;
+
+                    case 'service':
+                    case 'booking':
+                        $bookingId = $transaction['target_id'];
+                        $bookings = $this->Booking_model->getBooking($bookingId);
+
+                        if (count($bookings)) {
+                            $services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
+                            
+                            if(count($services)) {
+                                if ($purchaseType === 'service') {                    
+                                    $this->Booking_model->updateBooking(
+                                        array('state' => 'active'),
+                                        array('id' => $bookingId)
+                                    );
+                                    
+                                    $amount = (float)$services[0]['deposit_amount'];
+            
+                                    $this->NotificationHistory_model->insertNewNotification(
+                                        array(
+                                            'user_id' => $services[0]['user_id'],
+                                            'type' => 6,
+                                            'related_id' => $bookingId,
+                                            'read_status' => 0,
+                                            'send_status' => 0,
+                                            'visible' => 1,
+                                            'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of £" . number_format($amount, 2),
+                                            'name' => $users[0]['user_name'],
+                                            'profile_image' => $users[0]['pic_url'],
+                                            'updated_at' => time(),
+                                            'created_at' => time()
+                                        )
+                                    );
+            
+                                } else {
+                                    $this->NotificationHistory_model->insertNewNotification(
+                                        array(
+                                            'user_id' => $services[0]['user_id'], // $transaction['destination'],
+                                            'type' => 12,
+                                            'related_id' => $bookingId,
+                                            'read_status' => 0,
+                                            'send_status' => 0,
+                                            'visible' => 1,
+                                            'text' => " has completed the payment for " . $services[0]['title'],
+                                            'name' => $users[0]['user_name'],
+                                            'profile_image' => $users[0]['pic_url'],
+                                            'updated_at' => time(),
+                                            'created_at' => time()
+                                        )
+                                    );
+                                }
+
+                                // send emails if it's required here
+
                             } else {
-                                $this->NotificationHistory_model->insertNewNotification(
-                                    array(
-                                        'user_id' => $services[0]['user_id'], // $transaction['destination'],
-                                        'type' => 12,
-                                        'related_id' => $bookingId,
-                                        'read_status' => 0,
-                                        'send_status' => 0,
-                                        'visible' => 1,
-                                        'text' => " has completed the payment for " . $services[0]['title'],
-                                        'name' => $users[0]['user_name'],
-                                        'profile_image' => $users[0]['pic_url'],
-                                        'updated_at' => time(),
-                                        'created_at' => time()
-                                    )
-                                );
+                                echo 'Not found the service:' . $bookings[0]['service_id'];
                             }
+
+                        } else {
+                            echo 'Not found the booking:' . $bookingId;
                         }
-                    }
 
-                } else {
-                    /** product or product_variant */
+                        break;
+
+                    case 'product':
+                    case 'product_variant':
+                        $quantity = $transaction['quantity'];
+
+                        if ($purchaseType === 'product') {
+                            $productID = $transaction['target_id'];
+                            $products = $this->Product_model->getProduct($productID);
+
+                            if (count($products)) {
+                                $product = $products[0];
+                                $stockLevel = $product['stock_level'];
+
+                                if ($stockLevel > 0) {
+                                    if ($stockLevel > 1) {
+                                        // decrease the stock level
+                                        $this->Product_model->updateProduct(
+                                            array(
+                                                'stock_level' => $stockLevel - $quantity, 'updated_at' => time()
+                                            ),
+                                            array('id' => $productID)
+                                        );
+                
+                                    } else {
+                                        // set the stock level as '0' and set the product as 'Sold out'
+                                        $this->Product_model->updateProduct(
+                                            array(
+                                                'stock_level' => 0, 
+                                                'is_sold' => 1, 
+                                                'updated_at' => time()											
+                                            ),
+                                            array('id' => $productID)
+                                        );
+                
+                                        // set the relevant posts as 'Sold out'
+                                        $posts = $this->Post_model->getPostInfo(
+                                            array(
+                                                'product_id' => $productID, 
+                                                'post_type' => 2));
+                
+                                        for ($postIndex = 0; $postIndex < count($posts); $postIndex ++) {
+                                            $this->Post_model->updatePostContent(
+                                                array(
+                                                    'is_sold' => 1, 
+                                                    'updated_at' => time()
+                                                ),
+                                                array('id' => $posts[$postIndex]['id'])
+                                            );
+                                        }
+                                    }
+    
+                                    $this->NotificationHistory_model->insertNewNotification(
+                                        array(
+                                            'user_id' => $product['user_id'],
+                                            'type' => 4,
+                                            'related_id' => $product['poster_profile_type'],
+                                            'read_status' => 0,
+                                            'send_status' => 0,
+                                            'visible' => 1,
+                                            'text' => " has purchased " . $product['title'],
+                                            'name' => $users[0]['user_name'],
+                                            'profile_image' => $users[0]['pic_url'],
+                                            'updated_at' => time(),
+                                            'created_at' => time()
+                                        )
+                                    );
+
+                                    /** send emails if it's required */
+    
+                                } else {
+                                    echo 'The product is out of stock:' . $productID;
+                                }
+
+                            } else {
+                                echo 'Received unknown product:' . $productID;
+                            }
+
+                        } else {
+                            /** product variant */
+                            $variantID = $transaction['target_id'];
+                            $productVariants = $this->Product_model->getProductVariation($variantID);
+
+                            if (count($productVariants) > 0) {
+                                $productVariant = $productVariants[0];	// selected product variant
+                                $product = $this->Product_model->getProduct($productVariant['product_id'])[0];
+
+                                $stockLevel = $productVariant['stock_level'];
+
+                                if ($stockLevel > 0) {
+                                    // decrease the stock level
+                                    $this->Product_model->updateProductVariation(
+                                        array(
+                                            'stock_level' => $stockLevel - $quantity,
+                                            'updated_at' => time()
+                                        ),
+                                        array('id' => $variantID)
+                                    );
+                
+                                    // get all variations
+                                    $allProductVariants = $this->Product_model->getProductVariations(array('product_id' => $productVariant['product_id']));
+                                    $totalStockLevel = 0;
+                                    for ($variantIndex = 0; $variantIndex < count($allProductVariants); $variantIndex++)  {
+                                        $totalStockLevel += $allProductVariants[$variantIndex]['stock_level'];
+                                    }
+                
+                                    if ($totalStockLevel <= 0) {
+                                        // set the product as 'Sold out'
+                                        $this->Product_model->updateProduct(
+                                            array(
+                                                'is_sold' => 1, 'updated_at' => time()
+                                            ),
+                                            array('id' => $product['id'])
+                                        );
+                
+                                        // set all relevant posts as 'Sold out'
+                                        $posts = $this->Post_model->getPostInfo(array('product_id' => $product['id'], 'post_type' => 2));	
+                                        for ($postIndex = 0; $postIndex < count($posts); $postIndex ++) {
+                                            $this->Post_model->updatePostContent(
+                                                array(
+                                                    'is_sold' => 1, 
+                                                    'updated_at' => time()
+                                                ),
+                                                array('id' => $posts[$postIndex]['id'])
+                                            );
+                                        }
+                                    }
+    
+                                    $this->NotificationHistory_model->insertNewNotification(
+                                        array(
+                                            'user_id' => $product['user_id'],
+                                            'type' => 4,
+                                            'related_id' => $product['poster_profile_type'],
+                                            'read_status' => 0,
+                                            'send_status' => 0,
+                                            'visible' => 1,
+                                            'text' => " has purchased " . $product['title'],
+                                            'name' => $users[0]['user_name'],
+                                            'profile_image' => $users[0]['pic_url'],
+                                            'updated_at' => time(),
+                                            'created_at' => time()
+                                        )
+                                    );
+    
+                                } else {
+                                    echo 'The product variation is out of stock:' . $variantID;
+                                }
+
+                            } else {
+                                echo 'Received unknown product variant:' . $variantID;
+                            }
+                        }   
+
+                        break;
+
+                    default:
+                        echo 'Received unknown purchase type:' . $purchaseType;
+                        break;
                 }
 
-                if ($subject && $content) {
-                    $users = $this->User_model->getOnlyUser(array('id' => $userId));
-                    $this->sendEmail($users[0]["user_email"], $subject, $content);
-                }
-
-            echo 'payment intent successful:' . $paymentIntentId;
+                echo 'payment intent successful:' . $paymentIntentId;
 
             } else {
-                echo 'Not found the user: ' . $paymentIntentId;
+                echo 'Not found the buyer: ' . $paymentIntentId;
             }
 
         } else {
             echo 'Not found the transaction:' . $paymentIntentId;
         }
-      }
+    }
 }
