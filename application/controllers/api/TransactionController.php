@@ -7,12 +7,16 @@ class TransactionController extends MY_Controller
 		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
 		$retVal = [];
 
-		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
+		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {			
+			/** using braintree */
+			// $purchases = $this->UserBraintreeTransaction_model->getPurchasedProductHistory($verifyTokenResult['id']);
 			
-			$purchases = $this->UserBraintreeTransaction_model->getPurchasedProductHistory($verifyTokenResult['id']);
+			/** using stripe */
+			$purchases = $this->UserTransaction_model->getPurchases($verifyTokenResult['id']);
 			
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = $purchases;
+
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
@@ -28,11 +32,13 @@ class TransactionController extends MY_Controller
 		$retVal = [];
 
 		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
-			
-			$purchases = $this->UserBraintreeTransaction_model->getSoldProductHistory($verifyTokenResult['id'], $this->input->post('is_business'));
+			/** using braintree */		
+			// $purchases = $this->UserBraintreeTransaction_model->getSoldProductHistory($verifyTokenResult['id'], $this->input->post('is_business'));
+			$purchases = $this->UserTransaction_model->getSoldItems($verifyTokenResult['id'], $this->input->post('is_business'));
 			
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = $purchases;
+
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
