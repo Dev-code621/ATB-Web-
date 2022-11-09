@@ -41,7 +41,14 @@ class Booking_model extends MY_Model {
         	if(!empty($bookings[$i]['service_id'])){
         		$bookings[$i]['service'] = $this->UserService_model->getServiceInfo($bookings[$i]['service_id']);
         	}
-        	$bookings[$i]["transactions"] = $this->UserBraintreeTransaction_model->getTransactionHistory(array("purchase_type" => "booking", "target_id" => $bookings[$i]['id']));
+            
+        	// $bookings[$i]["transactions"] = $this->UserBraintreeTransaction_model->getTransactionHistory(array("purchase_type" => "booking", "target_id" => $bookings[$i]['id']));
+
+            // updated 10 Nov, wiring new transactions
+            $bookings[$i]['transactions'] = $this->UserTransaction_model->getBookingTransactions(array(
+                'target_id' => $bookings[$i]['id'],
+                'status' => 1
+            ));
         } 
 
         return $bookings;
@@ -67,8 +74,14 @@ class Booking_model extends MY_Model {
         	}
         	if(!empty($bookings[$i]['service_id'])){
         		$bookings[$i]['service'] = $this->UserService_model->getServiceInfo($bookings[$i]['service_id']);
-        	} 
-        	$bookings[$i]["transactions"] = $this->UserBraintreeTransaction_model->getTransactionHistory(array("purchase_type" => "booking", "target_id" => $bookings[$i]['id'])); 
+        	}            
+        	// $bookings[$i]["transactions"] = $this->UserBraintreeTransaction_model->getTransactionHistory(array("purchase_type" => "booking", "target_id" => $bookings[$i]['id'])); 
+
+            // updated 10 Nov, wiring new transactions
+            $bookings[$i]['transactions'] = $this->UserTransaction_model->getBookingTransactions(array(
+                'target_id' => $bookings[$i]['id'],
+                'status' => 1
+            ));
         } 
 
         return $bookings;

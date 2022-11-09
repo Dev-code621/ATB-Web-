@@ -165,4 +165,13 @@ class UserTransaction_model extends MY_Model
 
         return $transactions;
     }
+
+    public function getBookingTransactions($where = array()) {
+        // no need to bind service items
+        return $this->db->select('*')->from(self::TABLE_USER_TRANSACTION)
+            ->where($where)
+            ->where("(purchase_type = 'service' OR purchase_type = 'booking')")
+            ->order_by('created_at', 'DESC')
+            ->get()->result_array();            
+    }
 }

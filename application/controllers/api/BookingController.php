@@ -72,6 +72,9 @@ class BookingController extends MY_Controller {
 			} else {
 				$searchArray["user_id"] = $user_id;
 			}
+
+			// to remove returning pending bookings in the return
+			$searchArray['state <>'] = 'pending';
 			
 			if(!empty($month)){
 				$startMonth = DateTime::createFromFormat('Y m', $month);
