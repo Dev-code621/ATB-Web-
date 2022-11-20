@@ -12,6 +12,9 @@
         <link rel="stylesheet" href="assets/css/style.css">
         <title>ATB</title>
         <style>
+            .dropdown-body {
+                text-align: right;
+            }
             .dropbtn {
                 background: #A6BFDE;
             color: white;
@@ -26,7 +29,7 @@
             position: relative;
             display: inline-block;
             background: #A6BFDE;
-          
+            min-width: 160px;
             }
 
             .dropdown-content {
@@ -56,7 +59,7 @@
     <body>
         
         <div class="index-content" style="background: #A6BFDE; ">
-         <div>
+         <div class="dropdown-body">
             <div class="dropdown" >
                     <button class="dropbtn">T&Cs</button>
                     <div class="dropdown-content">
