@@ -13,7 +13,7 @@ class ProfileController extends MY_Controller
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 		$retVal = array();
-		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+		if ($tokenVerifyResulft[self::RESULT_FIELD_NAME]) {
 			$bookingId = $this->input->post('booking_id');
 			$this->UserBraintreeTransaction_model->updateTransactionRecord(
 				array(
@@ -558,56 +558,208 @@ class ProfileController extends MY_Controller
 	public function generate_ephemeral_key()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
-		$retVal = array();
-		require_once('application/libraries/stripe-php/init.php');
-		\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
-		$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-		//2019-10-17
-		$key = \Stripe\EphemeralKey::create(
-			["customer" => $customerToken[0]['stripe_customer_token']],
-			["stripe_version" => "2019-10-17"]
-		);
-		$retVal["key"] = $key;
-		echo json_encode($retVal);
+
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			require_once('application/libraries/stripe-php/init.php');
+			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+			// $customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+		
+			if(count($users)) {
+				$user = $users[0];
+				
+				$customerToken = $user['stripe_customer_token'];
+				if(is_null($customerToken) || empty($customerToken)) {
+					$stripeCustomer = \Stripe\Customer::create([
+						'email' => $user['user_email'], 
+						'name' => $user['user_name']
+					]);
+	
+					if(!empty($stripeCustomer)) {
+						$customerToken = $stripeCustomer->id;
+	
+						$this->User_model->updateUserRecord(
+							array('stripe_customer_token' => $customerToken),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					}
+				}
+	
+				//2019-11-05
+				$return = \Stripe\EphemeralKey::create(
+					["customer" => $customerToken],
+					["stripe_version" => "2019-11-05"]
+				);
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+
+		echo json_encode($return);
 	}
 
+	/**
+	 * Stripe subscription
+	 */
 	public function add_subscription()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		$source = $this->input->post('source');
+		
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
 			require_once('application/libraries/stripe-php/init.php');
 			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
-			$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
 
-			$subscription = \Stripe\Subscription::create(
-				[
-					'customer' => $customerToken[0]['stripe_customer_token'],
-					'items' => [
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				$user = $users[0];
+				
+				$customerToken = $user['stripe_customer_token'];
+
+				if(is_null($customerToken) || empty($customerToken)) {
+					$retVal[self::RESULT_FIELD_NAME] = false;
+					$retVal[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";
+	
+				} else {
+					$subscription = \Stripe\Subscription::create(
 						[
-							'plan' => 'plan_FUSAHhAO4rxF17',
-						],
-					],
-					'expand' => ['latest_invoice.payment_intent'],
-				]
-			);
+							'customer' => $customerToken,
+							'items' => [
+								[
+									'plan' => $this->config->item('stripe_price_id'),
+								],
+							],
+							'default_payment_method'=> $source,
+							'expand' => ['latest_invoice.payment_intent']
+						]
+					);
+					
+					if(empty($subscription)) {
+						$retVal[self::RESULT_FIELD_NAME] = false;
+						$retVal[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";						
 
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $tokenVerifyResult['id'],
-					'transaction_id' => $subscription->id,
-					'amount' => -$subscription->plan->amount,
-					'created_at' => time()
-				)
-			);
+					} else {
+						$this->UserTransaction_model->insertNewTransaction(
+							array(
+								'user_id' => $tokenVerifyResult['id'],
+								'transaction_id' => $subscription->id,
+								'amount' => -$subscription->plan->amount,
+								'created_at' => time()
+							)
+						);
 
-			$retVal[self::RESULT_FIELD_NAME] = true;
+						$retVal[self::RESULT_FIELD_NAME] = true;
+						$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for your subscription.";
+					}
+				}
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
 		}
 
 		echo json_encode($retVal);
+	}
+
+	/**
+	 * new Stripe subscription using payment intent
+	 */
+	public function subscribe() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				require_once('application/libraries/stripe-php/init.php');
+				\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+
+				$user = $users[0];
+
+				/**
+				 * create a new stripe user or retrieve the one associated with the user
+				 */
+				$customer = $user['stripe_customer_token'];
+				try {
+					if(is_null($customer) || empty($customer)) {
+						$newCustomer = \Stripe\Customer::create([
+							'email' => $user['user_email'], 
+							'name' => $user['user_name']
+						]);
+	
+						$customer = $newCustomer->id;	
+						$this->User_model->updateUserRecord(
+							array('stripe_customer_token' => $customer),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					}
+	
+					$ephemeralKey = \Stripe\EphemeralKey::create(
+						["customer" => $customer],
+						["stripe_version" => "2019-11-05"]
+					);
+
+					$subscription = \Stripe\Subscription::create([
+						'customer' => $customer,
+						'items' => [
+							['plan' => $this->config->item('stripe_price_id')]
+						],
+						'payment_behavior'=> 'default_incomplete',
+						'expand' => ['latest_invoice.payment_intent']
+					]);
+
+					$this->UserTransaction_model->insertNewTransaction(
+						array(
+							'user_id' => $tokenVerifyResult['id'],
+							'transaction_id' => $subscription->latest_invoice->payment_intent->id,
+							'amount' => $subscription->plan->amount,
+							'purchase_type' => 'subscription',
+							'created_at' => time(),
+							'updated_at' => time()
+						)
+					);
+
+					$return[self::RESULT_FIELD_NAME] = true;
+					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+					$return[self::EXTRA_FIELD_NAME] = array(
+						'customer_id' => $customer,
+						'ephemeral_key_secret' => $ephemeralKey->secret, 
+						'payment_intent_client_secret' => $subscription->latest_invoice->payment_intent->client_secret,
+						'publishable_key' => $this->config->item('stripe_key')
+					);
+
+				} catch (Exception $ex) {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";
+				}				
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
+		}
+
+		echo json_encode($return);
 	}
 
 	public function like_notifications()
@@ -670,6 +822,166 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	public function onboard_user() {
+		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+		
+		$token = $this->input->post('token');
+
+		$return = array();
+		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+			require_once('application/libraries/stripe-php/init.php');
+			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+			
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+			if(count($users)) {
+				$user = $users[0];
+
+				$connectId = $user['stripe_connect_account'];
+
+				// $businessProfile = array();
+				// if ($user['account_type']== '1') {
+				// 	$business = $this->UserBusiness_model->getBusinessInfo($user['id'])[0];
+				// 	$businessProfile = array(
+				// 		'name' => $business['business_name'],
+				// 		'product_description' => $business['business_bio'],
+				// 		'url' => $business['business_website']
+				// 	);
+				// }
+
+				if(is_null($connectId) || empty($connectId)) {					
+					// creating a merchant account
+					$account = \Stripe\Account::create([
+						'type' => 'express',
+						'email' => $user['user_email'],						
+						'business_type' => 'individual',
+						'country'=> 'GB',					
+						'capabilities' => [
+							'card_payments' => [
+								'requested' => true
+							], 
+							'transfers' => [
+								'requested' => true
+							]
+						]
+					]);
+		
+					if(!empty($account) && !is_null($account->id)) {	
+						$connectId = $account->id;
+
+						$this->User_model->updateUserRecord(
+							array('stripe_connect_account' => $connectId),
+							array('id' => $tokenVerifyResult['id'])
+						);
+					} 
+				}
+
+				if(!empty($connectId)) {
+					// set this on when SSL issue is fixed
+					$baseUrl = base_url();
+
+					// test
+					$baseUrl = "https://test.myatb.co.uk/";
+
+					$accountLink = \Stripe\AccountLink::create([
+						'account' => $connectId, 
+						'refresh_url' => $baseUrl.'payment/onboard?action=re-auth&token='.$token,
+						'return_url' => $baseUrl.'payment/onboard?action=return',
+						'type' => 'account_onboarding'
+					]);
+
+					$return[self::RESULT_FIELD_NAME] = true;
+					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB platform. Please use the link to complete your onboarding with Stripe.";
+					$return[self::EXTRA_FIELD_NAME] = array(
+						'account_link' => $accountLink->url,
+						'connect_id' => $connectId
+					);
+					
+				} else {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "It's been failed to proceed your onboarding program.";
+				}
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+			}
+			
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Authorization is required";
+		}
+
+		echo json_encode($return);
+	}
+
+	/**
+	 * retrieve a stripe account & check capailities
+	 */
+	public function retrieve_connect_user() {
+		$return = array();
+
+		try {
+			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
+			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+				$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+
+				if (count($users)) {
+					$user = $users[0];
+
+					$connect = $user['stripe_connect_account'];
+					if (!is_null($connect) && !empty($connect)) {
+						require_once('application/libraries/stripe-php/init.php');
+						\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+
+						try {
+							$account = \Stripe\Account::retrieve($connect);
+
+							if (!is_null($account)) {
+								$return[self::RESULT_FIELD_NAME] = true;
+								$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB.";
+								
+								$extra = array(
+									'charges_enabled' => $account->charges_enabled ?? false,
+									'payouts_enabled' => $account->payouts_enabled ?? false
+								);
+
+								$return[self::EXTRA_FIELD_NAME] = $extra;
+
+							} else {
+								$return[self::RESULT_FIELD_NAME] = false;
+								$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+							}
+
+						} catch (Exception $ex) {
+							$return[self::RESULT_FIELD_NAME] = false;
+							$return[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+						}
+
+					} else {
+						$return[self::RESULT_FIELD_NAME] = false;
+						$return[self::MESSAGE_FIELD_NAME] = "Please complete your onboarding to receive paymnets on ATB.";
+					}
+
+				} else {
+					$return[self::RESULT_FIELD_NAME] = false;
+					$return[self::MESSAGE_FIELD_NAME] = "We are not able to find you in the user record.";
+				}
+
+			} else {
+				$return[self::RESULT_FIELD_NAME] = false;
+				$return[self::MESSAGE_FIELD_NAME] = "The session has been expired.";
+			}
+
+		} catch (Exception $ex) {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Authorization is required.";
+		}
+		
+		echo json_encode($return);
+	}
+
 	public function add_connect_account()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
@@ -703,112 +1015,177 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
-	public function make_payment()
-	{
+	public function checkout() {
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
 		$retVal = array();
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
-			$chargeAmount = $this->input->post('amount');
+			/**
+			 * validate the user/buyer
+			 */
+			$users = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+			if (count($users)) {				
+				$user = $users[0];
 
-			$fee = round((($chargeAmount / 100) * 5));
+				require_once('application/libraries/stripe-php/init.php');
+				\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
 
-			$toUserID = $this->input->post('toUserId');
+				$customer = $user['stripe_customer_token'];				
 
-			require_once('application/libraries/stripe-php/init.php');
-			\Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+				$toUserID = $this->input->post('toUserId');
+				$toUsers = $this->User_model->getOnlyUser(array('id' => $toUserID));
 
-			$customerToken = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
-			$touser = $this->User_model->getOnlyUser(array('id' => $toUserID));
+				if (count($toUsers)) {
+					$toUser = $toUsers[0];
 
-			$token = \Stripe\Token::create(
-				["customer" => $customerToken[0]['stripe_customer_token']],
-				["stripe_account" => $touser[0]['stripe_connect_account']]
-			);
-
-			$charge = \Stripe\Charge::create(
-				[
-					"amount" => $chargeAmount,
-					"currency" => "gbp",
-					"source" => $token->id,
-					"application_fee_amount" => $fee,
-				],
-				["stripe_account" => $touser[0]['stripe_connect_account']]
-			);
-
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $tokenVerifyResult['id'],
-					'transaction_id' => $charge->id,
-					'amount' => -$charge->amount,
-					'post_id' => $this->input->post('postId'),
-					'product_id' => $this->input->post('product_id'),
-					'variation_id' => $this->input->post('variation_id'),
-					'created_at' => time()
-				)
-			);
-
-			$this->UserTransaction_model->insertNewTransaction(
-				array(
-					'user_id' => $toUserID,
-					'transaction_id' => $charge->id,
-					'amount' => $charge->amount - $charge->application_fee_amount,
-					'post_id' => $this->input->post('postId'),
-					'product_id' => $this->input->post('product_id'),
-					'variation_id' => $this->input->post('variation_id'),
-					'created_at' => time()
-				)
-			);
+					$connectedAccount = $toUser['stripe_connect_account'];				
+					if (!is_null($connectedAccount) && !empty($connectedAccount)) {
+						try  {	
+							if (is_null($customer) || empty($customer)) {
+								$newCustomer = \Stripe\Customer::create([
+									'email' => $user['user_email'], 
+									'name' => $user['user_name']
+								]);
 			
-			$title = "";
-			$related_id = 0;
-			$type = 0;
-			
-			if (!is_null($this->input->post('postId')) && $this->input->post('postId') != 0) {
-				$title = $this->Post_model->getPostDetail($this->input->post('postId'))["title"];
-				$related_id = $this->input->post('product_id'); 
-				$updateResult = $this->Post_model->updatePostContent(
-					array(
-						'is_sold' => 1
-					),
-					array('id' => $this->input->post('postId'), 'post_type' => 2)
-				);
-			}
-			
-			if (!is_null($this->input->post('product_id')) && $this->input->post('product_id') != 0) {
-				$title = $this->Product_model->getProduct($this->input->post('product_id'))[0]["title"];
-				$related_id = $this->input->post('postId'); 
-				$this->Product_model->updateProduct(
-					array(
-						"stock_level" => $this->Product_model->getProduct($this->input->post('product_id'))[0]["stock_level"] - 1
-					),
-					array('id' => $this->input->post('id'))
-				);
-			}
-			
-			if (!is_null($this->input->post('variation_id')) && $this->input->post('variation_id') != 0) {
-				
-				$related_id = $this->input->post('variation_id'); 
-			}
+								$customer = $newCustomer->id;	
+								$this->User_model->updateUserRecord(
+									array('stripe_customer_token' => $customer),
+									array('id' => $tokenVerifyResult['id'])
+								);
+							}
 
-			$postContent = $this->Post_model->getPostDetail($this->input->post('postId'));
+							//2019-10-17
+							$ephemeralKey = \Stripe\EphemeralKey::create(
+								["customer" => $customer],
+								["stripe_version" => "2019-11-05"]
+							);
+							/**
+							 *	We are now using a payment method rather than source & token 
+							 */	
 
-			$this->NotificationHistory_model->insertNewNotification(
-				array(
-					'user_id' => $toUserID,
-					'type' => 6,
-					'related_id' => $related_id,
-					'read_status' => 0,
-                    'send_status' => 0,
-					'visible' => 1,
-					'text' => "Bought " . $title,
-					'name' => $customerToken[0]['user_name'],
-					'profile_image' => $customerToken[0]['pic_url'],
-					'updated_at' => time(),
-					'created_at' => time()
-				)
-			);
+							/**
+							 * You should be cloning the Payment method on the platform to a payment method on the connected account
+							 * https://stripe.com/docs/connect/cloning-customers-across-accounts
+							 * https://stripe.com/docs/payments/payment-methods/connect#cloning-payment-methods
+							 */
+							// clone the payment method to a connected account to create direct charges
+							/*
+							$cloned = \Stripe\PaymentMethod::create([
+								'customer' => $customer, 
+								'payment_method' => $paymentMethod
+							], ['stripe_account' => $connectedAccount]);*/
 
-			$retVal[self::RESULT_FIELD_NAME] = true;
+							$amount = round($this->input->post('amount')*100);
+							$fee = round((($amount / 100) * 5));
+
+							$paymentIntent = \Stripe\PaymentIntent::create([
+								'amount' => $amount,
+								'currency' => 'gbp', 
+								'application_fee_amount' => $fee,
+								'customer' => $customer,
+								'payment_method_types' => ['card'],
+								'transfer_data' => [
+									'destination' => $connectedAccount
+								]
+							]);
+
+							$productID = $this->input->post('product_id');
+							$variantID = $this->input->post('variation_id');
+							$serviceID = $this->input->post('service_id');			
+							$bookingID = $this->input->post('booking_id');
+
+							$quantity = $this->input->post('quantity');
+
+							$transaction = array(
+								'user_id' => $tokenVerifyResult['id'],
+								'destination' => $toUserID,
+								'transaction_id' => $paymentIntent->id,
+								'amount' => $amount,
+								'quantity' => $quantity,
+								'is_business' => $this->input->post('is_business'),
+								'delivery_option' => $this->input->post('delivery_option'),
+								'created_at' => time(),
+								'updated_at' => time()
+							);
+
+							if(!empty($variantID)){
+								$transaction['purchase_type'] = "product_variant";
+								$transaction['target_id'] = $variantID;
+
+							} else if(!empty($productID)){
+								$transaction['purchase_type'] = "product";
+								$transaction['target_id'] = $productID;
+
+							} else if(!empty($serviceID)){
+								$transaction['purchase_type'] = "service";
+								// $transaction['target_id'] = $serviceID;
+
+								// create a new booking with payment status pending temporarily
+								$business_user_id = $this->input->post('business_user_id');
+								$total_cost = $this->input->post('total_cost');
+								$booking_datetime = $this->input->post('booking_datetime');
+								$is_reminder_enabled = $this->input->post('is_reminder_enabled');
+								
+								$newBooking = array(
+									'service_id' => $serviceID,
+									'user_id' => $tokenVerifyResult['id'],
+									'business_user_id' => $business_user_id,									
+									'booking_datetime' => $booking_datetime,
+									'is_reminder_enabled' => $is_reminder_enabled,
+									'total_cost' => $total_cost,
+									'state' => 'pending', // creating a new booking temporarily
+									'created_at' => time(),
+									'updated_at' => time()
+								);
+
+								$created = $this->Booking_model->insertBooking($newBooking);
+								$transaction['target_id'] = $created;
+
+							} else if(!empty($bookingID)) {
+								$transaction['purchase_type'] = "booking";
+								$transaction['target_id'] = $bookingID;
+
+							} else {
+								$retVal[self::RESULT_FIELD_NAME] = false;
+								$retVal[self::MESSAGE_FIELD_NAME] = "Target id is required.";
+								echo json_encode($retVal);
+								exit(0);
+							}
+
+							$this->UserTransaction_model->insertNewTransaction($transaction);
+
+							$retVal[self::RESULT_FIELD_NAME] = true;
+							$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+							$retVal[self::EXTRA_FIELD_NAME] = array(
+								'customer_id' => $customer,
+								'ephemeral_key_secret' => $ephemeralKey->secret, 
+								'payment_intent_client_secret' => $paymentIntent->client_secret,
+								'publishable_key' => $this->config->item('stripe_key')
+							);
+
+						} catch (Exception $ex) {
+							$retVal[self::RESULT_FIELD_NAME] = false;
+							$retVal[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+
+							echo json_encode($retVal);
+							exit(0);
+						}					
+
+					} else {
+						$retVal[self::RESULT_FIELD_NAME] = false;
+						$retVal[self::MESSAGE_FIELD_NAME] = "We cannot send a payment to the seller at the moment as they don't have a payment source.";
+					}
+
+				} else {
+					$retVal[self::RESULT_FIELD_NAME] = false;
+					$retVal[self::MESSAGE_FIELD_NAME] = "The seller is unavailable.";
+				}
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "We can't find you in the user record.";
+			}			
+			
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
@@ -817,6 +1194,9 @@ class ProfileController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	/**
+	 * Adding a card
+	 */
 	public function add_payment()
 	{
 		$tokenVerifyResult = $this->verificationToken($this->input->post('token'));

@@ -105,6 +105,7 @@
     Route::group('/api/transaction', ['namespace' => 'api'], function() {
         Route::post('/get_purchases', 'TransactionController@get_purchases')->name('api.transaction.get_purchases');
         Route::post('/get_items_sold', 'TransactionController@get_items_sold')->name('api.transaction.get_items_sold');
+        Route::post('/all', 'TransactionController@get_transactions')->name('api.transaction.get_transactions');
     });
 
     Route::group('/api/profile', ['namespace' => 'api'], function() {
@@ -149,7 +150,7 @@
         Route::post('/getbusinessreview', 'ProfileController@getbusinessreview')->name('api.profile.getbusinessreview');
  	    Route::post('/add_connect_account', 'ProfileController@add_connect_account')->name('api.profile.add_connect_account');
 	    
-        Route::post('/make_payment', 'ProfileController@make_payment')->name('api.profile.make_payment');
+        Route::post('/checkout', 'ProfileController@checkout')->name('api.profile.checkout');
         Route::post('/make_cash_payment', 'ProfileController@make_cash_payment')->name('api.profile.make_cash_payment');
 
 	    Route::post('/get_transactions', 'ProfileController@getTransactions')->name('api.profile.getTransactions');
@@ -207,6 +208,10 @@
 
         // 4th May, 2022
         Route::post('/get_drafts', 'ProfileController@get_drafts')->name('api.profile.get_drafts');
+
+        Route::post('/onboard_user', 'ProfileController@onboard_user')->name('api.profile.onboard_user');
+        Route::post('/retrieve_connect_user', 'ProfileController@retrieve_connect_user')->name('api.profile.retrieve_connect_user');
+        Route::post('/subscribe', 'ProfileController@subscribe')->name('api.profile.subscribe');
     });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {
@@ -220,6 +225,10 @@
     Route::group('/payment', ['namespace' => 'payment'], function() {
         Route::get('/success', 'PaymentController@success')->name('payment.payment.success');
         Route::get('/cancel', 'PaymentController@cancel')->name('payment.payment.cancel');
+
+        Route::get('/onboard', 'PaymentController@onboard')->name('payment.payment.onboard');
+
+        Route::post('/stripe_hook', 'PaymentController@stripe_hook')->name('payment.payment.stripe_hook');
     });
     
     Route::group('api/search', ['namespace' => 'api'], function() {

@@ -526,10 +526,20 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+// $config['stripe_key'] = 'pk_test_RUmZEIci4CX1BpaYNFc07lSV';
+// $config['stripe_secret'] = 'sk_test_ituUjpvFGaQlRT1sHSAYpset';
 
+// $config['stripe_price_id'] = 'price_1LvTOyJCcOe9VEUxrXefvUnV';
+// $config['webhook_secret'] = 'whsec_uvMiVZYS4Du58Y2sCZgjjWkT6I7qvUzJ';
 
 $config['stripe_key'] = 'pk_test_vSm2y8pS6d0TXB2pZ4ppvLox';
 $config['stripe_secret'] = 'sk_test_6s7CUq8T7LJPgiqlrZUEa2Sk';
+$config['stripe_secret'] = 'sk_test_51CtFjlBbfMkRK41KQd012i6s4Czm8Uz7RBixkPZZz1fJ2zSKy2jNWWGYt0tbcNwBnKbq0cc2VotiDvHxaUiXxJ3D00ypHxzD3K';
+$config['webhook_secret'] = 'whsec_3ESgL5Ldbv6s9HlqtWFO3zubCO8OaFXj';
+
+// $config['stripe_price_id'] = 'price_1LzioHBbfMkRK41KaVxKSggq';
+$config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu';
+
 
 $config['braintree_environment'] = 'sandbox';
 $config['braintree_merchantId'] = 'm9pfp4w3g945hr3n';
