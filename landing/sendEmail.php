@@ -26,14 +26,14 @@
             $mail->isSMTP();                                            //Send using SMTP
             $mail->Host = "email-smtp.eu-west-2.amazonaws.com";                             //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'AKIAUJ7A46K5F3H2C6O6';                     //SMTP username
-            $mail->Password   = 'BM8MGaKSSUEuN7SvhwfY+fshlTcUpW74uMuhoQFDZhmo';                               //SMTP password
+            $mail->Username   = 'AKIAUJ7A46K5C7DYRA7F';                     //SMTP username
+            $mail->Password   = 'BNnfzw5tMYHK8BbxF0Z6TeAUgEfi5/rJBrAvlkvvyO2q';                               //SMTP password
             
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
             $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setfrom('noreply@myatb.co.uk', 'ATB');
+            $mail->setfrom('atbreply@myatb.co.uk', 'ATB');
             // function_alert( $surname);
             
             $mail->addAddress($email, $firstname . ' ' . $surname);     //Add a recipient

@@ -1434,21 +1434,6 @@ class PostController extends MY_Controller
 
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 
-			$content = '
-					<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
-						<span style="color: #808080; font-size: 18px;">Thank you for contacting the ATB admin team. Someone will get back to you as soon as possible.</span>
-					</p>
-					<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;">
-						<span style="color: #808080; font-size: 18px;"><b></b></span>
-					</p>';
-
-			$subject = 'ATB Admin Contacted';
-
-			$this->User_model->sendUserEmail($users[0]["user_email"], $subject, $content);
-
-			$retVal[self::RESULT_FIELD_NAME] = true;
-			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
-
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
@@ -1498,7 +1483,7 @@ class PostController extends MY_Controller
 
 				$postId = $this->input->post('post_id');
 				$posts = $this->Post_model->getPostInfo(array('id' => $postId));
-
+				$postUser = $this->User_model->getOnlyUser(array('id' => $posts[0]['user_id']));
 				$this->NotificationHistory_model->insertNewNotification(
 					array(
 						'user_id' => $posts[0]['user_id'],
@@ -1514,6 +1499,168 @@ class PostController extends MY_Controller
 						'created_at' => time()
 					)
 				);
+
+
+			$subject = "Reported post";
+
+			$content = '<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet" />
+			<!--<![endif]-->
+			<title>Subject: ATB - Reported post</title>
+			
+			<style type="text/css"> 
+			
+				body { padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#F8F8F8; -webkit-text-size-adjust:none }
+				p { padding:0 !important; margin:0 !important } 
+				table { border-spacing: 0 !important; border-collapse: collapse !important; table-layout: fixed !important;}
+				.container {width: 100%; max-width: 650px;}
+				.ExternalClass { width: 100%;}
+				.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%; }
+			
+				@media screen and (max-width: 650px) {
+					.wrapper {padding: 0 !important;}
+					.container { width: 100% !important; min-width: 100% !important; }
+					.border {display: none !important;}
+					.content {padding: 0 20px 50px !important;}
+					.box1 {padding: 55px 40px 50px !important;}
+					.social-btn {height: 35px; width: auto;}
+					.bottomNav a {font-size: 12px !important; line-height: 16px !important;}
+					.spacer {height: 61px !important;}
+				}
+			</style>
+			
+			
+			</head>
+			
+			<body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
+			<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it&#39ll show on the clients email listing. If not, it&#39ll take the first text of the email.</span>
+			
+			<table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
+				<tr>
+					<td align="center" valign="top" class="wrapper">
+						<!--[if (gte mso 9)|(IE)]>
+						<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+							<td>
+						<![endif]-->    
+						<table border="0" cellspacing="0" cellpadding="0" class="container">
+							<tr>
+								<td>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td style="background-color: #A6BFDE;" valign="top" align="center" class="content">
+												<!--[if gte mso 9]>
+												<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
+													<v:fill type="frame" src="images/background.jpg" color="#ABC1DE" />
+													<v:textbox inset="0,0,0,0">
+												<![endif]-->
+			
+													<table width="100%" border="0" cellspacing="0" cellpadding="0">
+														<tr>
+															<td align="center" style="padding: 53px 20px 40px">
+																<a href="#" target="_blank"><img src="'.base_url().'assets/email/images/logo.png" width="153" height="47" border="0" alt="" /></a>
+															</td>
+														</tr>
+													</table>
+			
+													<table width="100%" border="0" cellspacing="0" cellpadding="0">
+														<tr>
+															<td valign="bottom" >
+																<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																	<tr>
+																		<td height="98">
+																			<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+																				<tr><td  height="38" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">&nbsp;</td></tr>
+																				<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
+																			</table>
+																		</td>
+																		<td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="'.base_url().'assets/email/images/report_icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
+																		<td height="98">
+																			<table width="100%" border="0" cellspacing="0" cellpadding="0"  style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
+																				<tr><td  height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
+																				<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;border-radius: 0 5px 0 0;">&nbsp;</td></tr>
+																			</table>
+																		</td>
+																	</tr>
+																</table>
+																<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																	<tr>
+																		<td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
+																			<table border="0" cellspacing="0" cellpadding="0">
+																				<tr>
+																					<td><h1 style="color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">One of your posts was reported and has been removed from the platform.</h1>
+																				  <br>
+																				  <h2 style="margin: 0; color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;">Please contact <a href="mailto:atbadmin@myatb.com" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;text-decoration: underline;font-size: inherit;text-align: center;color: #a6bfde;">atbadmin@myatb.com</a> if you wish to dispute.</h2><br></td>
+																				</tr>
+																				<tr>
+																					<td>
+																					<p style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">*If this email went to junk please add us to your safe senders list!</p></td>
+																				</tr>																	
+																				<tr>
+																					<td>&nbsp;</td>
+																				</tr>
+																			</table>
+																		</td>
+																	</tr>
+																</table>
+																<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="border-radius: 0 0 5px 5px ">
+																	<tr>
+																		<td width="100%" style="padding: 0px 20px;">
+																			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="bottomNav">
+																				<tr><td colspan="3" style="padding-top: 30px; padding-bottom: 10px"></td></tr>
+																				<tr>
+																					<td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
+																					<td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
+																					<td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
+																				</tr>
+																				
+																			</table>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td width="100%" style="padding: 20px 20px 45px;">
+																			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																				<tr>
+																					<td align="center"><a href="#" style="color:#AEC3DE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:28px; text-align:center; text-decoration: none;">ATB All rights reserved</a> </td>
+																				</tr>
+																			</table>
+																		</td>
+																	</tr>
+																</table>
+															</td>
+														</tr>
+													</table>
+			
+												<!--[if gte mso 9]>
+													</v:textbox>
+													</v:rect>
+												<![endif]-->
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+						<!--[if (gte mso 9)|(IE)]>
+							</td>
+							</tr>
+						</table>
+						<![endif]-->
+					</td>
+				</tr>
+			</table>
+			
+			</body>
+			</html>		
+				';
+			
+			$this->sendEmail(
+				$postUser[0]["user_email"],
+				$subject,
+				$content);
+		
+				$retVal[self::RESULT_FIELD_NAME] = true;
+				$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+	
 			}	
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
