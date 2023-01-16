@@ -197,7 +197,7 @@ class BookingController extends MY_Controller {
 						$businessUser['user_email'], 
 						$bookingId, 
 						$users[0]['pic_url'], 
-						$users[0]['first_name'].' '.$users[0]['last_name'],
+						$businessUser['first_name'].' '.$businessUser['last_name'],
 						$users[0]['user_name'], 
 						$services[0]['title'],
 						$bookingDate, 

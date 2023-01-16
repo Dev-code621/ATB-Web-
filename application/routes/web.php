@@ -331,6 +331,7 @@
 
 });
 
+
     Route::group('admin/business', ['namespace' => 'admin'], function() {
     Route::get('/', 'BusinessController@index')->name('admin.business.index');
     Route::get('/detail/{businessid}', 'BusinessController@businessDetail')->name('admin.business.detail');
