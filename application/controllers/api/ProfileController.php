@@ -1543,7 +1543,8 @@ class ProfileController extends MY_Controller
 			</body>
 			</html>
 			';
-			$user =  $this->User_model->getUserProfileDTO( $tokenVerifyResult['id']);
+			$user = $this->User_model->getOnlyUser(array('id' => $tokenVerifyResult['id']));
+			// $user =  $this->User_model->getUserProfileDTO($tokenVerifyResult['id']);
 
 			$this->sendEmail(
 				$user[0]['user_email'],
