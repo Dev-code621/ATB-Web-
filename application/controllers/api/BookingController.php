@@ -785,11 +785,11 @@ class BookingController extends MY_Controller {
 					if (count($bookings) > 0) {
 						$services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
 
+						date_default_timezone_set('UTC');
+						$dateTime = date('jS F g:i A', $bookings[0]['booking_datetime']);
+
 						if ($is_requested_by == 1) {
 							$business = $this->UserBusiness_model->getBusinessInfo($verifyTokenResult['id'])[0];
-
-							date_default_timezone_set('UTC');
-							$dateTime = date('jS F g:i A', $bookings[0]['booking_datetime']);
 
 							$this->NotificationHistory_model->insertNewNotification(
 								array(
