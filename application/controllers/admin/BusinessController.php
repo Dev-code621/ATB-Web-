@@ -238,7 +238,7 @@ class BusinessController extends MY_Controller {
                                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
                                                         <td align="center" style="padding: 53px 20px 40px">
-                                                            <a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/images/logo.png" width="153" height="47" border="0" alt="" /></a>
+                                                            <a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/logo.png" width="153" height="47" border="0" alt="" /></a>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -254,7 +254,7 @@ class BusinessController extends MY_Controller {
                                                                             <tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
                                                                         </table>
                                                                     </td>
-                                                                    <td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="'.base_url().'assets/email/booking/images/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
+                                                                    <td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="'.base_url().'assets/email/booking/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
                                                                     <td height="98">
                                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0"  style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
                                                                             <tr><td  height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>

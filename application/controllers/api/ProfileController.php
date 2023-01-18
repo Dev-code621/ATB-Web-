@@ -1440,7 +1440,7 @@ class ProfileController extends MY_Controller
 													<table width="100%" border="0" cellspacing="0" cellpadding="0">
 														<tr>
 															<td align="center" style="padding: 53px 20px 40px">
-																<a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/images/logo.png" width="153" height="47" border="0" alt="" /></a>
+																<a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/logo.png" width="153" height="47" border="0" alt="" /></a>
 															</td>
 														</tr>
 													</table>
@@ -1456,7 +1456,7 @@ class ProfileController extends MY_Controller
 																				<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
 																			</table>
 																		</td>
-																		<td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="'.base_url().'assets/email/booking/images/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
+																		<td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="'.base_url().'assets/email/booking/icon.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;" /></td>
 																		<td height="98">
 																			<table width="100%" border="0" cellspacing="0" cellpadding="0"  style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
 																				<tr><td  height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
@@ -1479,8 +1479,8 @@ class ProfileController extends MY_Controller
 																					  <p style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">&nbsp;</p>
 																					  <table width="100" align="center">
 																							<tr>
-																							<td align="center"><a href=""><img src="'.base_url().'assets/email/booking/images/instagram.png" alt="" width="35"></a></td>
-																							<td align="center"><a href=""><img src="'.base_url().'assets/email/booking/images/facebook.png" alt="" width="35"></a></td>
+																							<td align="center"><a href=""><img src="'.base_url().'assets/email/booking/instagram.png" alt="" width="35"></a></td>
+																							<td align="center"><a href=""><img src="'.base_url().'assets/email/booking/facebook.png" alt="" width="35"></a></td>
 																							</tr>
 																						</table>
 																					  <p>&nbsp;</p>
@@ -4536,7 +4536,7 @@ class ProfileController extends MY_Controller
 														<h1 style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: bold;font-size: 30px;line-height: 31px;text-align: left;color: #fff; margin:0;">Hi '.$buyer_name.',</h1>
 														<h2 style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 20px;text-align: left;color: #fff; margin:0;">You have a new booking!</h2>
 													</td>
-													<td width="35%" style=""><a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/images/logo.png" width="153" height="47" border="0" alt="ATB Logo" /></a></td>	
+													<td width="35%" style=""><a href="#" target="_blank"><img src="'.base_url().'assets/email/booking/logo.png" width="153" height="47" border="0" alt="ATB Logo" /></a></td>	
 												</tr>
 												</table>
 												<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -4567,8 +4567,8 @@ class ProfileController extends MY_Controller
 																							</td>
 																							<td class="p100" align="right" width="200">
 																								<table border="0" cellspacing="0" cellpadding="0" align="right" class="t100" width="100%">
-																									<tr><td><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;"><img src="'.base_url().'assets/email/booking/images/message.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Message User</a> </td></tr>
-																									<tr><td valign="middle"><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700"><img src="'.base_url().'assets/email/booking/images/booking.png" width="20" height="16" alt="Booking icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Manage this booking</a> </td></tr>
+																									<tr><td><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;"><img src="'.base_url().'assets/email/booking/message.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Message User</a> </td></tr>
+																									<tr><td valign="middle"><a href="#" style="color:#535353;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700"><img src="'.base_url().'assets/email/booking/booking.png" width="20" height="16" alt="Booking icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;" /> Manage this booking</a> </td></tr>
 																								</table>
 																							</td>
 																						</tr>
@@ -4595,15 +4595,15 @@ class ProfileController extends MY_Controller
 																						  <td class="" width="187">
 																								<p style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
 																								<p style="color: #787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">
-																									<span><img src="'.base_url().'assets/email/booking/images/calendar.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" />'.$bookingDate.'</span> &nbsp;
-																									<span><img src="'.base_url().'assets/email/booking/images/clock.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" /> '.$bookingTime.'</span></p>
+																									<span><img src="'.base_url().'assets/email/booking/calendar.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" />'.$bookingDate.'</span> &nbsp;
+																									<span><img src="'.base_url().'assets/email/booking/clock.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;" /> '.$bookingTime.'</span></p>
 																							</td>
 																							<td width="" class="p100">
 																								<p style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Order Number:</p>
 																								<p style="color: #787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">'.$bookingID.'</p>
 																						  </td>
 																							<td width="" class="" style="">
-																								<a href="#" target="_blank" style="font-family: &#39Roboto&#39, Arial, sans-serif; font-weight: normal; font-size: 13px; line-height: 13px; color: #fff; border-radius: 5px; background: #a6bfde; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16); display: block; padding: 10px; text-decoration: none; text-align: center; width: 100%;" ><img src="'.base_url().'assets/email/booking/images/addcalendar.png" width="14" height="16" alt="" style="display: inline !important; vertical-align: middle; margin-right: 5px;"/> Add to calendar</a>
+																								<a href="#" target="_blank" style="font-family: &#39Roboto&#39, Arial, sans-serif; font-weight: normal; font-size: 13px; line-height: 13px; color: #fff; border-radius: 5px; background: #a6bfde; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16); display: block; padding: 10px; text-decoration: none; text-align: center; width: 100%;" ><img src="'.base_url().'assets/email/booking/addcalendar.png" width="14" height="16" alt="" style="display: inline !important; vertical-align: middle; margin-right: 5px;"/> Add to calendar</a>
 																							</td>
 																						</tr>
 																					</table>
