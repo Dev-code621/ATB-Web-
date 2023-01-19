@@ -1366,6 +1366,8 @@ class ProfileController extends MY_Controller
 				$retVal[self::RESULT_FIELD_NAME] = true;
 				$retVal[self::MESSAGE_FIELD_NAME] = "Successfully Updated";
 			}
+
+			/*
 			$subject = 'Business Service Accepted for ATB';
 			$content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 			<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -1551,7 +1553,7 @@ class ProfileController extends MY_Controller
 				$subject,
 				$content);
 			   
-
+		*/
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
