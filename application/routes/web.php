@@ -106,6 +106,7 @@
         Route::post('/get_purchases', 'TransactionController@get_purchases')->name('api.transaction.get_purchases');
         Route::post('/get_items_sold', 'TransactionController@get_items_sold')->name('api.transaction.get_items_sold');
         Route::post('/all', 'TransactionController@get_transactions')->name('api.transaction.get_transactions');
+        Route::post('/express', 'TransactionController@view_express')->name('api.transaction.express');
     });
 
     Route::group('/api/profile', ['namespace' => 'api'], function() {
