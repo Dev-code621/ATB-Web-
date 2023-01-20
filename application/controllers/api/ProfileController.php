@@ -746,7 +746,7 @@ class ProfileController extends MY_Controller
 
 				} catch (Exception $ex) {
 					$return[self::RESULT_FIELD_NAME] = false;
-					$return[self::MESSAGE_FIELD_NAME] = "It's been failed to create your subscription.";
+					$return[self::MESSAGE_FIELD_NAME] = $ex->getMessage();//"It's been failed to create your subscription.";
 				}				
 
 			} else {
