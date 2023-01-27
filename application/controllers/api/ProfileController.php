@@ -1074,94 +1074,252 @@ class ProfileController extends MY_Controller
 								'customer' => $customer, 
 								'payment_method' => $paymentMethod
 							], ['stripe_account' => $connectedAccount]);*/
-
-							$amount = round($this->input->post('amount')*100);
-							$fee = round((($amount / 100) * 5));
-
-							$paymentIntent = \Stripe\PaymentIntent::create([
-								'amount' => $amount,
-								'currency' => 'gbp', 
-								'application_fee_amount' => $fee,
-								'customer' => $customer,
-								'payment_method_types' => ['card'],
-								'transfer_data' => [
-									'destination' => $connectedAccount
-								]
-							]);
-
+							
+							// get the amount
 							$productID = $this->input->post('product_id');
-							$variantID = $this->input->post('variation_id');
+							$variationID = $this->input->post('variation_id');
+							$deliveryOption = $this->input->post('delivery_option');
+
 							$serviceID = $this->input->post('service_id');			
 							$bookingID = $this->input->post('booking_id');
 
-							$quantity = $this->input->post('quantity');
+							$amount = 0;
+							$checkoutType = '';
 
-							$transaction = array(
-								'user_id' => $tokenVerifyResult['id'],
-								'destination' => $toUserID,
-								'transaction_id' => $paymentIntent->id,
-								'amount' => $amount,
-								'quantity' => $quantity,
-								'is_business' => $this->input->post('is_business'),
-								'delivery_option' => $this->input->post('delivery_option'),
-								'created_at' => time(),
-								'updated_at' => time()
-							);
+							$isBusiness = 0;	// used in creating a transaction history
+							$totalCost = 0; 	// used in creating a booking
+							// user purchases a product
+							if (!is_null($productID) && !empty($productID)) {
+								$products = $this->Product_model->getProduct($productID);
+								if (count($products)) {
+									// check stock
+									if ($products[0]['stock_level'] <= 0) {
+										$retVal[self::RESULT_FIELD_NAME] = false;
+										$retVal[self::MESSAGE_FIELD_NAME] = "The product is out of stock now.";
+										echo json_encode($retVal);
+										exit(0);
+									}
 
-							if(!empty($variantID)){
-								$transaction['purchase_type'] = "product_variant";
-								$transaction['target_id'] = $variantID;
+									$amount = $products[0]['price'];
 
-							} else if(!empty($productID)){
-								$transaction['purchase_type'] = "product";
-								$transaction['target_id'] = $productID;
+									if ($deliveryOption == '5') {
+										$amount += $products[0]['delivery_cost'];
+									}
 
-							} else if(!empty($serviceID)){
-								$transaction['purchase_type'] = "service";
-								// $transaction['target_id'] = $serviceID;
+									$checkoutType = 'product';
+									$isBusiness = $products[0]['poster_profile_type'];
 
-								// create a new booking with payment status pending temporarily
-								$business_user_id = $this->input->post('business_user_id');
-								$total_cost = $this->input->post('total_cost');
-								$booking_datetime = $this->input->post('booking_datetime');
-								$is_reminder_enabled = $this->input->post('is_reminder_enabled');
-								
-								$newBooking = array(
-									'service_id' => $serviceID,
+								} else {
+									$retVal[self::RESULT_FIELD_NAME] = false;
+									$retVal[self::MESSAGE_FIELD_NAME] = "Sorry, we were not able to find the product in our record.";
+									echo json_encode($retVal);
+									exit(0);
+								}
+							}
+
+							// user pruchases a product variant
+							if (!is_null($variationID) && !empty($variationID)) {
+								$variations = $this->Product_model->getProductVariation($variationID);
+								if(count($variations)) {
+									// check stock
+									if ($variations[0]['stock_level'] <= 0) {
+										$retVal[self::RESULT_FIELD_NAME] = false;
+										$retVal[self::MESSAGE_FIELD_NAME] = "The product is out of stock now.";
+										echo json_encode($retVal);
+										exit(0);
+									}
+
+									$amount = $variations[0]['price'];
+
+									$products = $this->Product_model->getProduct($variations[0]['product_id']);
+									if ($deliveryOption == '5') {										
+										$amount += $products[0]['delivery_cost'];
+									}
+
+									$checkoutType = 'variation';
+									$isBusiness = $products[0]['poster_profile_type'];
+
+								} else {
+									$retVal[self::RESULT_FIELD_NAME] = false;
+									$retVal[self::MESSAGE_FIELD_NAME] = "Sorry, we were not able to find the product in our record.";
+									echo json_encode($retVal);
+									exit(0);
+								}
+							}
+
+							// user pays a deposit 
+							if (!is_null($serviceID) && !empty($serviceID)) {
+								$services = $this->UserService_model->getServiceInfo($serviceID);
+								if (count($services)) {
+									$amount = $services[0]['deposit_amount'];
+
+									$checkoutType = 'deposit';
+									$isBusiness = $services[0]['poster_profile_type'];
+									$totalCost = $services[0]['price'];
+
+								} else {
+									$retVal[self::RESULT_FIELD_NAME] = false;
+									$retVal[self::MESSAGE_FIELD_NAME] = "Sorry, we were not able to find the service in our record.";
+									echo json_encode($retVal);
+									exit(0);
+								}
+							}
+
+							// user pays the pending balance
+							if (!is_null($bookingID) && !empty($bookingID)) {
+								$bookings = $this->Booking_model->getBooking($bookingID);
+
+								if (count($bookings)) {
+									$services= $this->UserService_model->getServiceInfo($bookings[0]['service_id']);
+									// a simple solution would be to substract the deposit amount, however, can pay more than twice
+									// $amount = $services[0]['price'] - $services[0]['deposit_amount'];
+
+									// the best solution is to get & sum all transaction on the booking and substract from the total amount
+									$transactions = $this->UserTransaction_model->getBookingTransactions(
+										array(
+											'target_id' => $bookingID,
+											'status' => 1
+										));
+									
+									$paidAmount = 0;
+									foreach ($transactions as $transaction) {
+										$paidAmount += $transaction['amount'];
+									}
+									
+									$amount = $services[0]['price'] - $paidAmount/100.0;
+									$checkoutType = 'booking';
+									$isBusiness = $services[0]['poster_profile_type'];
+									$totalCost = $services[0]['price'];
+
+								} else {
+									$retVal[self::RESULT_FIELD_NAME] = false;
+									$retVal[self::MESSAGE_FIELD_NAME] = "Sorry, we were not able to find the boking in our record.";
+									echo json_encode($retVal);
+									exit(0);
+								}
+							}
+
+							if ($amount > 0) {
+								// the amount is valid to proceed a checkout
+
+								// an ATB commission fee
+								$fee = round($amount*3.6);								
+								switch ($checkoutType) {
+									case 'product':
+									case 'variation':
+										$amount = round($amount*100 + $amount*3.6 + $amount*1.4 + 20);
+										break;
+
+									case 'deposit':
+										$amount = round($amount*100);
+
+										break;
+
+									case 'booking':
+										$amount = round($amount*100);
+
+										break;
+									default: break;
+								}
+
+								$paymentIntent = array();
+								if ($checkoutType == 'deposit') {
+									$paymentIntent = \Stripe\PaymentIntent::create([
+										'amount' => $amount,
+										'currency' => 'gbp',
+										'customer' => $customer,
+										'payment_method_types' => ['card']
+									]);
+
+								} else {
+									$paymentIntent = \Stripe\PaymentIntent::create([
+										'amount' => $amount,
+										'currency' => 'gbp', 
+										'application_fee_amount' => $fee,
+										'customer' => $customer,
+										'payment_method_types' => ['card'],
+										'transfer_data' => [
+											'destination' => $connectedAccount
+										]
+									]);
+								}
+							
+								// payment intent was created or got an exception if the request is invalid
+								// do addition required actions once a payment intent is created
+
+								// creating a transaction history
+								$transaction = array(
 									'user_id' => $tokenVerifyResult['id'],
-									'business_user_id' => $business_user_id,									
-									'booking_datetime' => $booking_datetime,
-									'is_reminder_enabled' => $is_reminder_enabled,
-									'total_cost' => $total_cost,
-									'state' => 'pending', // creating a new booking temporarily
+									'destination' => $toUserID,
+									'transaction_id' => $paymentIntent->id,
+									'amount' => $amount,
+									'is_business' => $isBusiness,
+									'delivery_option' => $deliveryOption,
 									'created_at' => time(),
 									'updated_at' => time()
 								);
 
-								$created = $this->Booking_model->insertBooking($newBooking);
-								$transaction['target_id'] = $created;
+								
+								switch ($checkoutType) {
+									case 'product':
+										$transaction['purchase_type'] = "product";
+										$transaction['target_id'] = $productID;
+										$transaction['quantity'] = $this->input->post('quantity');
+										break;
 
-							} else if(!empty($bookingID)) {
-								$transaction['purchase_type'] = "booking";
-								$transaction['target_id'] = $bookingID;
+									case 'variation':
+										$transaction['purchase_type'] = "product_variant";
+										$transaction['target_id'] = $variationID;
+										$transaction['quantity'] = $this->input->post('quantity');
+										break;
+
+									case 'deposit':
+										$transaction['purchase_type'] = "service";
+										// $transaction['target_id'] = $serviceID;
+
+										// create a new booking with payment status pending temporarily
+										// $business_user_id = $this->input->post('business_user_id');
+										// $total_cost = $this->input->post('total_cost');
+										$booking_datetime = $this->input->post('booking_datetime');
+										// $is_reminder_enabled = $this->input->post('is_reminder_enabled');
+										
+										$newBooking = array(
+											'service_id' => $serviceID,
+											'user_id' => $tokenVerifyResult['id'],
+											'business_user_id' => $toUserID,									
+											'booking_datetime' => $booking_datetime,
+											// 'is_reminder_enabled' => $is_reminder_enabled,
+											'total_cost' => $totalCost,
+											'state' => 'pending', // creating a new booking temporarily
+											'created_at' => time(),
+											'updated_at' => time()
+										);
+
+										$created = $this->Booking_model->insertBooking($newBooking);
+										$transaction['target_id'] = $created;
+										break;
+
+									case 'booking':
+										$transaction['purchase_type'] = "booking";
+										$transaction['target_id'] = $bookingID;
+										break;
+								}
+
+								$this->UserTransaction_model->insertNewTransaction($transaction);
+
+								$retVal[self::RESULT_FIELD_NAME] = true;
+								$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+								$retVal[self::EXTRA_FIELD_NAME] = array(
+									'customer_id' => $customer,
+									'ephemeral_key_secret' => $ephemeralKey->secret, 
+									'payment_intent_client_secret' => $paymentIntent->client_secret,
+									'publishable_key' => $this->config->item('stripe_key')
+								);
 
 							} else {
 								$retVal[self::RESULT_FIELD_NAME] = false;
-								$retVal[self::MESSAGE_FIELD_NAME] = "Target id is required.";
-								echo json_encode($retVal);
-								exit(0);
+								$retVal[self::MESSAGE_FIELD_NAME] = "The amount is invalid.";
 							}
-
-							$this->UserTransaction_model->insertNewTransaction($transaction);
-
-							$retVal[self::RESULT_FIELD_NAME] = true;
-							$retVal[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
-							$retVal[self::EXTRA_FIELD_NAME] = array(
-								'customer_id' => $customer,
-								'ephemeral_key_secret' => $ephemeralKey->secret, 
-								'payment_intent_client_secret' => $paymentIntent->client_secret,
-								'publishable_key' => $this->config->item('stripe_key')
-							);
 
 						} catch (Exception $ex) {
 							$retVal[self::RESULT_FIELD_NAME] = false;
