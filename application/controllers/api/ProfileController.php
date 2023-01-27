@@ -715,6 +715,10 @@ class ProfileController extends MY_Controller
 						["stripe_version" => "2019-11-05"]
 					);
 
+					// to test
+					// $trialEnd = strtotime("+3 minutes");					
+					// real
+					// $trialEnd = strtotime("+1 week");
 					$subscription = \Stripe\Subscription::create([
 						'customer' => $customer,
 						'items' => [
@@ -722,7 +726,11 @@ class ProfileController extends MY_Controller
 						],
 						'payment_behavior'=> 'default_incomplete',
 						'expand' => ['latest_invoice.payment_intent']
+						// 'trial_end' => $trialEnd
 					]);
+
+					// echo $subscription;
+					// exit();
 
 					$this->UserTransaction_model->insertNewTransaction(
 						array(
@@ -1203,19 +1211,22 @@ class ProfileController extends MY_Controller
 								// the amount is valid to proceed a checkout
 
 								// an ATB commission fee
-								$fee = round($amount*3.6);								
+								$fee = 0;								
 								switch ($checkoutType) {
 									case 'product':
 									case 'variation':
+										$fee = round($amount*3.6 + $amount*1.4 + 20);
 										$amount = round($amount*100 + $amount*3.6 + $amount*1.4 + 20);
 										break;
 
 									case 'deposit':
+										$fee = round($amount*3.6);
 										$amount = round($amount*100);
 
 										break;
 
 									case 'booking':
+										$fee = round($amount*3.6);
 										$amount = round($amount*100);
 
 										break;
