@@ -454,8 +454,18 @@ class PaymentController extends MY_Controller {
                                         )
                                     );    
                                     
-                                    
+                                    // mark the booking as completed
+                                    $this->Booking_model->updateBooking(
+                                        array('state' => 'complete'),
+                                        array('id' => $bookingId)
+                                    );
 
+                                    $booking = $this->Booking_model->getBooking($bookingId)[0];
+                                    $provider = $this->User_model->getOnlyUser(array('id' => $booking['business_user_id']))[0];
+
+                                    $email = $provider['user_email'];
+                                    $userName = $provider['first_name'].' '. $provider['last_name'];
+                                    // $this->bookingCompleteEmail($email, $userName);
                                 }
 
 

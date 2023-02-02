@@ -24,8 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$base_url = (is_https() ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
- 		.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on' ? "https":"http")."://$_SERVER[HTTP_HOST]";
+// $base_url = (is_https() ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
+//  		.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
 //$config['base_url'] = 'https://admin.myatb.co.uk'; //Admin panel
 //$config['base_url'] = 'https://api.myatb.co.uk'; //Live API
 
