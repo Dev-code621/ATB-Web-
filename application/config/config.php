@@ -534,17 +534,17 @@ $config['proxy_ips'] = '';
 // $config['webhook_secret'] = 'whsec_uvMiVZYS4Du58Y2sCZgjjWkT6I7qvUzJ';
 
 // Sandbox
-$config['stripe_key'] = 'pk_test_vSm2y8pS6d0TXB2pZ4ppvLox';
-$config['stripe_secret'] = 'sk_test_51CtFjlBbfMkRK41KQd012i6s4Czm8Uz7RBixkPZZz1fJ2zSKy2jNWWGYt0tbcNwBnKbq0cc2VotiDvHxaUiXxJ3D00ypHxzD3K';
-$config['webhook_secret'] = 'whsec_3ESgL5Ldbv6s9HlqtWFO3zubCO8OaFXj';
+// $config['stripe_key'] = 'pk_test_vSm2y8pS6d0TXB2pZ4ppvLox';
+// $config['stripe_secret'] = 'sk_test_51CtFjlBbfMkRK41KQd012i6s4Czm8Uz7RBixkPZZz1fJ2zSKy2jNWWGYt0tbcNwBnKbq0cc2VotiDvHxaUiXxJ3D00ypHxzD3K';
+// $config['webhook_secret'] = 'whsec_3ESgL5Ldbv6s9HlqtWFO3zubCO8OaFXj';
 
-$config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu';
+// $config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu';
 
 // Stripe Live
-// $config['stripe_key'] = 'pk_live_Grn3O7feoNcAzLphl1fKXSwu';
-// $config['stripe_secret'] = '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';
-// $config['webhook_secret'] = 'whsec_gwG31dz6a4DiwBeO3LnwDnO1ApQ6TsBe';
-// $config['stripe_price_id'] = 'price_1MSOOzBbfMkRK41KdniqhUeM';
+$config['stripe_key'] = 'pk_live_Grn3O7feoNcAzLphl1fKXSwu';
+$config['stripe_secret'] = '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';
+$config['webhook_secret'] = 'whsec_gwG31dz6a4DiwBeO3LnwDnO1ApQ6TsBe';
+$config['stripe_price_id'] = 'price_1MSOOzBbfMkRK41KdniqhUeM';
 
 
 $config['braintree_environment'] = 'sandbox';

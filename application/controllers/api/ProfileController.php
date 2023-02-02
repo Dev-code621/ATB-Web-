@@ -1211,11 +1211,10 @@ class ProfileController extends MY_Controller
 								// the amount is valid to proceed a checkout
 
 								// an ATB commission fee
-								$fee = 0;								
+								$fee = round($amount*3.6 + $amount*1.4 + 20);							
 								switch ($checkoutType) {
 									case 'product':
-									case 'variation':
-										$fee = round($amount*3.6 + $amount*1.4 + 20);
+									case 'variation':										
 										$amount = round($amount*100 + $amount*3.6 + $amount*1.4 + 20);
 										break;
 
@@ -1226,7 +1225,6 @@ class ProfileController extends MY_Controller
 										break;
 
 									case 'booking':
-										$fee = round($amount*3.6);
 										$amount = round($amount*100);
 
 										break;
