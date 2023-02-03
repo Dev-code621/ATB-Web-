@@ -213,6 +213,8 @@
         Route::post('/onboard_user', 'ProfileController@onboard_user')->name('api.profile.onboard_user');
         Route::post('/retrieve_connect_user', 'ProfileController@retrieve_connect_user')->name('api.profile.retrieve_connect_user');
         Route::post('/subscribe', 'ProfileController@subscribe')->name('api.profile.subscribe');
+
+        Route::post('/delete_account', 'ProfileController@deleteAccount')->name('api.profile.delete_account');
     });
     
     Route::group('/api/auction', ['namespace' =>'api'], function() {

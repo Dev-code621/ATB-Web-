@@ -5920,5 +5920,18 @@ class ProfileController extends MY_Controller
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
 		}
 	}
+
+	public function deleteAccount() {
+		$retVal = array();
+		try {
+			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+
+		} catch (Exception $ex) {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+		}
+
+		echo json_encode($retVal);
+	}
 }
 
