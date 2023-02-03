@@ -666,11 +666,11 @@ class BookingController extends MY_Controller {
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">£'.number_format($total, 2).'</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;'.number_format($total, 2).'</td>
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-£'.number_format($deposit, 2).'</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;'.number_format($deposit, 2).'</td>
 																				</tr>
                                                                                 	<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
@@ -678,7 +678,7 @@ class BookingController extends MY_Controller {
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																					<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">£'.number_format($total-$deposit, 2).'</td>
+																					<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit, 2).'</td>
 																				</tr>
 																			</table>
 																		</td>
@@ -1157,11 +1157,11 @@ class BookingController extends MY_Controller {
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">£'.number_format($total, 2).'</td>
+																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;'.number_format($total, 2).'</td>
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-£'.number_format($deposit, 2).'</td>
+																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;'.number_format($deposit, 2).'</td>
 																						</tr>
 																							<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
@@ -1169,7 +1169,7 @@ class BookingController extends MY_Controller {
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																							<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">£'.number_format($total-$deposit, 2).'</td>
+																							<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit, 2).'</td>
 																						</tr>
 																					</table>
 																				</td>

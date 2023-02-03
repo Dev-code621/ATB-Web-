@@ -37,7 +37,7 @@ class ProfileController extends MY_Controller
 						'read_status' => 0,
 						'send_status' => 0,
 						'visible' => 1,
-						'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of £" . number_format($amount, 2),
+						'text' =>  " has booked " . $services[0]['title'] . " and paid a deposit of &pound;" . number_format($amount, 2),
 						'name' => $users[0]['user_name'],
 						'profile_image' => $users[0]['pic_url'],
 						'updated_at' => time(),
@@ -3524,14 +3524,14 @@ class ProfileController extends MY_Controller
                                                                                     <table width="100%" style="margin-top: 20px;" cellpadding="10" cellspacing="10">
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
                                                                                             <td width="57%" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Price, starting from</td>
-                                                                                            <td width="43%" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>£'.number_format($service['price'], 2).'</strong></td>
+                                                                                            <td width="43%" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>&pound;'.number_format($service['price'], 2).'</strong></td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td bgcolor="#F8F8F8"></td>
                                                                                         </tr>
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
                                                                                             <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Needs a deposit of</td>
-                                                                                            <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>£'.number_format($service['deposit_amount'], 2).'</strong></td>
+                                                                                            <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>&pound;'.number_format($service['deposit_amount'], 2).'</strong></td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td bgcolor="#F8F8F8"></td>
@@ -4925,15 +4925,15 @@ class ProfileController extends MY_Controller
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Total cost</td>
-																							<td align="right"  style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">£'.number_format($price, 2).'</td>
+																							<td align="right"  style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">&pound;'.number_format($price, 2).'</td>
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">-£'.number_format($deliver_cost, 2).'</td>
+																							<td align="right" style="color:#A6BFDE;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;">-&pound;'.number_format($deliver_cost, 2).'</td>
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" class="mfont2" style="color:#787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																							<td align="right" style="color:#787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">£'.number_format($price-$deliver_cost, 2).'</td>
+																							<td align="right" style="color:#787F82;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">&pound;'.number_format($price-$deliver_cost, 2).'</td>
 																						</tr>
 																					</table>
 																				</td>
