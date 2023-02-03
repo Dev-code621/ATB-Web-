@@ -850,7 +850,7 @@ class BusinessController extends MY_Controller {
         }</style></head>
         
         <body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
-        <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it&#39;ll show on the clients email listing. If not, it&#39;ll take the first text of the email.</span>
+        <span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">Congratulations your approved</span>
         
         <table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
             <tr>

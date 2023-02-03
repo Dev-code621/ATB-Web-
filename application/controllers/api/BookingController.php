@@ -193,57 +193,60 @@ class BookingController extends MY_Controller {
 					}
 					*/
 					
-					$this->emailToBusiness(
+					$this->ServiceemailToBusiness(
 						$businessUser['user_email'], 
 						$bookingId, 
 						$users[0]['pic_url'], 
 						$businessUser['first_name'].' '.$businessUser['last_name'],
-						$users[0]['user_name'], 
+						$users[0]['first_name'].' '.$users[0]['last_name'], 
 						$services[0]['title'],
 						$bookingDate, 
 						$bookingTime, 
 						$services[0]['price'],
-						$createdBy == '0' ? $services[0]['deposit_amount'] : 0
+						$services[0]['deposit_amount'],
+						($services[0]['price']*0.036 + $services[0]['price']*0.014 + 0.2)					
 					);
 
-					$this->emailToUser(
+					$this->ServiceemailToUser(
 						$users[0]['user_email'],
 						$bookingId,
 						$business['business_logo'], 
-						$business['business_name'], 
-						$businessUrl,
+						$users[0]['first_name'].' '.$users[0]['last_name'], 
+						$businessUser['first_name'].' '.$businessUser['last_name'],
 						$services[0]['title'],
 						$bookingDate, 
 						$bookingTime, 
 						$services[0]['price'],
-						$createdBy == '0' ? $services[0]['deposit_amount'] : 0
+						$services[0]['deposit_amount'],
+						($services[0]['price']*0.036 + $services[0]['price']*0.014 + 0.2)
 					);
-
 				} else {					
-					$this->emailToBusiness(
+					$this->ServiceemailToBusiness(
 						$businessUser['user_email'], 
 						$bookingId, 
 						base_url().'assets/placeholder.png', 
-						$full_name,
-						$email, 
+						$businessUser['first_name'].' '.$businessUser['last_name'],
+						$full_name,						
 						$services[0]['title'],
 						$bookingDate, 
 						$bookingTime, 
 						$services[0]['price'],
-						0
-					);
+						$services[0]['deposit_amount'],
+						($services[0]['price']*0.036 + $services[0]['price']*0.014 + 0.2)					);
 
-					$this->emailToUser(
+					$this->ServiceemailToUser(
 						$email,
 						$bookingId,
 						$business['business_logo'], 
+						$full_name,			
 						$business['business_name'], 
-						$businessUrl,
+					
 						$services[0]['title'],
 						$bookingDate, 
 						$bookingTime, 
 						$services[0]['price'],
-						0
+						$services[0]['deposit_amount'],
+						($services[0]['price']*0.036 + $services[0]['price']*0.014 + 0.2)
 					);
 				}
 				
@@ -264,7 +267,7 @@ class BookingController extends MY_Controller {
 		echo json_encode($retVal);
 	}
 
-	private function emailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit) {
+	private function ServiceemailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$atb_fee) {
 		$subject = "New Booking Request";
 
         $content = '
@@ -475,7 +478,7 @@ class BookingController extends MY_Controller {
 															  <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
 																<!--title-->
 																<tr>
-																  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$name.',</td>
+																  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi ' . $name.',</td>
 																</tr>
 																<!--end title-->
 																<tr>
@@ -524,7 +527,7 @@ class BookingController extends MY_Controller {
 																	<td style="padding-left: 10px;">
 																		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 																			<tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Client name:</td></tr>
-																			<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$username.'</td></tr>
+																			<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">' . $username . '</td></tr>
 																		</table>
 																	</td>
 																</tr>
@@ -585,7 +588,7 @@ class BookingController extends MY_Controller {
 																		<tr>
 																			<td>
 																				<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service:</p>
-																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s6">'.$title.'</p>
+																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s6">' . $title . '</p>
 																			</td>
 																		</tr>
 																		<tr>
@@ -612,8 +615,8 @@ class BookingController extends MY_Controller {
                                                                             <td>
                                                                                   <p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
                                                                                   <p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s8">
-                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$date.'</span> &nbsp;
-                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$time.'</span></p>
+                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> ' . $date . '</span> &nbsp;
+                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> ' . $time . '</span></p>
                                                                               </td>
                                                                           </tr>
 																		<tr>
@@ -639,7 +642,7 @@ class BookingController extends MY_Controller {
                                                                         <tr>
 																			<td>
 																				<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Order Number:</p>
-																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s9">#'.$bookingId.'</p>
+																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s9">#' . $bookingId . '</p>
 																		  </td>
 																		</tr>
 																		<tr>
@@ -666,19 +669,19 @@ class BookingController extends MY_Controller {
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;'.number_format($total, 2).'</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;' . number_format($total, 2) . '</td>
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;'.number_format($deposit, 2).'</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;' . number_format($deposit, 2) . '</td>
 																				</tr>
                                                                                 	<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;10.00</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;' . number_format($atb_fee, 2) . '</td>
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
 																					<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																					<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit, 2).'</td>
+																					<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;' . number_format($total - $deposit +$atb_fee, 2) . '</td>
 																				</tr>
 																			</table>
 																		</td>
@@ -747,8 +750,7 @@ class BookingController extends MY_Controller {
 </table>
 
 <script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script></body>
-</html>
-        ';
+</html>';
 
 		$this->sendEmail(
 			$to,
@@ -756,7 +758,7 @@ class BookingController extends MY_Controller {
 			$content);
 	}
 
-	private function emailToUser($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit) {
+	private function ServiceemailToUser($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$atb_fee) {
 		$subject = "Booking Confirmed";
 
 		$content = '
@@ -970,7 +972,7 @@ class BookingController extends MY_Controller {
 																	  <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
 																		<!--title-->
 																		<tr>
-																		  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$username.',</td>
+																		  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$name.',</td>
 																		</tr>
 																		<!--end title-->
 																		<tr>
@@ -1014,12 +1016,12 @@ class BookingController extends MY_Controller {
 																	  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
 																		<tr>
 																			<td style="border-radius: 50%;" width="73" valign="baseline">
-																				<img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/585a4a63-04d4-7d34-22fc-c719ad30a7d8.png" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;" mc:edit="s3">
+																				<img src="'.$profile.'" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;" mc:edit="s3">
 																			</td>
 																			<td style="padding-left: 10px;">
 																				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 																					<tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Business name:</td></tr>
-																					<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$name.'</td></tr>
+																					<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$username.'</td></tr>
 																				</table>
 																			</td>
 																		</tr>
@@ -1165,11 +1167,11 @@ class BookingController extends MY_Controller {
 																						</tr>
 																							<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;10.00</td>
+																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;'.number_format($atb_fee, 2).'</td>
 																						</tr>
 																						<tr style="border-top: 1px solid #E3E3E3;">
 																							<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																							<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit, 2).'</td>
+																							<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit+$atb_fee, 2).'</td>
 																						</tr>
 																					</table>
 																				</td>
