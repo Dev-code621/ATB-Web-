@@ -2026,7 +2026,6 @@ class ProfileController extends MY_Controller
 				}
 				
 				$products[$key]["tags"] = $tags;
-                $products[$key]["post_type"] = 2;
 			}
 			
 			$items = array_merge($files, $products);
@@ -2084,7 +2083,6 @@ class ProfileController extends MY_Controller
 				}
 				
 				$products[$key]["tags"] = $tags;
-                $products[$key]["post_type"] = 2;
 			}
 			
 			if ($isBusiness == 1) {
@@ -2858,7 +2856,6 @@ class ProfileController extends MY_Controller
 	
 					$userInfos = $this->User_model->getOnlyUser(array('id' => $products[0]['user_id']));
 					$products[0]['user'] = $userInfos;
-					$products[0]["post_type"] = 2;
 
 					$retVal[self::RESULT_FIELD_NAME] = true;
 					$retVal[self::MESSAGE_FIELD_NAME] = "Success";
