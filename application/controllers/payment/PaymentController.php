@@ -306,7 +306,7 @@ class PaymentController extends MY_Controller {
 						}</style></head>
 						
 						<body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
-						<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it&#39;ll show on the clients email listing. If not, it&#39;ll take the first text of the email.</span>
+						<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">Thank you for applying to become an ATB approved business</span>
 						
 						<table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
 							<tr>
@@ -693,11 +693,11 @@ class PaymentController extends MY_Controller {
                                         )
                                     );
                                  
-                                    $this->soldEmail(
-                                        $users[0]['user_email'],
-                                        $users[0]['user_name'],
-                                        $product['title']
-                                    );
+                                    // $this->soldEmail(
+                                    //     $users[0]['user_email'],
+                                    //     $users[0]['user_name'],
+                                    //     $product['title']
+                                    // );
 
                                     $businessUser = $this->User_model->getOnlyUser(array('id' =>$product['user_id']))[0];
                                     $bookingDate = date('jS F', $product['updated_at']);
@@ -712,10 +712,11 @@ class PaymentController extends MY_Controller {
                                         $bookingDate, 
                                         $bookingTime, 
                                         $product['price'],
-                                        $product['deposit_amount'] 
+                                        $product['deposit_amount'],
+										"N/A"
                                     );
                 
-                                    $this->ProductemailToUser(
+                                    $this->sendBuyerEmail(
                                         $users[0]['user_email'],
                                         $product['id'],
                                         $businessUser['pic_url'], 
@@ -725,7 +726,8 @@ class PaymentController extends MY_Controller {
                                         $bookingDate, 
                                         $bookingTime, 
                                         $product['price'],
-                                        $product['deposit_amount'] 
+                                        $product['deposit_amount'],
+										"N/A"
                                     );
 
                                     /** send emails if it's required */
@@ -804,14 +806,15 @@ class PaymentController extends MY_Controller {
                                         )
                                     );
 
-                                    $this->soldEmail(
-                                        $users[0]['user_email'],
-                                        $users[0]['user_name'],
-                                        $product['title']
-                                    );
+                                   
                                     $businessUser = $this->User_model->getOnlyUser(array('id' =>$product['user_id']))[0];
                                     $bookingDate = date('jS F', $product['updated_at']);
                                     $bookingTime = date('g:i A', $product['updated_at']);
+									// $this->soldEmail(
+									// 	$businessUser['user_email'], 
+                                    //     $businessUser['first_name'].' '.$businessUser['last_name'],
+                                    //     $product['title']
+                                    // );
                                     $this->ProductemailToBusiness(
                                         $businessUser['user_email'], 
                                         $product['id'], 
@@ -822,10 +825,11 @@ class PaymentController extends MY_Controller {
                                         $bookingDate, 
                                         $bookingTime, 
                                         $product['price'],
-                                        $product['deposit_amount'] 
+                                        $product['deposit_amount'] ,
+										$productVariant['title']
                                     );
                 
-                                    $this->ProductemailToUser(
+                                    $this->sendBuyerEmail(
                                         $users[0]['user_email'],
                                         $product['id'],
                                         $businessUser['pic_url'], 
@@ -835,7 +839,8 @@ class PaymentController extends MY_Controller {
                                         $bookingDate, 
                                         $bookingTime, 
                                         $product['price'],
-                                        $product['deposit_amount'] 
+                                        $product['deposit_amount'],
+										$productVariant['title']
                                     );
     
                                 } else {
@@ -2007,8 +2012,8 @@ class PaymentController extends MY_Controller {
 			$content);
 	}
 
-    private function ProductemailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit) {
-		$subject = "New Booking Request";
+    private function ProductemailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$variation) {
+		$subject = "Item Sold";
 
 		$content = '
             <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -2221,7 +2226,7 @@ class PaymentController extends MY_Controller {
 															  <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
 																<!--title-->
 																<tr>
-																  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$username.',</td>
+																  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$name.',</td>
 																</tr>
 																<!--end title-->
 																<tr>
@@ -2271,7 +2276,7 @@ class PaymentController extends MY_Controller {
 																	<td style="padding-left: 10px;">
 																		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 																			<tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Buyer name:</td></tr>
-																			<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$name.'</td></tr>
+																			<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$username.'</td></tr>
 																		</table>
 																	</td>
 																</tr>
@@ -2354,7 +2359,7 @@ class PaymentController extends MY_Controller {
 																		<tr>
 																			<td>
 																				<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Variation:</p>
-																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s7">King Size</p>
+																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s7">'.$variation.'</p>
 																		  </td>
 																		</tr>
 																		<tr>
@@ -2435,11 +2440,11 @@ class PaymentController extends MY_Controller {
 																					<td style="color: #787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:50px">Invoice</td>
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">&pound;'.number_format($total, 2).'</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;22.00</td>
+																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Product Cost</td>
+																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;'.number_format($total, 2).'</td>
 																				</tr>
 																				<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Delivery/collection:</td>
+																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Delivery Cost:</td>
 																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">&pound;'.number_format($deposit, 2).'</td>
 																				</tr>
                                                                                 	<tr style="border-top: 1px solid #E3E3E3;">
@@ -2525,8 +2530,8 @@ class PaymentController extends MY_Controller {
 			$content);
 	}
 
-	private function ProductemailToUser($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit) {
-		$subject = "You purchased product";
+	private function sendBuyerEmail($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$variation) {
+		$subject = "Item Purchased";
 
 		$content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -2738,7 +2743,7 @@ class PaymentController extends MY_Controller {
                                                                       <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
                                                                         <!--title-->
                                                                         <tr>
-                                                                          <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$name.',</td>
+                                                                          <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$username.',</td>
                                                                         </tr>
                                                                         <!--end title-->
                                                                         <tr>
@@ -2788,7 +2793,7 @@ class PaymentController extends MY_Controller {
                                                                             <td style="padding-left: 10px;">
                                                                                 <table width="100%" border="0" cellpadding="0" cellspacing="0">
                                                                                     <tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Seller name:</td></tr>
-                                                                                    <tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$username.'</td></tr>
+                                                                                    <tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$name.'</td></tr>
                                                                                 </table>
                                                                             </td>
                                                                         </tr>
@@ -2871,7 +2876,7 @@ class PaymentController extends MY_Controller {
                                                                                 <tr>
                                                                                     <td>
                                                                                         <p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Variation:</p>
-                                                                                        <p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s7">King Size</p>
+                                                                                        <p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s7">'.$variation.'</p>
                                                                                   </td>
                                                                                 </tr>
                                                                                 <tr>
