@@ -12,6 +12,8 @@ use Symfony\Component\VarDumper\Cloner\Data;
 use function Aws\flatmap;
 use PubNub\Endpoints\Objects\Membership\GetMemberships;
 use PubNub\Endpoints\Objects\Member\SetMembers;
+use PubNub\Endpoints\Objects\Channel\RemoveChannelMetadata;
+use PubNub\Endpoints\Objects\UUID\RemoveUUIDMetadata;
 
 class ChatController extends MY_Controller
 {
@@ -57,6 +59,8 @@ class ChatController extends MY_Controller
 
     public function getChannelDetail($channel,$chatFlag,$wholeUsers){
         $pubnub = $this->loginPubNub();
+       
+
         $array = explode("_",$channel);
         $rooms['channel'] = $channel;
         $rooms['last_message'] = "";
@@ -168,6 +172,19 @@ class ChatController extends MY_Controller
 
         return $rooms;
     }
+
+    public function removeChannel($channel){
+          $pubnub = $this->loginPubNub();
+          $user_id= $this->session->userdata('user_id');
+          $response = $pubnub->removeUUIDMetadata()
+            ->uuid($user_id ."#ADMIN")
+            ->sync();
+        $aaa = $pubnub->removeChannelMetadata()      
+        ->channel($channel)
+        ->sync();
+        print_r($response . $channel);
+
+    }
     public function index() {
 
         $user_id= 1;//$this->session->userdata('user_id');
@@ -181,11 +198,12 @@ class ChatController extends MY_Controller
          $rooms = array();
          $count = 0;
          $wholeUsers = $this->User_model->getUsersListInDashboard();
-         
+       
          for($i =0;$i<count($channelMetadata);++$i ){
             $channel = $channelMetadata[$i]->getId();
             if(str_contains($channel,".json"))continue;
             if (str_contains($channel, $user_id."#ADMIN")) {
+                // $this-> removeChannel( $channel);
                 $rooms[$count] = $this-> getChannelDetail($channel, 0, $wholeUsers );
                 // print_r($channelMetadata[$i]);
                 // exit;
