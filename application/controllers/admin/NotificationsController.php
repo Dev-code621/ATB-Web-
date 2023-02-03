@@ -593,7 +593,7 @@ class NotificationsController extends MY_Controller
                                                                         <table border="0" cellspacing="0" cellpadding="0">
                                                                             <tr>
                                                                                 <td><h1 mc:edit="s1" style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">ATB has Approved Your Service</h1>
-                                                                              <br><h2 mc:edit="s2" style="margin: 0; color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;"><strong>[INSERT SERVICE NAME].</strong></h2>																	  
+                                                                              <br><h2 mc:edit="s2" style="margin: 0; color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;"><strong>' .$user[0]['first_name']  . " ".$user[0]['last_name'] . '.</strong></h2>																	  
                                                                               <br></td>
                                                                             </tr>
                                                                             <tr>
@@ -604,20 +604,20 @@ class NotificationsController extends MY_Controller
                                                                                     <table width="100%" style="margin-top: 20px;" cellpadding="10" cellspacing="10">
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
                                                                                             <td mc:edit="s4" width="57%" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Price, starting from</td>
-                                                                                            <td mc:edit="s5" width="43%" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>£'.number_format($service['price'], 2).'</strong></td>
+                                                                                            <td mc:edit="s5" width="43%" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>&pound;'.number_format($service['price'], 2).'</strong></td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td bgcolor="#F8F8F8"></td>
                                                                                         </tr>
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
                                                                                             <td mc:edit="s6" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Needs a deposit of</td>
-                                                                                            <td mc:edit="s7" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>£'.number_format($service['deposit_amount'], 2).'</strong></td>
+                                                                                            <td mc:edit="s7" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>&pound;'.number_format($service['deposit_amount'], 2).'</strong></td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <td bgcolor="#F8F8F8"></td>
                                                                                         </tr>
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
-                                                                                            <td mc:edit="s8" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Cancellations Within 􀅴</td>
+                                                                                            <td mc:edit="s8" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Cancellations Within</td>
                                                                                             <td mc:edit="s9" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>'.$service['cancellations'] .' days</strong></td>
                                                                                         </tr>
                                                                                         <tr>
@@ -768,7 +768,7 @@ class NotificationsController extends MY_Controller
         </table>
         
         <script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script></body>
-        </html>        
+        </html>             
         ';
 
     $this->sendEmail(
