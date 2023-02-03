@@ -25,6 +25,7 @@ class Product_model extends MY_Model
        for($i = 0 ; $i < count($products) ; $i++) {
             $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
             $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+            $products[$i]["post_type"] = 2;
         }    
         
         return $products;
@@ -39,9 +40,10 @@ class Product_model extends MY_Model
             ->get()
             ->result_array();
             
-            for($i = 0 ; $i < count($products) ; $i++) {
-                    $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
-                    $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+        for($i = 0 ; $i < count($products) ; $i++) {
+            $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
+            $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+            $products[$i]["post_type"] = 2;
         }    
         
         return $products;
@@ -57,9 +59,10 @@ class Product_model extends MY_Model
             ->get()
             ->result_array();
             
-            for($i = 0 ; $i < count($products) ; $i++) {
-                    $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
-                    $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+        for($i = 0 ; $i < count($products) ; $i++) {
+            $products[$i]['post_imgs'] = $this->getPostImage(array('product_id' => $products[$i]['id']));
+            $products[$i]["variations"] = $this->getProductVariations(array('product_id' => $products[$i]['id']));
+            $products[$i]["post_type"] = 2;
         }    
         
         return $products;
