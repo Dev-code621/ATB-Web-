@@ -3509,7 +3509,7 @@ class ProfileController extends MY_Controller
                                                                     <td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
                                                                         <table border="0" cellspacing="0" cellpadding="0">
                                                                             <tr>
-                                                                                <td><h1 style="color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">Your Service has Submitted to approve</h1>
+                                                                                <td><h1 style="color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">Your service has been submitted and is waiting approval</h1>
                                                                               <br><h2 style="margin: 0; color:#787F82; font-family:&#39Roboto&#39, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;"><strong> '.$service['title'].'</strong></h2>																	  
                                                                               <br></td>
                                                                             </tr>
@@ -3543,21 +3543,7 @@ class ProfileController extends MY_Controller
                                                                                         <tr style="border-radius: 7px;background: #EFEFEF;">
                                                                                             <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Area Covered</td>
                                                                                             <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #575757;"><strong>'.$service['location_id'] .'</strong></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td bgcolor="#F8F8F8"></td>
-                                                                                        </tr>
-                                                                                        <tr style="border-radius: 7px;background: #EFEFEF;">
-                                                                                            <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Insurance</td>
-                                                                                            <td style="text-align: right;"> <a href="" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #a6bfde;">View Insurance &gt;</a></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td bgcolor="#F8F8F8"></td>
-                                                                                        </tr>
-                                                                                        <tr style="border-radius: 7px;background: #EFEFEF;">
-                                                                                            <td style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: normal;font-size: 15px;line-height: 12px;text-align: left;color: #838383;">Qualifications</td>
-                                                                                            <td style="text-align: right;"><a href="" style="font-family:&#39Roboto&#39, Arial, sans-serif;font-weight: 500;font-size: 15px;line-height: 12px;text-align: right;color: #a6bfde;">View Qualifications &gt;</a></td>
-                                                                                        </tr>
+                                                                                        </tr>                                                                                                                                                                            
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
@@ -3571,9 +3557,9 @@ class ProfileController extends MY_Controller
                                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bottomNav">
                                                                             <tr><td colspan="3" style="padding-top: 30px; padding-bottom: 10px"></td></tr>
                                                                             <tr>
-                                                                                <td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
-                                                                                <td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
-                                                                                <td align="center"><a href="#" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
+                                                                                <td align="center"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
+                                                                                <td align="center"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
+                                                                                <td align="center"><a href="mailto:help@myatb.co.uk" style="color:#A2A2A2;font-family:&#39Roboto&#39, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
                                                                             </tr>
                                                                             
                                                                         </table>
@@ -5423,7 +5409,7 @@ class ProfileController extends MY_Controller
 						}</style></head>
 						
 						<body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
-						<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">This is where you write what it&#39;ll show on the clients email listing. If not, it&#39;ll take the first text of the email.</span>
+						<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">Thank you for applying to become an ATB approved business</span>
 						
 						<table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
 							<tr>
