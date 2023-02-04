@@ -407,5 +407,20 @@ class Post_model extends MY_Model
         
         return $posts;
     }
+
+    /**
+     * return all active posts to delete when they close their account
+     * @param $userId: user id
+     */
+    public function getActivePosts($userId) {
+        $posts =  $this->db->select('*') -> from(self::TABLE_POST_LIST)
+            ->where(array('user_id' => $userId))
+            ->where_not_in('is_active', array(97, 99))
+            ->order_by('id', 'DESC')
+            ->get()
+            ->result_array();
+
+        return $posts;
+    }
     
 }
