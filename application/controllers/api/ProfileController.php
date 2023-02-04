@@ -5665,10 +5665,28 @@ class ProfileController extends MY_Controller
 		$retVal = array();
 		try {
 			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+				$this->User_model->updateUserRecord(
+					array(
+						'status' => 4,
+						'status_reason' => 'user-action',
+						'updated_at' => time()
+					), 
+					array('id' => $tokenVerifyResult['id']));
+
+				$retVal[self::RESULT_FIELD_NAME] = true;
+				$retVal[self::MESSAGE_FIELD_NAME] = "The account has been deleted.";
+
+				// do additional actions such as disabling products, services, and their all posts
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "Token has been expired.";
+			}
 
 		} catch (Exception $ex) {
 			$retVal[self::RESULT_FIELD_NAME] = false;
-			$retVal[self::MESSAGE_FIELD_NAME] = $ex->getMessage();
+			$retVal[self::MESSAGE_FIELD_NAME] = "Authorization is required.";
 		}
 
 		echo json_encode($retVal);
