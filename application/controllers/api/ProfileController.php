@@ -5660,5 +5660,55 @@ class ProfileController extends MY_Controller
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential.";
 		}
 	}
+
+	public function deleteAccount() {
+		$retVal = array();
+		try {
+			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
+			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+				/*
+				$this->User_model->updateUserRecord(
+					array(
+						'status' => 4,
+						'status_reason' => 'User close the account',
+						'updated_at' => time()
+					), 
+					array('id' => $tokenVerifyResult['id']));
+				*/
+
+				// TO DO: any addition updates							
+				// disable/delete posts by the user
+				$userId = $tokenVerifyResult['id'];
+				$posts = $this->Post_model->getActivePosts($userId);
+				foreach ($posts as $post) {
+					$this->Post_model->updatePostContent(
+						array(
+							'is_active' => 97,
+							'status_reason' => 'Account deleeted',
+							'updated_at' => time()
+						),
+						array('id' => $post['id'])
+					);
+				}
+
+				// $products = $this->Product_model->
+
+				// $retVal[self::EXTRA_FIELD_NAME] = $posts;			
+
+				$retVal[self::RESULT_FIELD_NAME] = true;
+				$retVal[self::MESSAGE_FIELD_NAME] = "The account has been deleted.";
+
+			} else {
+				$retVal[self::RESULT_FIELD_NAME] = false;
+				$retVal[self::MESSAGE_FIELD_NAME] = "Token has been expired.";
+			}
+
+		} catch (Exception $ex) {
+			$retVal[self::RESULT_FIELD_NAME] = false;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Authorization is required.";
+		}
+
+		echo json_encode($retVal);
+	}
 }
 

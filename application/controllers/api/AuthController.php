@@ -490,21 +490,32 @@ class AuthController extends MY_Controller
 		}
 
 		$retVal = array();
-		$retVal[self::RESULT_FIELD_NAME] = false;
-		$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credential entered";
+    $retVal[self::RESULT_FIELD_NAME] = false;
+    $retVal[self::MESSAGE_FIELD_NAME] = "Please check your username and password.";
+
 		if(count($existUser) > 0 ) {
+      if ($existUser[0]['status'] == 3) {
+        $token = $this->generateToken($existUser[0]['id']);
+        $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
 
-		    if ($existUser[0]['status'] != 3) {
-                $retVal[self::MESSAGE_FIELD_NAME] = "User Blocked";
-            } else {
-                $token = $this->generateToken($existUser[0]['id']);
-                $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
+        $retVal[self::RESULT_FIELD_NAME] = true;
+        $retVal[self::MESSAGE_FIELD_NAME] = $token;
+        $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
 
-                $retVal[self::RESULT_FIELD_NAME] = true;
-                $retVal[self::MESSAGE_FIELD_NAME] = $token;
-                $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
-            }
+      } else {
+        $retVal[self::RESULT_FIELD_NAME] = false;
+        switch ($existUser[0]['status']) {
+          case 4: 
+            $retVal[self::MESSAGE_FIELD_NAME] = "Your account has been deleted.";
+            break;
+
+          default: 
+            $retVal[self::MESSAGE_FIELD_NAME] = "Your account was blocked";
+            break;
+        }
+      }
 		}
+
 		echo json_encode($retVal);
 	}
 
