@@ -5666,18 +5666,37 @@ class ProfileController extends MY_Controller
 		try {
 			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
+				/*
 				$this->User_model->updateUserRecord(
 					array(
 						'status' => 4,
-						'status_reason' => 'user-action',
+						'status_reason' => 'User close the account',
 						'updated_at' => time()
 					), 
 					array('id' => $tokenVerifyResult['id']));
+				*/
+
+				// TO DO: any addition updates							
+				// disable/delete posts by the user
+				$userId = $tokenVerifyResult['id'];
+				$posts = $this->Post_model->getActivePosts($userId);
+				foreach ($posts as $post) {
+					$this->Post_model->updatePostContent(
+						array(
+							'is_active' => 97,
+							'status_reason' => 'Account deleeted',
+							'updated_at' => time()
+						),
+						array('id' => $post['id'])
+					);
+				}
+
+				// $products = $this->Product_model->
+
+				// $retVal[self::EXTRA_FIELD_NAME] = $posts;			
 
 				$retVal[self::RESULT_FIELD_NAME] = true;
 				$retVal[self::MESSAGE_FIELD_NAME] = "The account has been deleted.";
-
-				// do additional actions such as disabling products, services, and their all posts
 
 			} else {
 				$retVal[self::RESULT_FIELD_NAME] = false;
