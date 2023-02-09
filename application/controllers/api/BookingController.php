@@ -270,487 +270,519 @@ class BookingController extends MY_Controller {
 	private function ServiceemailToBusiness($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$atb_fee) {
 		$subject = "New Booking Request";
 
-        $content = '
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-<head>
-	<!--[if gte mso 9]>
-	<xml>
-		<o:OfficeDocumentSettings>
-		<o:AllowPNG/>
-		<o:PixelsPerInch>96</o:PixelsPerInch>
-		</o:OfficeDocumentSettings>
-	</xml>
-	<![endif]-->
-<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-<meta name="format-detection" content="date=no">
-<meta name="format-detection" content="address=no">
-<meta name="format-detection" content="telephone=no">
-<meta name="x-apple-disable-message-reformatting">
- <!--[if !mso]><!-->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-<!--<![endif]-->
-<title>*|MC:SUBJECT|*</title>
-
-
-
-
-<style type="text/css">
-		body{
-			padding:0 !important;
-			margin:0 !important;
-			display:block !important;
-			min-width:100% !important;
-			width:100% !important;
-			background:#A6BFDE;
-			-webkit-text-size-adjust:none;
-		}
-		p{
-			padding:0 !important;
-			margin:0 !important;
-		}
-		table{
-			border-spacing:0 !important;
-			border-collapse:collapse !important;
-			table-layout:fixed !important;
-		}
-		.container{
-			width:100%;
-			max-width:650px;
-		}
-		.ExternalClass{
-			width:100%;
-		}
-		.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
-			line-height:100%;
-		}
-	@media (max-width: 650px){
-		.wrapper{
-			padding:0 !important;
-		}
-
-}	@media (max-width: 650px){
-		.container{
-			width:100% !important;
-			min-width:100% !important;
-		}
-
-}	@media (max-width: 650px){
-		.content{
-			padding-left:30px !important;
-			padding-right:30px !important;
-		}
-
-}	@media (max-width: 650px){
-		.social-btn{
-			height:35px;
-			width:auto;
-		}
-
-}	@media (max-width: 650px){
-		.p100{
-			display:block !important;
-			width:100% !important;
-			min-width:100%;
-			padding-bottom:10px !important;
-			padding-left:0px !important;
-			float:left !important;
-		}
-
-}	@media (max-width: 650px){
-		.p100 table{
-			width:100% !important;
-		}
-
-}	@media (max-width: 650px){
-		.mleft{
-			float:left !important;
-		}
-
-}	@media (max-width: 650px){
-		.mfont{
-			font-size:20px !important;
-		}
-
-}	@media (max-width: 650px){
-		.mfont2{
-			font-size:16px !important;
-		}
-
-}	@media (max-width: 650px){
-		.t100{
-			width:50% !important;
-			float:left !important;
-		}
-
-}	@media (max-width: 650px){
-		.t100 tr td{
-			display:block !important;
-			float:left !important;
-		}
-
-}	@media (max-width: 650px){
-		.black{
-			color:#000000 !important;
-		}
-
-}	@media (max-width: 650px){
-		.mnone{
-			display:none !important;
-		}
-
-}	@media (max-width: 650px){
-		.colim{
-			width:100% !important;
-		}
-
-}	@media (max-width: 650px){
-		.colim2{
-			width:100% !important;
-			padding-left:20px !important;
-			padding-right:20px !important;
-		}
-
-}</style></head>
-
-<body style="padding:0; margin:0; background: #A6BFDE;">
-
-<table border="0" bgcolor="#A6BFDE" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
-    <tr>
-        <td align="center" valign="top" style="padding: 80px 0;" class="wrapper">
-			<!--[if (gte mso 9)|(IE)]>
-			<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
-				<tr>
-				<td>
-			<![endif]-->    
-            <table border="0" cellspacing="0" cellpadding="0" class="container">
-				<tr>
-					<td>
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+        $content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<!doctype html>
+		<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+		
+		<head>
+		  <title>*|MC:SUBJECT|*</title>
+		  <!--[if !mso]><!-->
+		  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		  <!--<![endif]-->
+		  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		  <meta name="viewport" content="width=device-width, initial-scale=1">
+		  
+		  <!--[if mso]>
+				<noscript>
+				<xml>
+				<o:OfficeDocumentSettings>
+				  <o:AllowPNG/>
+				  <o:PixelsPerInch>96</o:PixelsPerInch>
+				</o:OfficeDocumentSettings>
+				</xml>
+				</noscript>
+				<![endif]-->
+		  <!--[if lte mso 11]>
+				<style type="text/css">
+				  .mj-outlook-group-fix { width:100% !important; }
+				</style>
+				<![endif]-->
+		  <!--[if !mso]><!-->
+		  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+		  <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
+		  <!--<![endif]-->
+		  
+		  
+		  
+		<style type="text/css">
+				#outlook a{
+					padding:0;
+				}
+				body{
+					margin:0;
+					padding:0;
+					-webkit-text-size-adjust:100%;
+					-ms-text-size-adjust:100%;
+				}
+				table,td{
+					border-collapse:collapse;
+					mso-table-lspace:0pt;
+					mso-table-rspace:0pt;
+				}
+				img{
+					border:0;
+					height:auto;
+					line-height:100%;
+					outline:none;
+					text-decoration:none;
+					-ms-interpolation-mode:bicubic;
+				}
+				p{
+					display:block;
+					margin:13px 0;
+				}
+			@media only screen and (min-width:480px){
+				.mj-column-px-640{
+					width:640px !important;
+					max-width:640px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-250{
+					width:250px !important;
+					max-width:250px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-350{
+					width:350px !important;
+					max-width:350px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-370{
+					width:370px !important;
+					max-width:370px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-270{
+					width:270px !important;
+					max-width:270px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-200{
+					width:200px !important;
+					max-width:200px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-240{
+					width:240px !important;
+					max-width:240px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-420{
+					width:420px !important;
+					max-width:420px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-220{
+					width:220px !important;
+					max-width:220px;
+				}
+		
+		}		.moz-text-html .mj-column-px-640{
+					width:640px !important;
+					max-width:640px;
+				}
+				.moz-text-html .mj-column-px-250{
+					width:250px !important;
+					max-width:250px;
+				}
+				.moz-text-html .mj-column-px-350{
+					width:350px !important;
+					max-width:350px;
+				}
+				.moz-text-html .mj-column-px-370{
+					width:370px !important;
+					max-width:370px;
+				}
+				.moz-text-html .mj-column-px-270{
+					width:270px !important;
+					max-width:270px;
+				}
+				.moz-text-html .mj-column-px-200{
+					width:200px !important;
+					max-width:200px;
+				}
+				.moz-text-html .mj-column-px-240{
+					width:240px !important;
+					max-width:240px;
+				}
+				.moz-text-html .mj-column-px-420{
+					width:420px !important;
+					max-width:420px;
+				}
+				.moz-text-html .mj-column-px-220{
+					width:220px !important;
+					max-width:220px;
+				}
+			@media only screen and (max-width:480px){
+				table.mj-full-width-mobile{
+					width:100% !important;
+				}
+		
+		}	@media only screen and (max-width:480px){
+				td.mj-full-width-mobile{
+					width:auto !important;
+				}
+		
+		}</style></head>
+		
+		<body style="word-spacing:normal;background-color:#eeeeee;">
+		  <div style="background-color:#eeeeee;">
+			<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
 							<tr>
-								<td style="padding: 0 0px 50px; box-shadow: 0px 3px 6px #b3b3b3;" bgcolor="#ABC1DE" valign="top" align="center">
-									<!--[if gte mso 9]>
-									<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
-										<v:fill type="frame" src="http://sg-lab.co/dev/atb/email/welcome/images/background.jpg" color="#ABC1DE" />
-										<v:textbox inset="0,0,0,0">
-									<![endif]-->
-										
-										<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-											<tr>
-											  <td align="center">
-												<table dir="rtl" align="center" border="0" cellpadding="0" cellspacing="0">
-												  <tr>
-													<td height="35"></td>
-												  </tr>
-												  <tr>
-													<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-													  <!--left-->
-													  <div style="display:inline-block; vertical-align:middle;">
-														<table align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td width="160" align="center">
-															  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-																<!--image-->
-																<tr>
-																  <td align="center" style="line-height:0px;"><img style="display:block; line-height:0px; font-size:0px; border:0px;" class="img1" width="150" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/58bfffbc-ae54-a2bf-36b0-e2d695d19418.png" alt="img"></td>
-																</tr>
-																<!--end image-->
-																<tr>
-																  <td height="20"></td>
-																</tr>
-															  </table>
-															</td>
-														  </tr>
-														</table>
-													  </div>
-													  <!--end left-->
-													  <!--[if (gte mso 9)|(IE)]>
-							</td>
-							<td align="center" style="text-align:center;vertical-align:middle;font-size:0;">
-							<![endif]-->
-													  <!--right-->
-													  <div style="display:inline-block; vertical-align:middle;">
-														<table align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td width="414" align="center">
-															  <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
-																<!--title-->
-																<tr>
-																  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi ' . $name.',</td>
-																</tr>
-																<!--end title-->
-																<tr>
-																  <td height="10"></td>
-																</tr>
-																<!--content-->
-																<tr>
-																  <td style="font-family:Open sans, Arial, Sans-serif; font-size:20px; color:#ffffff;line-height:28px;" mc:edit="s2">You Have A New Booking!</td>
-																</tr>
-																<!--end content-->
-																<tr>
-																  <td height="35"></td>
-																</tr>
-															  </table>
-															</td>
-														  </tr>
-														</table>
-													  </div>
-													  <!--end right-->
-													</td>
-												  </tr>
-												</table>
-											  </td>
-											</tr>
-										</table>
-
-										<table bgcolor="#F8F8F8" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-											<tr>
-											  <td align="center">
-												<table align="center" border="0" cellpadding="0" cellspacing="0">
-												  <tr>
-													<td height="20"></td>
-												  </tr>
-												  <tr>
-													<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-													  <!--left-->
-													  <div style="display:inline-block; vertical-align:middle;">
-														<table align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td width="370" align="center" class="colim2">
-															  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
-																<tr>
-																	<td style="border-radius: 50%;" width="73" valign="baseline">
-																		<img src="'.$profile.'" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;" mc:edit="s3">
-																	</td>
-																	<td style="padding-left: 10px;">
-																		<table width="100%" border="0" cellpadding="0" cellspacing="0">
-																			<tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Client name:</td></tr>
-																			<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">' . $username . '</td></tr>
-																		</table>
-																	</td>
-																</tr>
-																<tr>
-																  <td height="20"></td>
-																</tr>
-															  </table>
-															</td>
-														  </tr>
-														</table>
-													  </div>
-													  <!--end left-->
-													  <!--[if (gte mso 9)|(IE)]>
-							</td>
-							<td align="center" style="text-align:center;vertical-align:middle;font-size:0;">
-							<![endif]-->
-													  <!--right-->
-													  <div style="display:inline-block; vertical-align:middle;">
-														<table align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td width="204" align="center" class="colim2">
-															  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-
-                                                                <tr>
-                                                                    <td height="10"></td>
-                                                                  </tr>
-                                                                <tr><td mc:edit="s51"><a href="hrefdeeplink" style="color:#535353;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/ff683c55-7e1d-de42-ebae-a6a85b9d65e3.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;"> Manage this booking</a> </td></tr>
-																<tr>
-																  <td height="20"></td>
-																</tr>
-															  </table>
-															</td>
-														  </tr>
-														</table>
-													  </div>
-													  <!--end right-->
-													</td>
-												  </tr>
-												</table>
-											  </td>
-											</tr>
-										  </table>
-
-										<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3;padding: 10px 40px 80px;border-spacing: 0 !important;border-collapse: collapse !important;table-layout: fixed !important;">
-											<tr>
-												<td>
-													<table bgcolor="#ffffff" width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
-														<tr>
-														  <td align="center" style="text-align:center;vertical-align:top;font-size:0; padding: 10px 20px 10px" bgcolor="#ffffff" class="content">
-															<div style="display:inline-block;vertical-align:top;">
-															  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																<tr>
-																  <td width="200" align="center" class="colim">
-																	<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="container">
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-																		<tr>
-																			<td>
-																				<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service:</p>
-																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s6">' . $title . '</p>
-																			</td>
-																		</tr>
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-																	</table>
-																  </td>
-																</tr>
-															  </table>
-															</div>
-															<!--[if (gte mso 9)|(IE)]>
-															</td>
-															<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-															<![endif]-->
-															<div style="display:inline-block;vertical-align:top;">
-															  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																<tr>
-																  <td width="240" align="center" class="colim">
-																	<table width="95%" class="container" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                  <p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
-                                                                                  <p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s8">
-                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> ' . $date . '</span> &nbsp;
-                                                                                      <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> ' . $time . '</span></p>
-                                                                              </td>
-                                                                          </tr>
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-																	</table>
-																  </td>
-																</tr>
-															  </table>
-															</div>
-															<!--[if (gte mso 9)|(IE)]>
-															</td>
-															<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-															<![endif]-->
-															<div style="display:inline-block;vertical-align:top;">
-															  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																<tr>
-																  <td width="120" align="center" class="colim">
-																	<table width="95%" class="container" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-                                                                        <tr>
-																			<td>
-																				<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Order Number:</p>
-																				<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s9">#' . $bookingId . '</p>
-																		  </td>
-																		</tr>
-																		<tr>
-																			<td height="10"></td>
-																		</tr>
-																	</table>
-																  </td>
-																</tr>
-															  </table>
-															</div>
-														  </td>
-														</tr>
-													  </table>
-
-													<table width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3; padding: 10px 40px 80px" bgcolor="#ffffff" class="content">
-																<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																	<tr>
-																		<td style="padding-top: 20px;">
-																			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																				<tr>
-																					<td style="color: #787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:50px">Invoice</td>
-																				</tr>
-																				<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;' . number_format($total, 2) . '</td>
-																				</tr>
-																				<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;' . number_format($deposit, 2) . '</td>
-																				</tr>
-                                                                                	<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
-																					<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;' . number_format($atb_fee, 2) . '</td>
-																				</tr>
-																				<tr style="border-top: 1px solid #E3E3E3;">
-																					<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																					<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;' . number_format($total - $deposit +$atb_fee, 2) . '</td>
-																				</tr>
-																			</table>
-																		</td>
-																	</tr>
-																	<tr>
-																	  <td>
-																			<br>
-																			<hr>
-																		  <p style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px;font-weight: normal;font-size: 15px;line-height: 18px;text-align: left;color: #787f82;" mc:edit="s1">If you cannot fulfill the booking for any reason please get in touch with the client directly to reschedule.
-
-                                                                          </p>
-																		</td>
-																	</tr>
-																</table>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-
-										<table width="100%" border="0" cellspacing="0" cellpadding="0">
-											<tr>
-												<td style="padding: 30px 40px 0px" class="content">
-													<table width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td class="p100">
-																<table border="0" align="left" cellspacing="0" cellpadding="0" class="bottomNav">
-																	<tr><td align="left" mc:edit="info1"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Terms and conditions</a></td></tr>
-																	<tr><td align="left" mc:edit="info2"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;" class="black">Privacy Policy</a> </td></tr>
-																	<tr><td align="left" mc:edit="info3"><a href="mailto:help@myatb.co.uk" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Contact Us</a> </td></tr>
-																</table>
-															</td>
-															<td class="p100" align="right" width="400">
-																<table border="0" cellspacing="0" cellpadding="0">
-																</table>
-																<table border="0" cellspacing="0" cellpadding="0">
-																	<tr>
-																		<td mc:edit="info4" align="right" class="p100" style="padding-top: 10px"><a href="#" class="mleft" style="color:#ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:right; text-decoration: none !important;display: block !important;">ATB All rights reserved</a> </td>
-																	</tr>
-																</table>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-
-									<!--[if gte mso 9]>
-										</v:textbox>
-										</v:rect>
-									<![endif]-->
-								</td>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:10px;line-height:10px;">&#8202;</div>
+							  </td>
 							</tr>
+						  </tbody>
 						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
 					</td>
-				</tr>
-			</table>
-			<!--[if (gte mso 9)|(IE)]>
-				</td>
-				</tr>
-			</table>
-			<![endif]-->
-        </td>
-    </tr>
-</table>
-
-<script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script></body>
-</html>';
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#ABC1DE" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#ABC1DE;background-color:#ABC1DE;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ABC1DE;background-color:#ABC1DE;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:rtl;font-size:0px;padding:20px 0;padding-bottom:35px;padding-top:35px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:220px;" ><![endif]-->
+					  <div class="mj-column-px-220 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+								  <tbody>
+									<tr>
+									  <td style="width:153px;">
+										<img mc:edit="main11" height="auto" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/58bfffbc-ae54-a2bf-36b0-e2d695d19418.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 153px;" width="153">
+									  </td>
+									</tr>
+								  </tbody>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:420px;" ><![endif]-->
+					  <div class="mj-column-px-420 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main12" style="font-family:Roboto;font-size:30px;font-weight:bold;line-height:1;text-align:left;color:#FFFFFF;">Hi  '.$name.',</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main13" style="font-family:Roboto;font-size:20px;line-height:1;text-align:left;color:#FFFFFF;">You Have A New Booking!</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#F8F8F8" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#F8F8F8;background-color:#F8F8F8;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#F8F8F8;background-color:#F8F8F8;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="border-bottom:1px solid #eeeeee;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:370px;" ><![endif]-->
+					  <div class="mj-column-px-370 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="75"><img mc:edit="main14" src="' . $profile . '" width="75" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 75px;"></td>
+									<td width="10"></td>
+									<td mc:edit="main15" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:28px;font-weight:normal;">Client name:<br>
+									<span style="color:#787f82; font-family:roboto,arial,sans-serif; font-size:15px; font-weight:normal; line-height:28px">' . $username . '</span></td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:270px;" ><![endif]-->
+					  <div class="mj-column-px-270 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="20"><img mc:edit="main16" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/ff683c55-7e1d-de42-ebae-a6a85b9d65e3.png" width="20" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 20px;"></td>
+									<td width="10"></td>
+									<td mc:edit="main17" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:28px;font-weight:bold;"> Manage this booking </td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#FFFFFF" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#FFFFFF;background-color:#FFFFFF;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;background-color:#FFFFFF;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="border-bottom:1px solid #eeeeee;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:200px;" ><![endif]-->
+					  <div class="mj-column-px-200 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main18" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Service:</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main19" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#787f82;">' . $title . '
+								</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:240px;" ><![endif]-->
+					  <div class="mj-column-px-240 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main110" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Service Date and Time:</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="13">
+									  <img mc:edit="main111" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 13px;">
+									</td>
+									<td width="5"></td>
+									<td mc:edit="main112" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787f82;line-height:28px;font-weight:normal;">
+									' . $date . '
+									</td>
+								  </tr>
+								  <tr>
+									<td width="13">
+									  <img mc:edit="main113" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="13" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 13px;">
+									</td>
+									<td width="5"></td>
+									<td mc:edit="main114" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787f82;line-height:28px;font-weight:normal;">
+									' . $time . '
+									</td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:200px;" ><![endif]-->
+					  <div class="mj-column-px-200 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main115" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Order Number:</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main116" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#787f82;">#' . $bookingId . '
+								</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#FFFFFF" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#FFFFFF;background-color:#FFFFFF;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;background-color:#FFFFFF;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:20px;line-height:20px;">&#8202;</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main117" style="font-family:Roboto;font-size:30px;font-weight:bold;line-height:1;text-align:left;color:#787F82;">Invoice</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr style="border-top: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3;">
+									<td mc:edit="main118" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> Service total cost </td>
+									<td mc:edit="main119" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;"> £' . number_format($total, 2) . '
+									</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main120" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> Deposit paid </td>
+									<td mc:edit="main121" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;"> -£' . number_format($deposit, 2) . '
+									</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main122" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> ATB Transaction Fees </td>
+									<td mc:edit="main123" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;"> -£' . number_format($atb_fee, 2) . '
+									</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main124" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787F82;line-height:40px; font-weight: bold;"> Payment Pending </td>
+									<td mc:edit="main125" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787F82;line-height:40px; font-weight: bold;"> £' . number_format($total - $deposit +$atb_fee, 2) . '
+									</td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:20px;line-height:20px;">&#8202;</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main126" style="font-family:Roboto;font-size:15px;line-height:21px;text-align:left;color:#787F82;">If you cannot fulfill the booking for any reason please get in touch with the client directly to reschedule.
+		
+		</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#A6BFDE" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#A6BFDE;background-color:#A6BFDE;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A6BFDE;background-color:#A6BFDE;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:420px;" ><![endif]-->
+					  <div class="mj-column-px-420 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						<tbody>
+							<tr>
+							<td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main127" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color: #ffffff; text-decoration: none;">Terms and conditions</a></div>
+							</td>
+							</tr>
+							<tr>
+							<td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main128" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color: #ffffff; text-decoration: none;">Privacy Policy</a></div>
+							</td>
+							</tr>
+							<tr>
+							<td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main129" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="mailto:help@myatb.co.uk" style="color: #ffffff; text-decoration: none;">Contact Us</a></div>
+							</td>
+							</tr>
+						</tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:220px;" ><![endif]-->
+					  <div class="mj-column-px-220 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main130" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;">ATB All rights reserved</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:10px;line-height:10px;">&#8202;</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><![endif]-->
+		  </div>
+		<script type="text/javascript"  src="/OiORoJkI/HFD/Raf/ax9YTjB6tt/LYN9XQbL/SxBdJRdhAQ/KC/RFUwM-On4"></script></body>
+		
+		</html> ';
 
 		$this->sendEmail(
 			$to,
@@ -761,488 +793,518 @@ class BookingController extends MY_Controller {
 	private function ServiceemailToUser($to, $bookingId, $profile, $name, $username, $title, $date, $time, $total, $deposit,$atb_fee) {
 		$subject = "Booking Confirmed";
 
-		$content = '
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		$content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<!doctype html>
 		<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+		
 		<head>
-			<!--[if gte mso 9]>
-			<xml>
+		  <title>*|MC:SUBJECT|*</title>
+		  <!--[if !mso]><!-->
+		  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		  <!--<![endif]-->
+		  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		  <meta name="viewport" content="width=device-width, initial-scale=1">
+		  
+		  <!--[if mso]>
+				<noscript>
+				<xml>
 				<o:OfficeDocumentSettings>
-				<o:AllowPNG/>
-				<o:PixelsPerInch>96</o:PixelsPerInch>
+				  <o:AllowPNG/>
+				  <o:PixelsPerInch>96</o:PixelsPerInch>
 				</o:OfficeDocumentSettings>
-			</xml>
-			<![endif]-->
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-		<meta name="format-detection" content="date=no">
-		<meta name="format-detection" content="address=no">
-		<meta name="format-detection" content="telephone=no">
-		<meta name="x-apple-disable-message-reformatting">
-		 <!--[if !mso]><!-->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-		<!--<![endif]-->
-		<title>*|MC:SUBJECT|*</title>
-		
-		
-		
-		
+				</xml>
+				</noscript>
+				<![endif]-->
+		  <!--[if lte mso 11]>
+				<style type="text/css">
+				  .mj-outlook-group-fix { width:100% !important; }
+				</style>
+				<![endif]-->
+		  <!--[if !mso]><!-->
+		  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+		  <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
+		  <!--<![endif]-->
+		  
+		  
+		  
 		<style type="text/css">
-				body{
-					padding:0 !important;
-					margin:0 !important;
-					display:block !important;
-					min-width:100% !important;
-					width:100% !important;
-					background:#A6BFDE;
-					-webkit-text-size-adjust:none;
+				#outlook a{
+					padding:0;
 				}
-				a{
-					color:#A6BFDE;
+				body{
+					margin:0;
+					padding:0;
+					-webkit-text-size-adjust:100%;
+					-ms-text-size-adjust:100%;
+				}
+				table,td{
+					border-collapse:collapse;
+					mso-table-lspace:0pt;
+					mso-table-rspace:0pt;
+				}
+				img{
+					border:0;
+					height:auto;
+					line-height:100%;
+					outline:none;
+					text-decoration:none;
+					-ms-interpolation-mode:bicubic;
 				}
 				p{
-					padding:0 !important;
-					margin:0 !important;
+					display:block;
+					margin:13px 0;
 				}
-				table{
-					border-spacing:0 !important;
-					border-collapse:collapse !important;
-					table-layout:fixed !important;
-				}
-				.container{
-					width:100%;
-					max-width:650px;
-				}
-				.ExternalClass{
-					width:100%;
-				}
-				.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
-					line-height:100%;
-				}
-			@media (max-width: 650px){
-				.wrapper{
-					padding:0 !important;
+			@media only screen and (min-width:480px){
+				.mj-column-px-640{
+					width:640px !important;
+					max-width:640px;
 				}
 		
-		}	@media (max-width: 650px){
-				.container{
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-250{
+					width:250px !important;
+					max-width:250px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-350{
+					width:350px !important;
+					max-width:350px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-370{
+					width:370px !important;
+					max-width:370px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-270{
+					width:270px !important;
+					max-width:270px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-200{
+					width:200px !important;
+					max-width:200px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-240{
+					width:240px !important;
+					max-width:240px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-420{
+					width:420px !important;
+					max-width:420px;
+				}
+		
+		}	@media only screen and (min-width:480px){
+				.mj-column-px-220{
+					width:220px !important;
+					max-width:220px;
+				}
+		
+		}		.moz-text-html .mj-column-px-640{
+					width:640px !important;
+					max-width:640px;
+				}
+				.moz-text-html .mj-column-px-250{
+					width:250px !important;
+					max-width:250px;
+				}
+				.moz-text-html .mj-column-px-350{
+					width:350px !important;
+					max-width:350px;
+				}
+				.moz-text-html .mj-column-px-370{
+					width:370px !important;
+					max-width:370px;
+				}
+				.moz-text-html .mj-column-px-270{
+					width:270px !important;
+					max-width:270px;
+				}
+				.moz-text-html .mj-column-px-200{
+					width:200px !important;
+					max-width:200px;
+				}
+				.moz-text-html .mj-column-px-240{
+					width:240px !important;
+					max-width:240px;
+				}
+				.moz-text-html .mj-column-px-420{
+					width:420px !important;
+					max-width:420px;
+				}
+				.moz-text-html .mj-column-px-220{
+					width:220px !important;
+					max-width:220px;
+				}
+			@media only screen and (max-width:480px){
+				table.mj-full-width-mobile{
 					width:100% !important;
-					min-width:100% !important;
 				}
 		
-		}	@media (max-width: 650px){
-				.content{
-					padding-left:30px !important;
-					padding-right:30px !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.social-btn{
-					height:35px;
-					width:auto;
-				}
-		
-		}	@media (max-width: 650px){
-				.p100{
-					display:block !important;
-					width:100% !important;
-					min-width:100%;
-					padding-bottom:10px !important;
-					padding-left:0px !important;
-					float:left !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.p100 table{
-					width:100% !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.mleft{
-					float:left !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.mfont{
-					font-size:20px !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.mfont2{
-					font-size:16px !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.t100{
-					width:50% !important;
-					float:left !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.t100 tr td{
-					display:block !important;
-					float:left !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.black{
-					color:#000000 !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.mnone{
-					display:none !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.colim{
-					width:100% !important;
-				}
-		
-		}	@media (max-width: 650px){
-				.colim2{
-					width:100% !important;
-					padding-left:20px !important;
-					padding-right:20px !important;
+		}	@media only screen and (max-width:480px){
+				td.mj-full-width-mobile{
+					width:auto !important;
 				}
 		
 		}</style></head>
 		
-		<body style="padding:0; margin:0; background: #A6BFDE;">
-		
-		<table border="0" bgcolor="#A6BFDE" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
-			<tr>
-				<td align="center" valign="top" style="padding: 80px 0;" class="wrapper">
-					<!--[if (gte mso 9)|(IE)]>
-					<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
-						<tr>
-						<td>
-					<![endif]-->    
-					<table border="0" cellspacing="0" cellpadding="0" class="container">
-						<tr>
-							<td>
-								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<body style="word-spacing:normal;background-color:#eeeeee;">
+		  <div style="background-color:#eeeeee;">
+			<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:10px;line-height:10px;">&#8202;</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#ABC1DE" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#ABC1DE;background-color:#ABC1DE;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ABC1DE;background-color:#ABC1DE;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:rtl;font-size:0px;padding:20px 0;padding-bottom:35px;padding-top:35px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:220px;" ><![endif]-->
+					  <div class="mj-column-px-220 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+								  <tbody>
 									<tr>
-										<td style="padding: 0 0px 50px; box-shadow: 0px 3px 6px #b3b3b3;" bgcolor="#ABC1DE" valign="top" align="center">
-											<!--[if gte mso 9]>
-											<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
-												<v:fill type="frame" src="http://sg-lab.co/dev/atb/email/welcome/images/background.jpg" color="#ABC1DE" />
-												<v:textbox inset="0,0,0,0">
-											<![endif]-->
-												
-												<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-													<tr>
-													  <td align="center">
-														<table dir="rtl" align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td height="35"></td>
-														  </tr>
-														  <tr>
-															<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-															  <!--left-->
-															  <div style="display:inline-block; vertical-align:middle;">
-																<table align="center" border="0" cellpadding="0" cellspacing="0">
-																  <tr>
-																	<td width="160" align="center">
-																	  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<!--image-->
-																		<tr>
-																		  <td align="center" style="line-height:0px;"><img style="display:block; line-height:0px; font-size:0px; border:0px;" class="img1" width="150" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/58bfffbc-ae54-a2bf-36b0-e2d695d19418.png" alt="img"></td>
-																		</tr>
-																		<!--end image-->
-																		<tr>
-																		  <td height="20"></td>
-																		</tr>
-																	  </table>
-																	</td>
-																  </tr>
-																</table>
-															  </div>
-															  <!--end left-->
-															  <!--[if (gte mso 9)|(IE)]>
-									</td>
-									<td align="center" style="text-align:center;vertical-align:middle;font-size:0;">
-									<![endif]-->
-															  <!--right-->
-															  <div style="display:inline-block; vertical-align:middle;">
-																<table align="center" border="0" cellpadding="0" cellspacing="0">
-																  <tr>
-																	<td width="414" align="center">
-																	  <table dir="ltr" width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<!--title-->
-																		<tr>
-																		  <td style="font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:30px; color:#ffffff;font-weight:bold;" mc:edit="ss1">Hi '.$name.',</td>
-																		</tr>
-																		<!--end title-->
-																		<tr>
-																		  <td height="10"></td>
-																		</tr>
-																		<!--content-->
-																		<tr>
-																		  <td style="font-family:Open sans, Arial, Sans-serif; font-size:20px; color:#ffffff;line-height:28px;" mc:edit="s2">Please find below details of your booking:                                                                </td>
-																		</tr>
-																		<!--end content-->
-																		<tr>
-																		  <td height="35"></td>
-																		</tr>
-																	  </table>
-																	</td>
-																  </tr>
-																</table>
-															  </div>
-															  <!--end right-->
-															</td>
-														  </tr>
-														</table>
-													  </td>
-													</tr>
-												</table>
-		
-												<table bgcolor="#F8F8F8" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-													<tr>
-													  <td align="center">
-														<table align="center" border="0" cellpadding="0" cellspacing="0">
-														  <tr>
-															<td height="20"></td>
-														  </tr>
-														  <tr>
-															<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-															  <!--left-->
-															  <div style="display:inline-block; vertical-align:middle;">
-																<table align="center" border="0" cellpadding="0" cellspacing="0">
-																  <tr>
-																	<td width="370" align="center" class="colim2">
-																	  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<tr>
-																			<td style="border-radius: 50%;" width="73" valign="baseline">
-																				<img src="'.$profile.'" width="73" height="73" border="0" alt="user icon" style="border-radius:100%;" mc:edit="s3">
-																			</td>
-																			<td style="padding-left: 10px;">
-																				<table width="100%" border="0" cellpadding="0" cellspacing="0">
-																					<tr><td style="color:#454b4d; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-size:15px; line-height:20px;">Business name:</td></tr>
-																					<tr><td style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: normal;font-size: 15px;line-height: 16px;text-align: left;color: #787f82;" mc:edit="s4">'.$username.'</td></tr>
-																				</table>
-																			</td>
-																		</tr>
-																		<tr>
-																		  <td height="20"></td>
-																		</tr>
-																	  </table>
-																	</td>
-																  </tr>
-																</table>
-															  </div>
-															  <!--end left-->
-															  <!--[if (gte mso 9)|(IE)]>
-									</td>
-									<td align="center" style="text-align:center;vertical-align:middle;font-size:0;">
-									<![endif]-->
-															  <!--right-->
-															  <div style="display:inline-block; vertical-align:middle;">
-																<table align="center" border="0" cellpadding="0" cellspacing="0">
-																  <tr>
-																	<td width="204" align="center" class="colim2">
-																	  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-																		<tr><td mc:edit="s51"><a href="hrefdeeplink" style="color:#535353;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:13px; line-height:25px; text-decoration: none !important;font-weight: 700;display: block;"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/ff683c55-7e1d-de42-ebae-a6a85b9d65e3.png" width="20" height="19" alt="Message icon" style="display: inline !important;padding-right: 3px;vertical-align: middle;"> Manage this booking</a> </td></tr>
-																		<tr>
-																		  <td height="20"></td>
-																		</tr>
-																	  </table>
-																	</td>
-																  </tr>
-																</table>
-															  </div>
-															  <!--end right-->
-															</td>
-														  </tr>
-														</table>
-													  </td>
-													</tr>
-												  </table>
-		
-												<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3;padding: 10px 40px 80px;border-spacing: 0 !important;border-collapse: collapse !important;table-layout: fixed !important;">
-													<tr>
-														<td>
-															<table bgcolor="#ffffff" width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
-																<tr>
-																  <td align="center" style="text-align:center;vertical-align:top;font-size:0; padding: 10px 20px 10px" bgcolor="#ffffff" class="content">
-																	<div style="display:inline-block;vertical-align:top;">
-																	  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																		<tr>
-																		  <td width="200" align="center" class="colim">
-																			<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="container">
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																				<tr>
-																					<td>
-																						<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service:</p>
-																						<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s6">'.$title.'</p>
-																					</td>
-																				</tr>
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																			</table>
-																		  </td>
-																		</tr>
-																	  </table>
-																	</div>
-																	<!--[if (gte mso 9)|(IE)]>
-																	</td>
-																	<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-																	<![endif]-->
-																	<div style="display:inline-block;vertical-align:top;">
-																	  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																		<tr>
-																		  <td width="240" align="center" class="colim">
-																			<table width="95%" class="container" border="0" align="center" cellpadding="0" cellspacing="0">
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																				<tr>
-																					<td>
-																						  <p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Service Schedule:</p>
-																						  <p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s8">
-																							  <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$date.' </span> &nbsp;
-																							  <span><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="15" height="15" alt="Booking icon" style="display: inline !important;vertical-align: text-top;"> '.$time.'</span></p>
-																					  </td>
-																				  </tr>
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																			</table>
-																		  </td>
-																		</tr>
-																	  </table>
-																	</div>
-																	<!--[if (gte mso 9)|(IE)]>
-																	</td>
-																	<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-																	<![endif]-->
-																	<div style="display:inline-block;vertical-align:top;">
-																	  <table align="center" border="0" cellpadding="0" cellspacing="0">
-																		<tr>
-																		  <td width="120" align="center" class="colim">
-																			<table width="95%" class="container" border="0" align="center" cellpadding="0" cellspacing="0">
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																				<tr>
-																					<td>
-																						<p style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;">Order Number:</p>
-																						<p style="color: #787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-decoration: none;" mc:edit="s9">#'.$bookingId.'</p>
-																				  </td>
-																				</tr>
-																				<tr>
-																					<td height="10"></td>
-																				</tr>
-																			</table>
-																		  </td>
-																		</tr>
-																	  </table>
-																	</div>
-																  </td>
-																</tr>
-															  </table>
-		
-															<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																<tr>
-																	<td style="border-radius: 0 0 8px 8px;box-shadow: 0px 3px 6px #b3b3b3; padding: 10px 40px 80px" bgcolor="#ffffff" class="content">
-																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																			<tr>
-																				<td style="padding-top: 20px;">
-																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																						<tr>
-																							<td style="color: #787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:50px">Invoice</td>
-																						</tr>
-																						<tr style="border-top: 1px solid #E3E3E3;">
-																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Service total cost</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s10">&pound;'.number_format($total, 2).'</td>
-																						</tr>
-																						<tr style="border-top: 1px solid #E3E3E3;">
-																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">Deposit paid</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s11">-&pound;'.number_format($deposit, 2).'</td>
-																						</tr>
-																							<tr style="border-top: 1px solid #E3E3E3;">
-																							<td align="left" style="color:#454B4D;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;">ATB Transaction Fees</td>
-																							<td align="right" style="color:#A6BFDE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:40px; text-decoration: none;font-weight: 700;" mc:edit="s111">-&pound;'.number_format($atb_fee, 2).'</td>
-																						</tr>
-																						<tr style="border-top: 1px solid #E3E3E3;">
-																							<td align="left" class="mfont2" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;">Payment Pending</td>
-																							<td align="right" style="color:#787F82;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:20px; line-height:40px; text-decoration: none; font-weight: 700;" mc:edit="s12">&pound;'.number_format($total-$deposit+$atb_fee, 2).'</td>
-																						</tr>
-																					</table>
-																				</td>
-																			</tr>
-																			<tr>
-																			  <td>
-																					<br>
-																					<hr>
-																				  <p style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px;font-weight: normal;font-size: 15px;line-height: 18px;text-align: left;color: #787f82;" mc:edit="s1">If you can no longer attend or need to make amendments to the appointment, please get in touch with [business name] at the earliest.
-		
-																				  </p>
-																				</td>
-																			</tr>
-																		</table>
-																	</td>
-																</tr>
-															</table>
-														</td>
-													</tr>
-												</table>
-		
-												<table width="100%" border="0" cellspacing="0" cellpadding="0">
-													<tr>
-														<td style="padding: 30px 40px 0px" class="content">
-															<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																<tr>
-																	<td class="p100">
-																		<table border="0" align="left" cellspacing="0" cellpadding="0" class="bottomNav">
-																			<tr><td align="left" mc:edit="info1"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Terms and conditions</a></td></tr>
-																			<tr><td align="left" mc:edit="info2"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;" class="black">Privacy Policy</a> </td></tr>
-																			<tr><td align="left" mc:edit="info3"><a href="mailto:help@myatb.co.uk" style="color: #ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:26px; text-align:left; text-decoration: none !important;">Contact Us</a> </td></tr>
-																		</table>
-																	</td>
-																	<td class="p100" align="right" width="400">
-																		<table border="0" cellspacing="0" cellpadding="0">
-																		</table>
-																		<table border="0" cellspacing="0" cellpadding="0">
-																			<tr>
-																				<td mc:edit="info4" align="right" class="p100" style="padding-top: 10px"><a href="#" class="mleft" style="color:#ffffff;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:right; text-decoration: none !important;display: block !important;">ATB All rights reserved</a> </td>
-																			</tr>
-																		</table>
-																	</td>
-																</tr>
-															</table>
-														</td>
-													</tr>
-												</table>
-		
-											<!--[if gte mso 9]>
-												</v:textbox>
-												</v:rect>
-											<![endif]-->
-										</td>
+									  <td style="width:153px;">
+										<img mc:edit="main11" height="auto" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/58bfffbc-ae54-a2bf-36b0-e2d695d19418.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 153px;" width="153">
+									  </td>
 									</tr>
+								  </tbody>
 								</table>
-							</td>
-						</tr>
-					</table>
-					<!--[if (gte mso 9)|(IE)]>
-						</td>
-						</tr>
-					</table>
-					<![endif]-->
-				</td>
-			</tr>
-		</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:420px;" ><![endif]-->
+					  <div class="mj-column-px-420 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main12" style="font-family:Roboto;font-size:30px;font-weight:bold;line-height:1;text-align:left;color:#FFFFFF;">Hi '.$name.',</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main13" style="font-family:Roboto;font-size:20px;line-height:1;text-align:left;color:#FFFFFF;">Please find below details of your booking</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#F8F8F8" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#F8F8F8;background-color:#F8F8F8;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#F8F8F8;background-color:#F8F8F8;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="border-bottom:1px solid #eeeeee;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:370px;" ><![endif]-->
+					  <div class="mj-column-px-370 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="75">
+										<img src="'.$profile.'" width="73" height="73" border="0" alt="user icon" style="border-radius:100%" class="CToWUd" data-bit="iit">
+									</td>
+									<td width="10"></td>
+									<td mc:edit="main15" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:28px;font-weight:normal;">Business name:<br>
+		<span style="color:#787f82; font-family:roboto,arial,sans-serif; font-size:15px; font-weight:normal; line-height:28px">'.$username.'</span></td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:270px;" ><![endif]-->
+					  <div class="mj-column-px-270 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="20"><img mc:edit="main16" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/ff683c55-7e1d-de42-ebae-a6a85b9d65e3.png" width="20" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 20px;"></td>
+									<td width="10"></td>
+									<td mc:edit="main17" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:28px;font-weight:bold;"> Manage this booking </td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#FFFFFF" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#FFFFFF;background-color:#FFFFFF;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;background-color:#FFFFFF;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="border-bottom:1px solid #eeeeee;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:200px;" ><![endif]-->
+					  <div class="mj-column-px-200 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main18" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Service:</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main19" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#787f82;">'.$title.'</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:240px;" ><![endif]-->
+					  <div class="mj-column-px-240 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main110" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Service Schedule:
 		
-		<script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script></body>
-		</html>
+		</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr>
+									<td width="13">
+									  <img mc:edit="main111" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/cc0f5ed0-be91-08d3-61c6-770791b89c82.png" width="13" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 13px;">
+									</td>
+									<td width="5"></td>
+									<td mc:edit="main112" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787f82;line-height:28px;font-weight:normal;">
+									'.$date.'
+									</td>
+								  </tr>
+								  <tr>
+									<td width="13">
+									  <img mc:edit="main113" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/724c211d-2972-389d-54ca-82876374d86c.png" width="13" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px; max-width: 13px;">
+									</td>
+									<td width="5"></td>
+									<td mc:edit="main114" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787f82;line-height:28px;font-weight:normal;">
+									'.$time.'
+									</td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:200px;" ><![endif]-->
+					  <div class="mj-column-px-200 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main115" style="font-family:Roboto;font-size:15px;font-weight:bold;line-height:1;text-align:left;color:#454B4D;">Order Number:</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main116" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#787f82;">#'.$bookingId.'</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#FFFFFF" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#FFFFFF;background-color:#FFFFFF;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFFFFF;background-color:#FFFFFF;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:20px;line-height:20px;">&#8202;</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main117" style="font-family:Roboto;font-size:30px;font-weight:bold;line-height:1;text-align:left;color:#787F82;">Invoice</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+								  <tr style="border-top: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3;">
+									<td mc:edit="main118" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> Service total cost </td>
+									<td mc:edit="main119" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;">£'.number_format($total, 2).'</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main120" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> Deposit paid </td>
+									<td mc:edit="main121" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;"> -£'.number_format($deposit, 2).'
+									</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main122" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#454B4D;line-height:40px;"> ATB Transaction Fees </td>
+									<td mc:edit="main123" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#A6BFDE;line-height:40px; font-weight: bold;"> -£'.number_format($atb_fee, 2).'
+									</td>
+								  </tr>
+								  <tr style="border-bottom: 1px solid #e3e3e3">
+									<td mc:edit="main124" align="left" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787F82;line-height:40px; font-weight: bold;"> Payment Pending </td>
+									<td mc:edit="main125" align="right" style="font-family:&#39;Roboto&#39, Arial, sans-serif; font-size:15px; color:#787F82;line-height:40px; font-weight: bold;"> £'.number_format($total-$deposit+$atb_fee, 2).'
+									</td>
+								  </tr>
+								</table>
+							  </td>
+							</tr>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:20px;line-height:20px;">&#8202;</div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main126" style="font-family:Roboto;font-size:15px;line-height:21px;text-align:left;color:#787F82;">If you can no longer attend or need to make amendments to the appointment, please get in touch with [business name] at the earliest.</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" bgcolor="#A6BFDE" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="background:#A6BFDE;background-color:#A6BFDE;margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A6BFDE;background-color:#A6BFDE;width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:middle;width:420px;" ><![endif]-->
+					  <div class="mj-column-px-420 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main127" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color: #ffffff; text-decoration: none;">Terms and conditions</a></div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main128" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color: #ffffff; text-decoration: none;">Privacy Policy</a></div>
+							  </td>
+							</tr>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main129" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;"><a href="mailto:help@myatb.co.uk" style="color: #ffffff; text-decoration: none;">Contact Us</a></div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td><td class="" style="vertical-align:middle;width:220px;" ><![endif]-->
+					  <div class="mj-column-px-220 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%">
+						  <tbody>
+							<tr>
+							  <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+								<div mc:edit="main130" style="font-family:Roboto;font-size:15px;line-height:1;text-align:left;color:#FFFFFF;">ATB All rights reserved</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:640px;" width="640" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+			<div style="margin:0px auto;max-width:640px;">
+			  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+				<tbody>
+				  <tr>
+					<td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
+					  <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:640px;" ><![endif]-->
+					  <div class="mj-column-px-640 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+						  <tbody>
+							<tr>
+							  <td style="font-size:0px;word-break:break-word;">
+								<div style="height:10px;line-height:10px;">&#8202;</div>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
+					  <!--[if mso | IE]></td></tr></table><![endif]-->
+					</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</div>
+			<!--[if mso | IE]></td></tr></table><![endif]-->
+		  </div>
+		<script type="text/javascript"  src="/OiORoJkI/HFD/Raf/ax9YTjB6tt/LYN9XQbL/SxBdJRdhAQ/KC/RFUwM-On4"></script></body>
 		
-			';
+		</html>';
 		
 		$this->sendEmail(
 			$to,

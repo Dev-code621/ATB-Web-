@@ -13,6 +13,7 @@ use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\PNConfiguration;
 use Lcobucci\JWT\Validation\ConstraintViolation;
+use Monolog\Handler\ErrorLogHandler;
 
 
 //Load Composer's autoloader
@@ -253,6 +254,8 @@ class MY_Controller extends CI_Controller
         $pnconf->setPublishKey($publish_key);
         $pnconf->setUuid( $user_id ."#ADMIN");
         $pubnub = new PubNub($pnconf);
+        $pubnub->getLogger()->pushHandler(new ErrorLogHandler());
+
 
         return $pubnub;
     }
