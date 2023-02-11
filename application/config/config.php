@@ -538,7 +538,9 @@ $config['stripe_key'] = 'pk_test_vSm2y8pS6d0TXB2pZ4ppvLox';
 $config['stripe_secret'] = 'sk_test_51CtFjlBbfMkRK41KQd012i6s4Czm8Uz7RBixkPZZz1fJ2zSKy2jNWWGYt0tbcNwBnKbq0cc2VotiDvHxaUiXxJ3D00ypHxzD3K';
 $config['webhook_secret'] = 'whsec_3ESgL5Ldbv6s9HlqtWFO3zubCO8OaFXj';
 
-$config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu';
+$config['stripe_price_id'] = 'price_1MKiH0BbfMkRK41KLSAH8YMx'; //0.99
+// $config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu'; //4.99
+
 
 // Stripe Live
 // $config['stripe_key'] = 'pk_live_Grn3O7feoNcAzLphl1fKXSwu';
