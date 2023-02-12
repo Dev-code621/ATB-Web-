@@ -126,44 +126,38 @@
     </head>
 
     <body>
-        <div class="text-right" style="position: absolute; z-index: 9; /* display: flex; */ /* align-content: end; */ right: 40px; top: 40px;">
-			<a href="javascript:;" aria-label="Toggle navigation" onclick="openNav()" class="" style="color: white;font-size: 31px;"><i class="far fa-bars"></i></a>
-		</div>
-		<!--
-Name: Menu Sidebar
-Status: User Logged In
--->
-<div id="mySidenav" class="sidenav">
-	<div class="nav-profile">
-		<img src="assets/img/logo-white.svg">
-		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-	</div>
-<div style="height: 100vh;display: flex; align-content: end;">
-<ul class="navbar-nav mr-auto" style="height: 250px; /* background: blue; */ /* bottom: 0; */ /* position: absolute; */ align-content: end; display: flex; width: 100%; margin-top: calc(100vh - 370px);">
+        <div id="mySidenav" class="sidenav">
+            <div class="nav-profile">
+                <img src="assets/img/logo-white.svg">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+            </div>
+            <div style="height: 100vh;display: flex; align-content: end;">
+                <ul class="navbar-nav mr-auto" style="height: 250px; /* background: blue; */ /* bottom: 0; */ /* position: absolute; */ align-content: end; display: flex; width: 100%; margin-top: calc(100vh - 370px);">
                     <li class="nav-item">
-                        <a class="nav-link d-flex" href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" target="_blank">User agreement <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
+                        <a class="nav-link d-flex" href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1">User agreement <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex" href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" target="_blank">Privacy Policy <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
+                        <a class="nav-link d-flex" href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486">Privacy Policy <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex" href="https://app.termly.io/document/cookie-policy/de313fa7-ef48-4619-86d2-0daad3679b40" target="_blank">Cookie Policy <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
+                        <a class="nav-link d-flex" href="https://app.termly.io/document/cookie-policy/de313fa7-ef48-4619-86d2-0daad3679b40">Cookie Policy <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex" href="https://app.termly.io/document/eula/c8f66d8d-c546-452f-bcf4-1c28815043dd" target="_blank">EULA <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
+                        <a class="nav-link d-flex" href="https://app.termly.io/document/eula/c8f66d8d-c546-452f-bcf4-1c28815043dd">EULA <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex" href="https://app.termly.io/document/disclaimer/c3c5eb9f-6576-4402-b294-11a7ac0704c1"target="_blank">Disclaimer <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
+                        <a class="nav-link d-flex" href="https://app.termly.io/document/disclaimer/c3c5eb9f-6576-4402-b294-11a7ac0704c1">Disclaimer <i class="fal fa-arrow-up-right-from-square ml-auto"></i></a>
                     </li>
                 </ul>
-	</div>
-</div>
-		
-        <div class="index-content">
+            </div>
+        </div>
+        <div class="index-content" style="background: #A6BFDE; ">         
+            
             <div class="logo">
                 <h6>Welcome to</h6>
                 <img src="assets/img/logo-white.svg">
             </div>
+            
             <div id="sliders" class="carousel slide carousel-fade" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
@@ -190,7 +184,7 @@ Status: User Logged In
                     </div>
                 </div>
             </div>
-
+         
             <div class="navigation py-3 px-4">
                 <h2 class="small-title text-uppercase text-center mb-3 font-weight-bold">How do you plan on using the ATB app?</h2>
                 <a href="#" class="btn" id="openNav" style="z-index: 10">To promote my business</a>
@@ -199,7 +193,7 @@ Status: User Logged In
                     <span>(I am not a business)</span>
                 </a>
             </div>
-        
+           
             <div class="navigation-options">
                 <div class="header position-relative p-4">
                     <div class="logo">
@@ -223,14 +217,5 @@ Status: User Logged In
         <script src="assets/vendor/jquery-3.5.1.min.js" ></script>
         <script src="assets/vendor/bootstrap.min.js" ></script>
         <script src="assets/js/function.js"></script>
-		<script>
-			function openNav() {
-					document.getElementById("mySidenav").classList.add("open");
-			  }
-
-			  function closeNav() {
-					document.getElementById("mySidenav").classList.remove("open");
-			  }
-		</script>
     </body>
 </html>

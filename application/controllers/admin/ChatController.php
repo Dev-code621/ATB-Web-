@@ -174,15 +174,12 @@ class ChatController extends MY_Controller
     }
 
     public function removeChannel($channel){
-          $pubnub = $this->loginPubNub();
-          $user_id= $this->session->userdata('user_id');
-          $response = $pubnub->removeUUIDMetadata()
-            ->uuid($user_id ."#ADMIN")
-            ->sync();
-        $aaa = $pubnub->removeChannelMetadata()      
+        $pubnub = $this->loginPubNub(); 
+        $removeResult = $pubnub->removeChannelMetadata()      
         ->channel($channel)
         ->sync();
-        print_r($response . $channel);
+        echo'<br>========New Line========<br>';
+        print_r("Remove Response : " . $removeResult ."  Channel :  ". $channel);
 
     }
     public function index() {
@@ -192,23 +189,28 @@ class ChatController extends MY_Controller
          $pubnub = $this->loginPubNub();
          $result = $pubnub->getAllChannelMetadata()
          ->includeFields([ "totalCount" => true, "customFields" => true ])
-        ->filter(  urlencode($_filter))
+        // ->filter(  urlencode($_filter))
          ->sync();
+       
          $channelMetadata = $result-> getData();
          $rooms = array();
          $count = 0;
          $wholeUsers = $this->User_model->getUsersListInDashboard();
-       
          for($i =0;$i<count($channelMetadata);++$i ){
             $channel = $channelMetadata[$i]->getId();
-            if(str_contains($channel,".json"))continue;
-            if (str_contains($channel, $user_id."#ADMIN")) {
-                // $this-> removeChannel( $channel);
-                $rooms[$count] = $this-> getChannelDetail($channel, 0, $wholeUsers );
-                // print_r($channelMetadata[$i]);
-                // exit;
-                $count ++;
-            }
+            // echo'==========ChannelLogs======<br>';
+            // print_r($channel);
+            
+            $this-> removeChannel( $channel);
+           
+
+            // if(str_contains($channel,".json"))continue;
+            // if (str_contains($channel, $user_id."#ADMIN")) {
+                
+            //     $rooms[$count] = $this-> getChannelDetail($channel, 0, $wholeUsers );                
+            //     // exit;
+            //     $count ++;
+            // }
          } 
         $this->session->set_userdata('chatRooms',$rooms);
         $this->session->set_userdata('pubnub', $pubnub);
