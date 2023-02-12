@@ -289,4 +289,21 @@ class Product_model extends MY_Model
     public function removeProductVariation($where) {
         $this->db->where($where)->delete(self::TABLE_PRODUCT_VARIATION);
     }
+
+    // added 3 Feb, 2023
+    /**
+     * return all user products (no drafts, no deleted)
+     * @param $id: user id
+     */
+    public function getAllUserProducts($id) {
+        $products =  $this->db->select('*')
+            -> from(self::TABLE_PRODUCT)
+            ->where(array('user_id' => $id))
+            ->where('is_active !=', '99')       // deleted
+            ->where('is_active !=', '98')       // draft
+            ->get()
+            ->result_array();
+
+        return $products;
+    }
 }
