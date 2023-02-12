@@ -5666,7 +5666,6 @@ class ProfileController extends MY_Controller
 		try {
 			$tokenVerifyResult = $this->verificationToken($this->input->post('token'));
 			if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
-				/*
 				$this->User_model->updateUserRecord(
 					array(
 						'status' => 4,
@@ -5674,7 +5673,6 @@ class ProfileController extends MY_Controller
 						'updated_at' => time()
 					), 
 					array('id' => $tokenVerifyResult['id']));
-				*/
 
 				// TO DO: any addition updates							
 				// disable/delete posts by the user
