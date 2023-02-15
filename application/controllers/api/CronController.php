@@ -206,4 +206,39 @@ class CronController extends MY_Controller
 			} 
 		}
 	}
+
+	public function deeplink() {
+		$branch_key = $this->config->item('branch_key');
+		$ios_url = $this->config->item('ios_url');
+		$android_url = $this->config->item('android_url');
+		
+		$url = 'https://api.branch.io/v1/url';
+		
+		$ch = curl_init();
+
+		$payload = array(
+			'branch_key'=> $branch_key,
+			'campaign' => 'profile', 
+			'data' => array(
+				'$ios_url' => $ios_url,
+				'$android_url' => $android_url,
+				"nav_type" => "0",
+				'nav_here' => "17")
+		);
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1);  
+        
+		// send request
+        $result = curl_exec($ch); 
+		curl_close($ch);
+
+		echo json_decode($result);
+	}
 }
