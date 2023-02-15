@@ -76,6 +76,10 @@
         Route::post('/email', 'CronController@email_test')->name('api.auth.email_test');
         Route::get('/push_upgrade_business', 'CronController@push_upgrade_business')->name('api.push.push_upgrade_business');
     });
+
+    Route::group('/api/test', ['namespace' => 'api'], function() {
+        Route::get('/deeplink', 'CronController@deeplink')->name('api.test.deeplink');
+    });
     
     Route::group('/api/business', ['namespace' => 'api'], function() {
         Route::post('/add_holiday', 'BusinessController@add_holiday')->name('api.business.add_holiday');
