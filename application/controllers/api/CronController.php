@@ -216,7 +216,7 @@ class CronController extends MY_Controller
 		
 		$ch = curl_init();
 
-		$payload = json_encode(array(
+		$payload = array(
 			'branch_key'=> $branch_key,
 			'campaign' => 'profile', 
 			'data' => array(
@@ -224,7 +224,7 @@ class CronController extends MY_Controller
 				'$android_url' => $android_url,
 				"nav_type" => "0",
 				'nav_here' => "17")
-		));
+		);
 
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -239,6 +239,6 @@ class CronController extends MY_Controller
         $result = curl_exec($ch); 
 		curl_close($ch);
 
-		echo json_encode($result);
+		echo json_decode($result);
 	}
 }
