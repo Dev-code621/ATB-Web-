@@ -541,6 +541,9 @@ $config['webhook_secret'] = 'whsec_3ESgL5Ldbv6s9HlqtWFO3zubCO8OaFXj';
 $config['stripe_price_id'] = 'price_1MKiH0BbfMkRK41KLSAH8YMx'; //0.99
 // $config['stripe_price_id'] = 'price_1LziuBBbfMkRK41KchPUnhtu'; //4.99
 
+$config['branch_key'] = 'key_live_ni0ofRv7D5RNhBAjiZhaUognsFfHXQMQ';
+$config['ios_url'] = 'https://itunes.apple.com/app/id1501095031';
+$config['android_url'] = 'https://play.google.com/store/apps/details?id=com.atb.app';
 
 // Stripe Live
 // $config['stripe_key'] = 'pk_live_Grn3O7feoNcAzLphl1fKXSwu';
