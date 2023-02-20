@@ -1434,6 +1434,9 @@ class PostController extends MY_Controller
 
 			$users = $this->User_model->getOnlyUser(array('id' => $verifyTokenResult['id']));
 
+			$retVal[self::RESULT_FIELD_NAME] = true;
+			$retVal[self::MESSAGE_FIELD_NAME] = "Success";
+
 		} else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
 			$retVal[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
