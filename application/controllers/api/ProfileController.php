@@ -716,7 +716,7 @@ class ProfileController extends MY_Controller
 					);
 
 					// to test
-					// $trialEnd = strtotime("+3 minutes");					
+					$trialEnd = strtotime("+5 minutes");					
 					// real
 					// $trialEnd = strtotime("+1 week");
 					$subscription = \Stripe\Subscription::create([
@@ -725,13 +725,18 @@ class ProfileController extends MY_Controller
 							['plan' => $this->config->item('stripe_price_id')]
 						],
 						'payment_behavior'=> 'default_incomplete',
-						'expand' => ['latest_invoice.payment_intent']
-						// 'trial_end' => $trialEnd
+						'expand' => ['latest_invoice.payment_intent', 'pending_setup_intent'],
+						'trial_end' => $trialEnd
 					]);
 
 					// echo $subscription;
 					// exit();
 
+					/**
+					 * without a free trial
+					 * 
+					 */
+					/*
 					$this->UserTransaction_model->insertNewTransaction(
 						array(
 							'user_id' => $tokenVerifyResult['id'],
@@ -749,6 +754,30 @@ class ProfileController extends MY_Controller
 						'customer_id' => $customer,
 						'ephemeral_key_secret' => $ephemeralKey->secret, 
 						'payment_intent_client_secret' => $subscription->latest_invoice->payment_intent->client_secret,
+						'publishable_key' => $this->config->item('stripe_key')
+					);
+					*/
+
+					/**
+					 * with a free trial period
+					 */
+					$this->UserTransaction_model->insertNewTransaction(
+						array(
+							'user_id' => $tokenVerifyResult['id'],
+							'transaction_id' => $subscription->pending_setup_intent->id,
+							'amount' => $subscription->plan->amount,
+							'purchase_type' => 'subscription',
+							'created_at' => time(),
+							'updated_at' => time()
+						)
+					);
+
+					$return[self::RESULT_FIELD_NAME] = true;
+					$return[self::MESSAGE_FIELD_NAME] = "Thank you for using ATB";
+					$return[self::EXTRA_FIELD_NAME] = array(
+						'customer_id' => $customer,
+						'ephemeral_key_secret' => $ephemeralKey->secret, 
+						'payment_intent_client_secret' => $subscription->pending_setup_intent->client_secret,
 						'publishable_key' => $this->config->item('stripe_key')
 					);
 
