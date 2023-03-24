@@ -764,7 +764,8 @@ class ProfileController extends MY_Controller
 					$this->UserTransaction_model->insertNewTransaction(
 						array(
 							'user_id' => $tokenVerifyResult['id'],
-							'transaction_id' => $subscription->pending_setup_intent->id,
+							'transaction_id' => $subscription->id, 							// subscription id
+							'setup_intent_id' => $subscription->pending_setup_intent->id,	// pending setup intent id start with seti_
 							'amount' => $subscription->plan->amount,
 							'purchase_type' => 'subscription',
 							'created_at' => time(),
