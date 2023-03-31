@@ -119,7 +119,6 @@ class SubscriptionController extends MY_Controller {
                     );
 
                     if (count($transactions) > 0) {
-                        if (notificationType)
                         $transaction = $transactions[0];
 
                         $update = array();
@@ -176,6 +175,8 @@ class SubscriptionController extends MY_Controller {
 
                     } else {
                         echo 'Not found the transaction:' . $transactionId;
+                        http_response_code(400);
+                        exit;
                     }
 
                     break;
