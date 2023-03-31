@@ -1,6 +1,11 @@
 <?php
 
 class PaymentController extends MY_Controller {
+
+	public function __construct() {
+        parent::__construct();
+        $this->load->library('firebase');
+    }
     
     public function success() {
         echo "Payment authorization was successful!";
@@ -192,6 +197,15 @@ class PaymentController extends MY_Controller {
 						array(
 							'transaction_id' => $subscriptionId
 						));
+
+					// firebase real-time update
+					$firebase = $this->firebase->init();
+					$db = $firebase->createDatabase();
+					$reference =  $db->getReference('ATB/Admin/business/'.$transaction['user_id']);
+					$reference->set([
+						"paid" => "1",
+						"updated" => time()*1000
+					]);
 					break;
 
 				// If subscription collection_method=charge_automatically it becomes past_due when payment to renew it fails
@@ -212,6 +226,15 @@ class PaymentController extends MY_Controller {
 							array('user_id' => $userId)
 						);
 					}
+
+					// firebase real-time update
+					$firebase = $this->firebase->init();
+					$db = $firebase->createDatabase();
+					$reference =  $db->getReference('ATB/Admin/business/'.$transaction['user_id']);
+					$reference->set([
+						"paid" => "0",
+						"updated" => time()*1000
+					]);
 					
 					break;
 
@@ -325,6 +348,15 @@ class PaymentController extends MY_Controller {
                             array('paid' => 1, 'updated_at' => time()),
                             array('user_id' => $userId)
                         );
+
+						// firebase real-time update
+						$firebase = $this->firebase->init();
+						$db = $firebase->createDatabase();
+						$reference =  $db->getReference('ATB/Admin/business/'.$transaction['user_id']);
+						$reference->set([
+							"paid" => "1",
+							"updated" => time()*1000
+						]);
                         
                         $content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 							<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
