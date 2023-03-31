@@ -8,6 +8,10 @@
  */
 class ProfileController extends MY_Controller
 {
+	public function __construct() {
+        parent::__construct();
+        $this->load->library('firebase');
+    }
 	
 	public function set_transaction_booking_id()
 	{
@@ -5602,6 +5606,15 @@ class ProfileController extends MY_Controller
 				array('paid' => 1, 'updated_at' => time()),
 				array('user_id' => $userId)
 			);
+
+			// firebase real-time update
+			$firebase = $this->firebase->init();
+			$db = $firebase->createDatabase();
+			$reference =  $db->getReference('ATB/Admin/business/'.$transaction['user_id']);
+			$reference->set([
+				"paid" => "1",
+				"updated" => time()*1000
+			]);
 
 			$retVal[self::RESULT_FIELD_NAME] = true;
 			$retVal[self::MESSAGE_FIELD_NAME] = "ATB Business subscription has been completed.";
