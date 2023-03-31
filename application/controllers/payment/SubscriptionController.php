@@ -129,6 +129,13 @@ class SubscriptionController extends MY_Controller {
                                 'updated_at' => time()
                             );
 
+                            $userId = $transaction['user_id'];
+                            // free trial has been started, mark user paid
+                            $this->UserBusiness_model->updateBusinessRecord(
+                                array('paid' => 0, 'updated_at' => time()),
+                                array('user_id' => $userId)
+                            );
+
                             // firebase real-time update
                             $firebase = $this->firebase->init();
                             $db = $firebase->createDatabase();
@@ -142,6 +149,13 @@ class SubscriptionController extends MY_Controller {
                             $update = array(
                                 'status' => 1,
                                 'updated_at' => time()
+                            );
+
+                            $userId = $transaction['user_id'];
+                            // free trial has been started, mark user paid
+                            $this->UserBusiness_model->updateBusinessRecord(
+                                array('paid' => 1, 'updated_at' => time()),
+                                array('user_id' => $userId)
                             );
 
                             // firebase real-time update
