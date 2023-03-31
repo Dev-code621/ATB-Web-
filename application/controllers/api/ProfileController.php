@@ -5610,7 +5610,7 @@ class ProfileController extends MY_Controller
 			// firebase real-time update
 			$firebase = $this->firebase->init();
 			$db = $firebase->createDatabase();
-			$reference =  $db->getReference('ATB/Admin/business/'.$transaction['user_id']);
+			$reference =  $db->getReference('ATB/Admin/business/'.$userId);
 			$reference->set([
 				"paid" => "1",
 				"updated" => time()*1000
