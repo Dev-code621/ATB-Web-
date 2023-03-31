@@ -244,8 +244,8 @@
        Route::post('/users', 'SearchController@getAllUsers')->name('api.search.users');
     });
 
-    Route::group('/subscription', ['namespace' => 'subscription'], function() {
-        Route::post('/notifications', 'SubscriptionController@handleNotifications')->name('api.subscription.notifications');
+    Route::group('/subscription', ['namespace' => 'payment'], function() {
+        Route::post('/notifications', 'SubscriptionController@handleNotifications')->name('payment.subscription.notifications');
     });
 
 /****

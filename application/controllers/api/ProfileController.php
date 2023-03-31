@@ -5559,6 +5559,19 @@ class ProfileController extends MY_Controller
 		if ($tokenVerifyResult[self::RESULT_FIELD_NAME]) {
 			$userId = $tokenVerifyResult['id'];
 
+			$this->UserTransaction_model->insertNewTransaction(
+				array(
+					'user_id' => $tokenVerifyResult['id'],
+					'transaction_id' => $this->input->post('transaction_id'),
+					'purchase_type' => 'subscription',
+					'amount' => '99',
+					'payment_method' => $this->input->post('payment_method'),
+					'created_at' => time(),
+					'updated_at' => time()
+				)
+			);
+
+			/* old transaction model
 			$this->load->model('UserBraintreeTransaction_model');
 
 			$transactionAddResult = $this->UserBraintreeTransaction_model->insertNewTransaction(
@@ -5572,7 +5585,7 @@ class ProfileController extends MY_Controller
 					'payment_source' => "Apple In-app subscription",
 					'created_at' => time()
 				)
-			);
+			); */
 
 			$users = $this->User_model->getOnlyUser(array('id' => $userId));
 
