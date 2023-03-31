@@ -127,7 +127,7 @@ class PaymentController extends MY_Controller {
         exit();
         }
         
-        // Handle the event
+        // Handle the event (listening and handle 6 events)
         switch ($event->type) {
         case 'payment_intent.canceled':
             $paymentIntent = $event->data->object;
@@ -142,6 +142,24 @@ class PaymentController extends MY_Controller {
             $this->handlePayment($paymentIntent);            
             break;
 
+		// Occurs when an SetupIntent has successfully setup a payment method.
+		case 'setup_intent.succeeded':
+			$setupIntent = $event->data->object;
+			$this->didCompleteSetupPayment($setupIntent);
+			break;
+
+		// Occurs whenever a subscription changes (e.g., switching from one plan to another, or changing the status from trial to active).
+		case 'customer.subscription.updated':
+			$subscription = $event->data->object;
+			$this->subscriptionUpdated($subscription);
+			break;
+
+		// Occurs whenever a customer’s subscription ends.
+		case 'customer.subscription.deleted':
+			$subscription = $event->data->object;
+			$this->subscriptionDeleted($subscription);
+			break;
+
         // ... handle other event types
         default:
             echo 'Received unknown event type ' . $event->type;
@@ -150,12 +168,124 @@ class PaymentController extends MY_Controller {
         http_response_code(200);
     }
 
+	private function subscriptionUpdated($subscription) {
+		$subscriptionId = $subscription->id;
+		$transactions = $this->UserTransaction_model->getTransactionHistory(
+            array('transaction_id' => $subscriptionId)
+        );
+
+		if (count($transactions)) {
+			$transaction = $transactions[0];
+
+			switch($subscription->status) {
+				// Once the first invoice is paid, the subscription moves into an active state.
+				case 'active': 
+					// trial ends and moves into an active state
+					// find the invoice id and keep it as it's going to the invoice that will be paid for this subscription.
+					$update = array(
+						'invoice' => $subscription->latest_invoice,
+						'updated_at' => time()
+					);
+
+					$this->UserTransaction_model->update(
+						$update,
+						array(
+							'transaction_id' => $subscriptionId
+						));
+					break;
+
+				// If subscription collection_method=charge_automatically it becomes past_due when payment to renew it fails
+				case 'past_due': 
+					break;
+
+				// canceled or unpaid (depending on your subscriptions settings) when Stripe has exhausted all payment retry attempts.
+				case 'unpaid': 
+					break;
+
+				case 'canceled': 
+					$userId = $transaction['user_id'];
+            		$users = $this->User_model->getOnlyUser(array('id' => $userId));
+
+					if (count($users)) {
+						$this->UserBusiness_model->updateBusinessRecord(
+							array('paid' => 0, 'updated_at' => time()),
+							array('user_id' => $userId)
+						);
+					}
+					
+					break;
+
+				// For collection_method=charge_automatically a subscription moves into incomplete if the initial payment attempt fails
+				case 'incomplete': 
+					break;
+
+				// If the first invoice is not paid within 23 hours, the subscription transitions to incomplete_expired. 
+				// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
+				case 'incomplete_expired': 
+					break;
+
+				// A subscription that is currently in a trial period is trialing and moves to active when the trial period is over.
+				case 'trialing': 
+					break;
+
+				case 'paused': 
+					break;
+
+				default:
+					echo 'unexpected subscription status:' . $subscription->status;
+					break;
+			}
+
+		} else {
+			echo 'Not found the transaction:' . $subscription->id;
+		}
+	}
+
+	private function subscriptionDeleted($subscription) { }
+	
+	private function didCompleteSetupPayment($setupIntent) {
+		$transactions = $this->UserTransaction_model->getTransactionHistory(
+            array('setup_intent_id' => $setupIntent->id)
+        );
+ 
+		if (count($transactions)) {
+			$transaction = $transactions[0];
+			
+			// user
+			$userId = $transaction['user_id'];
+            $users = $this->User_model->getOnlyUser(array('id' => $userId));
+
+			if (count($users)) {
+				// free trial has been started, mark user paid
+				$this->UserBusiness_model->updateBusinessRecord(
+					array('paid' => 1, 'updated_at' => time()),
+					array('user_id' => $userId)
+				);
+
+				// send an email if it's required 
+				// customer set up payment method and their trail started.
+			}
+		} else {
+			echo 'Not found the transaction:' . $setupIntent->id;
+		}
+	}
+
     private function handlePayment($paymentIntent) {
         $paymentIntentId = $paymentIntent->id;
 
+		$invoice = $paymentIntent->invoice;
+
+		$transactions = array();
         $transactions = $this->UserTransaction_model->getTransactionHistory(
             array('transaction_id' => $paymentIntentId)
         );
+
+		// find transactions with the invoice
+		if (count($transactions) <= 0) {
+			$transactions = $this->UserTransaction_model->getTransactionHistory(
+				array('invoice' => $invoice)
+			);
+		}
 
         if (count($transactions)) {
             $transaction = $transactions[0];
@@ -180,7 +310,7 @@ class PaymentController extends MY_Controller {
                 $this->UserTransaction_model->update(
                     $update,
                     array(
-                        'transaction_id' => $paymentIntentId
+                        'id' => $transaction['id']
                     ));
 
                 // Email properties
@@ -190,332 +320,332 @@ class PaymentController extends MY_Controller {
                 $purchaseType = $transaction['purchase_type'];
                 switch ($purchaseType) {
                     case 'subscription':
+						// no need but keep it as is
                         $this->UserBusiness_model->updateBusinessRecord(
                             array('paid' => 1, 'updated_at' => time()),
                             array('user_id' => $userId)
                         );
                         
                         $content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-						<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-						<head>
-							<!--[if gte mso 9]>
-							<xml>
-								<o:OfficeDocumentSettings>
-								<o:AllowPNG/>
-								<o:PixelsPerInch>96</o:PixelsPerInch>
-								</o:OfficeDocumentSettings>
-							</xml>
-							<![endif]-->
-						<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-						<meta name="vi	ewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-						<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-						<meta name="format-detection" content="date=no">
-						<meta name="format-detection" content="address=no">
-						<meta name="format-detection" content="telephone=no">
-						<meta name="x-apple-disable-message-reformatting">
-						 <!--[if !mso]><!-->
-							<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-						<!--<![endif]-->
-						<title>*|MC:SUBJECT|*</title>
+							<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+							<head>
+								<!--[if gte mso 9]>
+								<xml>
+									<o:OfficeDocumentSettings>
+									<o:AllowPNG/>
+									<o:PixelsPerInch>96</o:PixelsPerInch>
+									</o:OfficeDocumentSettings>
+								</xml>
+								<![endif]-->
+								<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+								<meta name="vi	ewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+								<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+								<meta name="format-detection" content="date=no">
+								<meta name="format-detection" content="address=no">
+								<meta name="format-detection" content="telephone=no">
+								<meta name="x-apple-disable-message-reformatting">
+								<!--[if !mso]><!-->
+									<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
+								<!--<![endif]-->
+								<title>*|MC:SUBJECT|*</title>
+
+								<style type="text/css">
+										body{
+											padding:0 !important;
+											margin:0 !important;
+											display:block !important;
+											min-width:100% !important;
+											width:100% !important;
+											background:#F8F8F8;
+											-webkit-text-size-adjust:none;
+										}
+										p{
+											padding:0 !important;
+											margin:0 !important;
+										}
+										table{
+											border-spacing:0 !important;
+											border-collapse:collapse !important;
+											table-layout:fixed !important;
+										}
+										.container{
+											width:100%;
+											max-width:650px;
+										}
+										.ExternalClass{
+											width:100%;
+										}
+										.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
+											line-height:100%;
+										}
+									@media screen and (max-width: 650px){
+										.wrapper{
+											padding:0 !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.container{
+											width:100% !important;
+											min-width:100% !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.border{
+											display:none !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.content{
+											padding:0 20px 50px !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.box1{
+											padding:55px 15px 50px !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.social-btn{
+											height:35px;
+											width:auto;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.bottomNav a{
+											font-size:12px !important;
+											line-height:16px !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										.spacer{
+											height:61px !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										h1{
+											font-size:16px !important;
+										}
+								
+								}	@media screen and (max-width: 650px){
+										h2{
+											font-size:16px !important;
+										}
+								
+								}</style>
+							</head>
 						
-						
-						
-						
-						<style type="text/css">
-								body{
-									padding:0 !important;
-									margin:0 !important;
-									display:block !important;
-									min-width:100% !important;
-									width:100% !important;
-									background:#F8F8F8;
-									-webkit-text-size-adjust:none;
-								}
-								p{
-									padding:0 !important;
-									margin:0 !important;
-								}
-								table{
-									border-spacing:0 !important;
-									border-collapse:collapse !important;
-									table-layout:fixed !important;
-								}
-								.container{
-									width:100%;
-									max-width:650px;
-								}
-								.ExternalClass{
-									width:100%;
-								}
-								.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
-									line-height:100%;
-								}
-							@media screen and (max-width: 650px){
-								.wrapper{
-									padding:0 !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.container{
-									width:100% !important;
-									min-width:100% !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.border{
-									display:none !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.content{
-									padding:0 20px 50px !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.box1{
-									padding:55px 15px 50px !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.social-btn{
-									height:35px;
-									width:auto;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.bottomNav a{
-									font-size:12px !important;
-									line-height:16px !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								.spacer{
-									height:61px !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								h1{
-									font-size:16px !important;
-								}
-						
-						}	@media screen and (max-width: 650px){
-								h2{
-									font-size:16px !important;
-								}
-						
-						}</style></head>
-						
-						<body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
-						<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">Thank you for applying to become an ATB approved business</span>
-						
-						<table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
-							<tr>
-								<td align="center" valign="top" class="wrapper">
-									<!--[if (gte mso 9)|(IE)]>
-									<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
-										<tr>
-										<td>
-									<![endif]-->    
-									<table border="0" cellspacing="0" cellpadding="0" class="container">
-										<tr>
-											<td>
-												<table width="100%" border="0" cellspacing="0" cellpadding="0">
-													<tr>
-														<td style="background-color: #A6BFDE;" valign="top" align="center" class="content">
-															<!--[if gte mso 9]>
-															<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
-																<v:fill type="frame" src="images/background.jpg" color="#ABC1DE" />
-																<v:textbox inset="0,0,0,0">
-															<![endif]-->
-						
-																<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																	<tr>
-																		<td align="center" style="padding: 53px 20px 40px">
-																			<a href="#" target="_blank"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/30d61529-fa12-c511-c9e3-acddf3ee2d5a.png" width="153" height="47" border="0" alt=""></a>
-																		</td>
-																	</tr>
-																</table>
-						
-																<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																	<tr>
-																		<td valign="bottom">
-																			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																				<tr>
-																					<td height="98">
-																						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																							<tr><td height="38" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">&nbsp;</td></tr>
-																							<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
-																						</table>
-																					</td>
-																					<td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/88863254-6c12-5fe3-df6d-cb5be53545fc.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;"></td>
-																					<td height="98">
-																						<table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
-																							<tr><td height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
-																							<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;border-radius: 0 5px 0 0;">&nbsp;</td></tr>
-																						</table>
-																					</td>
-																				</tr>
-																			</table>
-																			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																				<tr>
-																					<td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
-																						<table border="0" cellspacing="0" cellpadding="0">
-																							<tr>
-																								<td><h1 mc:edit="r1" style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">Business application received</h1><br><h2 mc:edit="r2" style="margin: 0; color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;">Thank you for applying to become an ATB approved business! </h2><br></td>
-																							</tr>
-																							<tr>
-																								<td>
-																									<p mc:edit="r3" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">We will review your request and respond within 3 working days. </p>
-																									<br>
-																									<p mc:edit="r4" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">While you wait you can begin to upload products and services to your business store (each new service will require additional admin approval).</p>
-																									<br>
-																									<p mc:edit="r5"><a href="hrefdeeplink" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;text-decoration: underline;font-size: 15px;text-align: center;color: #a6bfde;display: block; margin: auto;">Upload products and services now</a></p>
+							<body style="background-color: #A6BFDE; padding: 0 50px 50px; margin:0">
+								<span style="height: 0; width: 0; line-height: 0pt; opacity: 0; display: none;">Thank you for applying to become an ATB approved business</span>
+								
+								<table border="0" cellpadding="0" cellspacing="0" style="margin: 0; padding: 0" width="100%">
+									<tr>
+										<td align="center" valign="top" class="wrapper">
+											<!--[if (gte mso 9)|(IE)]>
+											<table width="650" align="center" cellpadding="0" cellspacing="0" border="0">
+												<tr>
+												<td>
+											<![endif]-->    
+											<table border="0" cellspacing="0" cellpadding="0" class="container">
+												<tr>
+													<td>
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															<tr>
+																<td style="background-color: #A6BFDE;" valign="top" align="center" class="content">
+																	<!--[if gte mso 9]>
+																	<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:650px; height: 880px">
+																		<v:fill type="frame" src="images/background.jpg" color="#ABC1DE" />
+																		<v:textbox inset="0,0,0,0">
+																	<![endif]-->
+								
+																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																			<tr>
+																				<td align="center" style="padding: 53px 20px 40px">
+																					<a href="#" target="_blank"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/30d61529-fa12-c511-c9e3-acddf3ee2d5a.png" width="153" height="47" border="0" alt=""></a>
+																				</td>
+																			</tr>
+																		</table>
+								
+																		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																			<tr>
+																				<td valign="bottom">
+																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																						<tr>
+																							<td height="98">
+																								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																									<tr><td height="38" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">&nbsp;</td></tr>
+																									<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt;width:100%; min-width:100%;border-radius:5px 0 0 0;">&nbsp;</td></tr>
+																								</table>
+																							</td>
+																							<td width="98" height="98" bgcolor="#F8F8F8" style="border-radius: 50% 50% 0 0!important;max-height: 98px !important;"><img src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/88863254-6c12-5fe3-df6d-cb5be53545fc.png" width="98" height="98" border="0" alt="" style="border: 0 !important; outline:none; text-decoration: none;display:block;max-height: 98px !important;"></td>
+																							<td height="98">
+																								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%;">
+																									<tr><td height="38" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;">&nbsp;</td></tr>
+																									<tr><td bgcolor="#F8F8F8" height="60" class="spacer" style="font-size:0pt; line-height:0pt; width:100%; min-width:100%;border-radius: 0 5px 0 0;">&nbsp;</td></tr>
+																								</table>
+																							</td>
+																						</tr>
+																					</table>
+																					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																						<tr>
+																							<td class="box1" bgcolor="#F8F8F8" align="center" style="padding:55px 120px 50px;">
+																								<table border="0" cellspacing="0" cellpadding="0">
+																									<tr>
+																										<td><h1 mc:edit="r1" style="color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 700; font-size:30px; line-height:31px; text-align:center; margin: 0;">Business application received</h1><br><h2 mc:edit="r2" style="margin: 0; color:#787F82; font-family:&#39;Roboto&#39;, Arial, sans-serif; font-weight: 300; font-size:20px; line-height:24px; text-align:center;">Thank you for applying to become an ATB approved business! </h2><br></td>
+																									</tr>
+																									<tr>
+																										<td>
+																											<p mc:edit="r3" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">We will review your request and respond within 3 working days. </p>
+																											<br>
+																											<p mc:edit="r4" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;font-size: 15px;text-align: center;color: #737373;">While you wait you can begin to upload products and services to your business store (each new service will require additional admin approval).</p>
+																											<br>
+																											<p mc:edit="r5"><a href="hrefdeeplink" style="font-family:&#39;Roboto&#39;, Arial, sans-serif;font-weight: normal;text-decoration: underline;font-size: 15px;text-align: center;color: #a6bfde;display: block; margin: auto;">Upload products and services now</a></p>
+																										</td>
+																									</tr>																	
+																								</table>
+																							</td>
+																						</tr>
+																					</table>
+																					<table bgcolor="#ffffff" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+																						<tr>
+																							<td height="40"></td>
+																						</tr>
+																						<tr>
+																							<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
+																								<!--left-->
+																								<div style="display:inline-block;vertical-align:top;">
+																								<table align="center" border="0" cellspacing="0" cellpadding="0">
+																									<tr>
+																									<td width="200" align="center">
+																										<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
+																										<tr>
+																											<td align="center">
+																											<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																												<tr>
+																													<td align="center" mc:edit="info1"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
+																												</tr>
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																											</table>
+																											</td>
+																										</tr>
+																										</table>
+																									</td>
+																									</tr>
+																								</table>
+																								</div>
+																								<!--end left-->
+																								<!--[if (gte mso 9)|(IE)]>
 																								</td>
-																							</tr>																	
-																						</table>
-																					</td>
-																				</tr>
-																			</table>
-																			<table bgcolor="#ffffff" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-																				<tr>
-																					<td height="40"></td>
-																				  </tr>
-																				<tr>
-																					<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-																						<!--left-->
-																						<div style="display:inline-block;vertical-align:top;">
-																						  <table align="center" border="0" cellspacing="0" cellpadding="0">
-																							<tr>
-																							  <td width="200" align="center">
-																								<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
-																								  <tr>
-																									<td align="center">
-																									  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+																								<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
+																								<![endif]-->
+																								<!--middle-->
+																								<div style="display:inline-block;vertical-align:top;">
+																								<table align="center" border="0" cellspacing="0" cellpadding="0">
+																									<tr>
+																									<td width="200" align="center">
+																										<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
 																										<tr>
-																										  <td height="10"></td>
+																											<td align="center">
+																											<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																												<tr>
+																													<td align="center" mc:edit="info2"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
+																												</tr>
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																											</table>
+																											</td>
 																										</tr>
-																										<tr>
-																											<td align="center" mc:edit="info1"><a href="https://app.termly.io/document/terms-of-use-for-online-marketplace/cbadd502-052f-40a2-8eae-30b1bb3ae9b1" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Terms and conditions</a> </td>
-																										</tr>
-																										<tr>
-																										  <td height="10"></td>
-																										</tr>
-																									  </table>
+																										</table>
 																									</td>
-																								  </tr>
+																									</tr>
 																								</table>
-																							  </td>
-																							</tr>
-																						  </table>
-																						</div>
-																						<!--end left-->
-																						<!--[if (gte mso 9)|(IE)]>
-																						</td>
-																						<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-																						<![endif]-->
-																						<!--middle-->
-																						<div style="display:inline-block;vertical-align:top;">
-																						  <table align="center" border="0" cellspacing="0" cellpadding="0">
-																							<tr>
-																							  <td width="200" align="center">
-																								<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
-																								  <tr>
-																									<td align="center">
-																									  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+																								</div>
+																								<!--end middle-->
+																								<!--[if (gte mso 9)|(IE)]>
+																								</td>
+																								<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
+																								<![endif]-->
+																								<!--middle-->
+																								<!--right-->
+																								<div style="display:inline-block;vertical-align:top;">
+																								<table align="center" border="0" cellspacing="0" cellpadding="0">
+																									<tr>
+																									<td width="200" align="center">
+																										<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
 																										<tr>
-																										  <td height="10"></td>
+																											<td align="center">
+																											<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																												<tr>
+																													<td align="center" mc:edit="info3"><a href="mailto:help@myatb.co.uk" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
+																												</tr>
+																												<tr>
+																												<td height="10"></td>
+																												</tr>
+																											</table>
+																											</td>
 																										</tr>
-																										<tr>
-																											<td align="center" mc:edit="info2"><a href="https://app.termly.io/document/privacy-policy/a5b8733a-4988-42d7-8771-e23e311ab486" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Privacy Policy</a> </td>
-																										</tr>
-																										<tr>
-																										  <td height="10"></td>
-																										</tr>
-																									  </table>
+																										</table>
 																									</td>
-																								  </tr>
+																									</tr>
 																								</table>
-																							  </td>
-																							</tr>
-																						  </table>
-																						</div>
-																						<!--end middle-->
-																						<!--[if (gte mso 9)|(IE)]>
-																						</td>
-																						<td align="center" style="text-align:center;vertical-align:top;font-size:0;">
-																						<![endif]-->
-																						<!--middle-->
-																						<!--right-->
-																						<div style="display:inline-block;vertical-align:top;">
-																						  <table align="center" border="0" cellspacing="0" cellpadding="0">
-																							<tr>
-																							  <td width="200" align="center">
-																								<table bgcolor="#FFFFFF" align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
-																								  <tr>
-																									<td align="center">
-																									  <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-																										<tr>
-																										  <td height="10"></td>
-																										</tr>
-																										<tr>
-																											<td align="center" mc:edit="info3"><a href="mailto:help@myatb.co.uk" style="color:#A2A2A2;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:20px; text-align:center; text-decoration: none;">Contact Us</a> </td>
-																										</tr>
-																										<tr>
-																										  <td height="10"></td>
-																										</tr>
-																									  </table>
-																									</td>
-																								  </tr>
+																								</div>
+																								<!--end right-->
+																							</td>
+																						</tr>
+																					</table>
+																					<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="border-radius: 0 0 5px 5px ">
+																						<tr>
+																							<td width="100%" style="padding: 20px 20px 45px;">
+																								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																									<tr>
+																										<td align="center" mc:edit="info4"><a href="#" style="color:#AEC3DE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:28px; text-align:center; text-decoration: none;">ATB All rights reserved</a> </td>
+																									</tr>
 																								</table>
-																							  </td>
-																							</tr>
-																						  </table>
-																						</div>
-																						<!--end right-->
-																					  </td>
-																				</tr>
-																			</table>
-																			<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="border-radius: 0 0 5px 5px ">
-																				<tr>
-																					<td width="100%" style="padding: 20px 20px 45px;">
-																						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																							<tr>
-																								<td align="center" mc:edit="info4"><a href="#" style="color:#AEC3DE;font-family:&#39;Roboto&#39;, Arial, sans-serif;font-size:15px; line-height:28px; text-align:center; text-decoration: none;">ATB All rights reserved</a> </td>
-																							</tr>
-																						</table>
-																					</td>
-																				</tr>
-																			</table>
-																		</td>
-																	</tr>
-																</table>
-						
-															<!--[if gte mso 9]>
-																</v:textbox>
-																</v:rect>
-															<![endif]-->
-														</td>
-													</tr>
-												</table>
-											</td>
-										</tr>
-									</table>
-									<!--[if (gte mso 9)|(IE)]>
+																							</td>
+																						</tr>
+																					</table>
+																				</td>
+																			</tr>
+																		</table>
+								
+																	<!--[if gte mso 9]>
+																		</v:textbox>
+																		</v:rect>
+																	<![endif]-->
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+											<!--[if (gte mso 9)|(IE)]>
+												</td>
+												</tr>
+											</table>
+											<![endif]-->
 										</td>
-										</tr>
-									</table>
-									<![endif]-->
-								</td>
-							</tr>
-						</table>
-						
-						<script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script></body>
-						</html>';
+									</tr>
+								</table>
+								
+								<script type="text/javascript"  src="/o6_vyQJqPbYtaVe-DZ2j-l984oA/5N3Sw4bS/GzM7GGwHGgM/YjMeBA5N/ITo"></script>
+							</body>
+							</html>';
 
-				$subject = 'Business application received';
+							$subject = 'Business application received';
 
-                        $this->sendEmail($users[0]["user_email"], $subject, $content);                        
-                        break;
+							$this->sendEmail($users[0]["user_email"], $subject, $content);                        
+							break;
 
                     case 'service':
                     case 'booking':
