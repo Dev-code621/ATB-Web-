@@ -62,6 +62,7 @@
         Route::post('/register', 'AuthController@register')->name('api.auth.register');
         Route::post('/update_feed', 'AuthController@update_feed')->name('api.auth.update_feed');
         Route::post('/login', 'AuthController@login')->name('api.auth.login');
+        Route::post('/social_login', 'AuthController@socialLogin')->name('api.auth.social_login');
         Route::post('/forgot_pass_email_verification', 'AuthController@forgot_pass_email_verification')->name('api.auth.forgot_pass_email_verification');
         Route::post('/check_verification_code', 'AuthController@check_verification_code')->name('api.auth.check_verification_code');
         Route::post('/update_pass', 'AuthController@update_pass')->name('api.auth.update_pass');

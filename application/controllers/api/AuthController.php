@@ -37,29 +37,28 @@ class AuthController extends MY_Controller
 		$email = strtolower($this->input->post('email'));
 		$retVal = array();
 		$existUser = $this->User_model->getOnlyUser(array('user_email' => $email));
-		if(count($existUser) == 0) {
-            
-                $insertURL = array(
-                    'user_email' => $email,
-                    'user_password' => self::GetMd5($this->input->post('pwd')),
-                    'facebook_token' => $this->input->post('fbToken'),
-                    'status' => 3,
-                    'updated_at' => time(),
-                    'created_at' => time()
-                );
+		if(count($existUser) == 0) {            
+        $insertURL = array(
+            'user_email' => $email,
+            'user_password' => self::GetMd5($this->input->post('pwd')),
+            'facebook_token' => $this->input->post('fbToken'),
+            'status' => 3,
+            'updated_at' => time(),
+            'created_at' => time()
+        );
 
-                $insResult = $this->User_model->insertNewUser($insertURL);
+        $insResult = $this->User_model->insertNewUser($insertURL);
 
-                if ($insResult[self::RESULT_FIELD_NAME]) {
-                    $token = $this->generateToken($insResult[MY_Controller::MESSAGE_FIELD_NAME]);
+        if ($insResult[self::RESULT_FIELD_NAME]) {
+            $token = $this->generateToken($insResult[MY_Controller::MESSAGE_FIELD_NAME]);
 
-                    $retVal[self::RESULT_FIELD_NAME] = true;
-                    $retVal[self::MESSAGE_FIELD_NAME] = $token;
+            $retVal[self::RESULT_FIELD_NAME] = true;
+            $retVal[self::MESSAGE_FIELD_NAME] = $token;
 
-                } else {
-                    $retVal[self::RESULT_FIELD_NAME] = false;
-                    $retVal[self::MESSAGE_FIELD_NAME] = "Database Error";
-                }
+        } else {
+            $retVal[self::RESULT_FIELD_NAME] = false;
+            $retVal[self::MESSAGE_FIELD_NAME] = "Database Error";
+        }
 		}
 		else {
 			$retVal[self::RESULT_FIELD_NAME] = false;
@@ -123,7 +122,7 @@ class AuthController extends MY_Controller
 			$user = $users[0];
 			
 			$subject = 'Welcome to ATB';
-
+      $deeplink = $this->generateDeepLink(4,0);
       $content = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
       <head>
@@ -298,7 +297,7 @@ class AuthController extends MY_Controller
                                       <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bottomNav">
                                         <tr><br></tr>
                                         <tr>
-                                          <td colspan="3" mc:edit="w3"><a href="hrefdeeplink" style="color: #ffffff; text-decoration: none; font-family: &#39;Roboto&#39;, Arial, sans-serif; font-size: 15px; width: 210px; padding-top: 15px; padding-bottom: 15px;display: block; text-align: center; background: #ABC1DE; border-radius: 5px; margin: auto;" target="_blank"><img height="20" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/dca874c4-ab1c-f4dd-c7e2-2cac15126445.png" style="vertical-align: middle; max-width: 20px;" width="20">&nbsp;&nbsp;Business Sign Up</a></td>
+                                          <td colspan="3" mc:edit="w3"><a href="'.$deeplink.'" style="color: #ffffff; text-decoration: none; font-family: &#39;Roboto&#39;, Arial, sans-serif; font-size: 15px; width: 210px; padding-top: 15px; padding-bottom: 15px;display: block; text-align: center; background: #ABC1DE; border-radius: 5px; margin: auto;" target="_blank"><img height="20" src="https://mcusercontent.com/174192f191938a935a9ebfdb2/images/dca874c4-ab1c-f4dd-c7e2-2cac15126445.png" style="vertical-align: middle; max-width: 20px;" width="20">&nbsp;&nbsp;Business Sign Up</a></td>
                                         </tr>
                                         <tr><td colspan="3" style="padding-top: 30px; padding-bottom: 10px"></td></tr>
                                         
@@ -478,47 +477,121 @@ class AuthController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+  /**
+   * This will proceed that login with email or auto login with emails or social accounts
+   */
 	public function login() {
-		$email  = strtolower($this->input->post('email'));
-		$pwd = $this->GetMd5($this->input->post('pwd'));
-		$fbToken = $this->input->post('fbToken');
-		
-		$existUser = $this->User_model->getOnlyUser(array('user_email' => $email, 'user_password' => $pwd));
-		
-		if (count($existUser) == 0 && strlen($fbToken) > 0) {
-			$existUser = $this->User_model->getOnlyUser(array('facebook_token' => $fbToken));
-		}
+    $userSocialIdentifier = $this->input->post('fbToken');
 
-		$retVal = array();
-    $retVal[self::RESULT_FIELD_NAME] = false;
-    $retVal[self::MESSAGE_FIELD_NAME] = "Please check your username and password.";
+    $email = strtolower($this->input->post('email'));
+    $pwd = $this->GetMd5($this->input->post('pwd'));
+    $existUser = $this->User_model->getOnlyUser(array('user_email' => $email, 'user_password' => $pwd));
 
-		if(count($existUser) > 0 ) {
-      if ($existUser[0]['status'] == 3) {
-        $token = $this->generateToken($existUser[0]['id']);
-        $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
+    if (count($existUser) <= 0 && strlen($userSocialIdentifier) > 0) {
+      $existUser = $this->User_model->getOnlyUser(array('facebook_token' => $userSocialIdentifier));
+    }
 
-        $retVal[self::RESULT_FIELD_NAME] = true;
-        $retVal[self::MESSAGE_FIELD_NAME] = $token;
-        $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
+    $retVal = array();
+		if(count($existUser) > 0) {
+      switch ($existUser[0]['status']) {
+        case 3: 
+          $token = $this->generateToken($existUser[0]['id']);
+          $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
 
-      } else {
-        $retVal[self::RESULT_FIELD_NAME] = false;
-        switch ($existUser[0]['status']) {
-          case 4: 
-            $retVal[self::MESSAGE_FIELD_NAME] = "Your account has been deleted.";
-            break;
+          $retVal[self::RESULT_FIELD_NAME] = true;
+          $retVal[self::MESSAGE_FIELD_NAME] = $token;
+          $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
+          break;
 
-          default: 
-            $retVal[self::MESSAGE_FIELD_NAME] = "Your account was blocked";
-            break;
-        }
+        case 4: 
+          $retVal[self::RESULT_FIELD_NAME] = false;
+          $retVal[self::MESSAGE_FIELD_NAME] = "Your account has been deleted.";
+          break;
+
+        default: 
+          $retVal[self::RESULT_FIELD_NAME] = false;
+          $retVal[self::MESSAGE_FIELD_NAME] = "Your account was blocked";
+          break;
       }
-		}
+
+		} else {
+      $retVal[self::RESULT_FIELD_NAME] = false;
+      $retVal[self::MESSAGE_FIELD_NAME] = "Please check your username and password.";
+    }
 
 		echo json_encode($retVal);
 	}
 
+  /**
+   * Let's create a new end point to avoid account being created on auto login even though db record is deleted
+   */
+  public function socialLogin() {
+    $userSocialIdentifier = $this->input->post('fbToken');
+
+    $existUser = $this->User_model->getOnlyUser(array('facebook_token' => $userSocialIdentifier));
+
+    $retVal = array();
+    if (count($existUser) > 0) {
+      switch ($existUser[0]['status']) {
+        case 3: 
+          $token = $this->generateToken($existUser[0]['id']);
+          $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
+
+          $retVal[self::RESULT_FIELD_NAME] = true;
+          $retVal[self::MESSAGE_FIELD_NAME] = $token;
+          $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
+          break;
+
+        case 4:            
+          $retVal[self::RESULT_FIELD_NAME] = false;
+          $retVal[self::MESSAGE_FIELD_NAME] = "Your account has been deleted.";
+          break;
+
+        default:          
+          $retVal[self::RESULT_FIELD_NAME] = false;
+          $retVal[self::MESSAGE_FIELD_NAME] = "Your account was blocked";
+          break;
+      }
+
+    } else {
+      $email = strtolower($this->input->post('email'));
+      $pwd = $this->GetMd5($this->random_string(6));
+      $firstname = $this->input->post('first_name');
+      $lastname = $this->input->post('last_name');
+
+      // user sign with their social accounts
+      // create a new user record      
+      $socialUser = array(
+        'user_email' => $email,
+        'user_password' => $pwd,
+        'facebook_token' => $userSocialIdentifier,
+        'first_name'=> $firstname,
+        'last_name'=> $lastname,
+        'status' => 3,
+        'created_at' => time(),
+        'updated_at' => time()
+      );
+
+      $added = $this->User_model->insertNewUser($socialUser);
+      if ($added[self::RESULT_FIELD_NAME]) {
+        // generate token with user id
+        $token = $this->generateToken($added[MY_Controller::MESSAGE_FIELD_NAME]);
+
+        $retVal[self::RESULT_FIELD_NAME] = true;
+        $retVal[self::MESSAGE_FIELD_NAME] = $token;
+
+        //! important: DO NOT RETURN extra
+        // This will app will let users complete their profile
+
+      } else {
+        // database error
+        $retVal[self::RESULT_FIELD_NAME] = false;
+        $retVal[self::MESSAGE_FIELD_NAME] = 'Sorry, something went wrong.\nPlease try again later';
+      }
+    }
+
+    echo json_encode($retVal);
+  }
 
 	public function forgot_pass_email_verification() {
 		$email = strtolower($this->input->post('email'));
@@ -531,8 +604,8 @@ class AuthController extends MY_Controller
 				$newVerifyCode = $this->ForgotPass_model->doForgotPassEmailVerify($existUser[0]);
 
 				$content = '
-<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You\'re requested to reset password on ATB. Your Password Reset Verification Code is</span></p>
-<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;"><b>'.$newVerifyCode.'</b></span></p>';
+          <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You\'re requested to reset password on ATB. Your Password Reset Verification Code is</span></p>
+          <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;"><b>'.$newVerifyCode.'</b></span></p>';
 	
 				$subject = 'ATB Password reset';
 				
@@ -595,8 +668,8 @@ class AuthController extends MY_Controller
 		$retVal[self::MESSAGE_FIELD_NAME] = "Password updated successfully";
 
         $content = '
-<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You\'re requested to reset password on ATB.</span></p>
-<p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">The password has been successfully reset.</span></p>';
+          <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">You\'re requested to reset password on ATB.</span></p>
+          <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="color: #808080; font-size: 18px;">The password has been successfully reset.</span></p>';
 
         $subject = 'ATB Password reset successful';
 
@@ -604,7 +677,6 @@ class AuthController extends MY_Controller
 
 		echo json_encode($retVal);
 	}
-
 
 	public function change_pass() {
 		$newPass = self::GetMd5($this->input->post('new_pass'));
