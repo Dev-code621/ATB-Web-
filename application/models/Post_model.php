@@ -228,7 +228,9 @@ class Post_model extends MY_Model
             $posts[$i]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[$i]['id']));
             $post_likes = $this->PostLike_model->getLikes(array('post_id' => $posts[$i]['id']));
             $posts[$i]['likes'] = count($post_likes);
-            $post_comments = $this->PostComment_model->getComments(array('post_id' => $posts[$i]['id']));
+            $post_comments = $this->PostComment_model->getComments(array(
+                'post_id' => $posts[$i]['id'],
+                'status' => 1));
             $commentCount = count($post_comments);
             foreach ($post_comments as $comment) {
             	$commentCount += count($comment["replies"]);
@@ -345,6 +347,13 @@ class Post_model extends MY_Model
      */
     public function getPostInfo_InMobile($userId, $searchKey = "") {
         $userFeeds = $this->Feeds_model->getFeedsInfo($userId);
+        
+        // feed groups should be defined here
+        // user didn't select their feed
+        if (count($userFeeds) <= 0) {
+            $userFeeds = $this->Feeds_model->getAllFeeds();
+        }
+
         $feedList = array();
         for($i = 0; $i < count($userFeeds); $i++) {
             array_push($feedList, $userFeeds[$i]['description']);
@@ -380,7 +389,9 @@ class Post_model extends MY_Model
             $posts[$i]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[$i]['id']));
             $post_likes = $this->PostLike_model->getLikes(array('post_id' => $posts[$i]['id']));
             $posts[$i]['likes'] = count($post_likes);
-            $post_comments = $this->PostComment_model->getComments(array('post_id' => $posts[$i]['id']));
+            $post_comments = $this->PostComment_model->getComments(array(
+                'post_id' => $posts[$i]['id'],
+                'status' => 1));
             $commentCount = count($post_comments);
             foreach ($post_comments as $comment) {
             	$commentCount += count($comment["replies"]);
