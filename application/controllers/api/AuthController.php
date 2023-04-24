@@ -498,9 +498,16 @@ class AuthController extends MY_Controller
           $token = $this->generateToken($existUser[0]['id']);
           $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
 
-          $retVal[self::RESULT_FIELD_NAME] = true;
-          $retVal[self::MESSAGE_FIELD_NAME] = $token;
-          $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
+          if ($loginRetVal['profile']['complete'] == 1) {
+            $retVal[self::RESULT_FIELD_NAME] = true;
+            $retVal[self::MESSAGE_FIELD_NAME] = $token;
+            $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
+
+          } else {
+            $retVal[self::RESULT_FIELD_NAME] = true;
+            $retVal[self::MESSAGE_FIELD_NAME] = $token;
+          }
+
           break;
 
         case 4: 
@@ -537,7 +544,7 @@ class AuthController extends MY_Controller
           $token = $this->generateToken($existUser[0]['id']);
           $loginRetVal = $this->User_model->doLoginMobileApp($existUser[0]);
 
-          if ($loginRetVal['complete'] === '1') {
+          if ($loginRetVal['profile']['complete'] == 1) {
             $retVal[self::RESULT_FIELD_NAME] = true;
             $retVal[self::MESSAGE_FIELD_NAME] = $token;
             $retVal[self::EXTRA_FIELD_NAME] = $loginRetVal;
@@ -545,10 +552,8 @@ class AuthController extends MY_Controller
           } else {
             $retVal[self::RESULT_FIELD_NAME] = true;
             $retVal[self::MESSAGE_FIELD_NAME] = $token;
-
-            // Do NOT return user information as extra, mobile handles redirect users to setup/complete their accounts
           }
-
+          
           break;
 
         case 4:            
