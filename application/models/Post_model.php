@@ -433,5 +433,180 @@ class Post_model extends MY_Model
 
         return $posts;
     }
+
+    // adding a pagination
+    public function getFeed($userId, $category, $ending, $limit, $page) {
+        if ($category == 'My ATB') {
+            $userFeeds = $this->Feeds_model->getFeedsInfo($userId);
+        
+            // feed groups should be defined here
+            // user didn't select their feed
+            if (count($userFeeds) <= 0) {
+                $userFeeds = $this->Feeds_model->getAllFeeds();
+            }
     
+            $feedList = array();
+            for($i = 0; $i < count($userFeeds); $i++) {
+                array_push($feedList, $userFeeds[$i]['description']);
+            }
+
+            $offset = $limit * ($page-1); 
+            if (!is_null($ending) && !empty($ending)) {
+                $offset = $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                ->where_in('category_title', $feedList)
+                ->where(array(
+                    'is_active' => 1, 
+                    'multi_pos' => 0,
+                    'id >= ' => $ending))
+                ->order_by('id', 'DESC')
+                ->get()
+                ->num_rows();
+            }
+            
+            $posts = $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                ->where_in('category_title', $feedList)
+                ->where(array('is_active' => 1, 'multi_pos' => 0))
+                ->order_by('id', 'DESC')
+                ->limit($limit, $offset)
+                ->get()
+                ->result_array();
+
+            for($i = 0 ; $i < count($posts) ; $i++) {
+                $posts[$i]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[$i]['id']));
+                $post_likes = $this->PostLike_model->getLikes(array('post_id' => $posts[$i]['id']));
+                $posts[$i]['likes'] = count($post_likes);
+                $post_comments = $this->PostComment_model->getComments(array(
+                    'post_id' => $posts[$i]['id'],
+                    'status' => 1));
+                $commentCount = count($post_comments);
+                foreach ($post_comments as $comment) {
+                    $commentCount += count($comment["replies"]);
+                }
+                
+                if (!empty($posts[$i]['insurance_id'])){
+                    $posts[$i]["insurance"] = $this->UserServiceFiles_model->getServiceFile($posts[$i]['insurance_id']);
+                }
+                
+                if (!empty($posts[$i]['qualification_id'])){
+                    $posts[$i]["qualification"] = $this->UserServiceFiles_model->getServiceFile($posts[$i]['qualification_id']);
+                }
+                
+                $posts[$i]['comments'] = $commentCount;
+                $user = $this->User_model->getOnlyUser(array('id' => $posts[$i]['user_id']));
+                $posts[$i]["user"] = $user;
+                
+                $posts[$i]['read_created'] = human_readable_date($posts[$i]['created_at']);
+                
+                if ($posts[$i]["post_type"] == 4) {
+                    $posts[$i]['poll_options'] = $this->PostPoll_model->getPollOptions($posts[$i]['id']);
+                    for($x = 0 ; $x < count($posts[$i]['poll_options']); $x++) {
+                        $posts[$i]['poll_options'][$x]["votes"] = $this->PostPoll_model->getPollVotes($posts[$i]['poll_options'][$x]["id"]);
+                    }
+                }
+            }
+
+            return $posts;
+
+        } else {
+            $offset = $limit * ($page-1);
+
+            if (!is_null($ending) && !empty($ending)) {
+                $offset = $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                    ->where(array(
+                        'category_title' => $category,
+                        'is_active' => 1, 
+                        'multi_pos' => 0,
+                        'id >= ' => $ending
+                    ))
+                    ->order_by('id', 'DESC')
+                    ->get()
+                    ->num_rows();
+            }
+
+            $posts =  $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                ->where(array(
+                    'category_title' => $category,
+                    'is_active' => 1, 
+                    'multi_pos' => 0
+                ))
+                ->order_by('id', 'DESC')
+                ->limit($limit, $offset)
+                ->get()
+                ->result_array();
+
+            for($i = 0 ; $i < count($posts) ; $i++) {
+                $posts[$i]['post_imgs'] = $this->getPostImage(array('post_id' => $posts[$i]['id']));
+                $post_likes = $this->PostLike_model->getLikes(array('post_id' => $posts[$i]['id']));
+                $posts[$i]['likes'] = count($post_likes);
+                $post_comments = $this->PostComment_model->getComments(array(
+                    'post_id' => $posts[$i]['id'],
+                    'status' => 1));
+                $commentCount = count($post_comments);
+                foreach ($post_comments as $comment) {
+                    $commentCount += count($comment["replies"]);
+                }
+                
+                if (!empty($posts[$i]['insurance_id'])){
+                    $posts[$i]["insurance"] = $this->UserServiceFiles_model->getServiceFile($posts[$i]['insurance_id']);
+                }
+                
+                if (!empty($posts[$i]['qualification_id'])){
+                    $posts[$i]["qualification"] = $this->UserServiceFiles_model->getServiceFile($posts[$i]['qualification_id']);
+                }
+                
+                $posts[$i]['comments'] = $commentCount;
+                $user = $this->User_model->getOnlyUser(array('id' => $posts[$i]['user_id']));
+                $posts[$i]["user"] = $user;
+                
+                $posts[$i]['read_created'] = human_readable_date($posts[$i]['created_at']);
+                
+                if ($posts[$i]["post_type"] == 4) {
+                    $posts[$i]['poll_options'] = $this->PostPoll_model->getPollOptions($posts[$i]['id']);
+                    for($x = 0 ; $x < count($posts[$i]['poll_options']); $x++) {
+                        $posts[$i]['poll_options'][$x]["votes"] = $this->PostPoll_model->getPollVotes($posts[$i]['poll_options'][$x]["id"]);
+                    }
+                }
+            }
+
+            return $posts;
+        }
+    }
+    
+    public function getFeedCount($userId, $category) {
+        $totalRows = 0;
+        if ($category == 'My ATB') {
+            $userFeeds = $this->Feeds_model->getFeedsInfo($userId);
+        
+            // feed groups should be defined here
+            // user didn't select their feed
+            if (count($userFeeds) <= 0) {
+                $userFeeds = $this->Feeds_model->getAllFeeds();
+            }
+    
+            $feedList = array();
+            for($i = 0; $i < count($userFeeds); $i++) {
+                array_push($feedList, $userFeeds[$i]['description']);
+            }
+
+            $totalRows = $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                ->where_in('category_title', $feedList)
+                ->where(array('is_active' => 1, 'multi_pos' => 0))
+                ->order_by('id', 'DESC')
+                ->get()
+                ->num_rows();
+
+        } else {
+            $totalRows =  $this->db->select('*') -> from(self::TABLE_POST_LIST)
+                ->where(array(
+                    'category_title' => $category,
+                    'is_active' => 1, 
+                    'multi_pos' => 0
+                ))
+                ->order_by('id', 'DESC')
+                ->get()
+                ->num_rows();
+        }
+
+        return $totalRows;
+    }
 }

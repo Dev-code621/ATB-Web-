@@ -993,6 +993,12 @@ class PostController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	/**
+	 * used to get and return feed when none My ATB category is selected
+	 * This will be deprecated after a new version is released
+	 * 
+	 * This will be deprecated once a new version is released
+	 */
 	public function get_feed()
 	{
 		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
@@ -1081,6 +1087,13 @@ class PostController extends MY_Controller
 		echo json_encode($retVal);
 	}
 
+	/**
+	 * 
+	 * used to get and return feed when My ATB category is selected
+	 * This will be deprecated after a new version is released
+	 *
+	 * This will be deprecated after a new version is released
+	 */
 	public function get_home_feed()
 	{
 		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
@@ -1173,6 +1186,129 @@ class PostController extends MY_Controller
 			$retVal[self::EXTRA_FIELD_NAME] = array();
 		}
 		echo json_encode($retVal);
+	}
+
+	// newly added feed API with a pagination
+	// creating a new end point not to prevent previous version apps working
+	public function getRecentFeed() {
+		$verifyTokenResult = $this->verificationToken($this->input->post('token'));
+
+		$return = array();
+		if ($verifyTokenResult[self::RESULT_FIELD_NAME]) {
+			$category = 'My ATB';
+
+			if (!is_null($this->input->post('category_title')) && !empty($this->input->post('category_title'))) {
+				$category = $this->input->post('category_title');
+			}
+
+			$limit = 10;
+			$page = 1;
+			if (!is_null($this->input->post('items_per_page')) && !empty($this->input->post('items_per_page'))) {
+				$limit = $this->input->post('items_per_page');
+			}
+
+			if (!is_null($this->input->post('page')) && !empty($this->input->post('page')) && $this->input->post('page') > 0) {
+				$page = $this->input->post('page');
+			}
+			
+			$queryEnding = $this->input->post('last_feed_id');
+
+			$userId = $verifyTokenResult['id'];
+			$totalRows = $this->Post_model->getFeedCount($userId, $category);
+			$posts = $this->Post_model->getFeed($userId, $category, $queryEnding, $limit, $page);
+			for ($i = 0; $i < count($posts); $i++) {
+				if (intval($posts[$i]['is_multi']) == 1) {
+					$multiPosts = $this->Post_model->getPostInfo(array(
+						'posts.is_active' => 1, 
+						'posts.multi_group' => $posts[$i]['multi_group']
+					));
+
+					foreach ($multiPosts as $elementKey => $element) {
+						foreach ($element as $valueKey => $value) {
+							if ($valueKey == 'id' && $value == $posts[$i]['id']) {
+								unset($multiPosts[$elementKey]);
+							}
+						}
+					}
+
+					$multiPosts = array_values($multiPosts);
+
+					for ($x = 0; $x < count($multiPosts); $x++) {
+						if (intval($multiPosts[$x]['poster_profile_type']) == 0) {
+							//personal
+							$userInfos = $this->User_model->getOnlyUser(array('id' => $posts[$x]['user_id']));
+							$multiPosts[$x]['profile_name'] = $userInfos[0]['user_name'];
+							$multiPosts[$x]['profile_img'] = $userInfos[0]['pic_url'];
+						} else {
+							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $posts[$x]['user_id']));
+							if (count($businessInfos) > 0) {
+								$multiPosts[$x]['profile_name'] = $businessInfos[0]['business_profile_name'];
+								$multiPosts[$x]['profile_img'] = $businessInfos[0]['business_logo'];
+							}
+						}
+                        
+                        $product_id = $multiPosts[$x]['product_id'];                        
+                        if ($multiPosts[$x]['post_type'] == "2" && !empty($product_id)) {
+							$products = $this->Product_model->getProduct($product_id);
+							if (count($products) > 0) {
+								$posts[$i]['stock_level'] = $products[0]['stock_level'];
+							}
+							
+                            $multiPosts[$x]["variations"] = $this->Product_model->getProductVariations(array('product_id' => $product_id));
+                        }
+					}
+
+					$posts[$i]["group_posts"] = $multiPosts;
+				}
+                
+                $product_id = $posts[$i]['product_id'];                        
+                if ($posts[$i]['post_type'] == "2" && !empty($product_id)) {
+					$products = $this->Product_model->getProduct($product_id);
+					if (count($products) > 0) {
+						$posts[$i]['stock_level'] = $products[0]['stock_level'];
+					}
+					
+                    $posts[$i]["variations"] = $this->Product_model->getProductVariations(array('product_id' => $product_id));
+                }
+				
+				$tagids = $this->Tag_model->getPostTags($posts[$i]['id']);
+				$tags = array();
+				
+				foreach ($tagids as $tagid) {
+					$tags[] = $this->Tag_model->getTag($tagid['tag_id']);
+				}
+				
+				$posts[$i]["tags"] = $tags;
+
+				if (intval($posts[$i]['poster_profile_type']) == 0) {
+                    //personal
+					$userInfos = $this->User_model->getOnlyUser(array('id' => $posts[$i]['user_id']));
+					$posts[$i]['profile_name'] = $userInfos[0]['user_name'];
+					$posts[$i]['profile_img'] = $userInfos[0]['pic_url'];
+
+				} else {
+					$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $posts[$i]['user_id']));
+					if (count($businessInfos) > 0) {
+						$posts[$i]['profile_name'] = $businessInfos[0]['business_profile_name'];
+						$posts[$i]['profile_img'] = $businessInfos[0]['business_logo'];
+					}
+				}
+			}
+
+			$return[self::RESULT_FIELD_NAME] = true;
+			$return[self::MESSAGE_FIELD_NAME] = "Success";
+			$return[self::EXTRA_FIELD_NAME] = array(
+				'total_rows' => $totalRows,
+				'feed' => $posts
+			);
+
+		} else {
+			$return[self::RESULT_FIELD_NAME] = false;
+			$return[self::MESSAGE_FIELD_NAME] = "Invalid Credentials";
+			$return[self::EXTRA_FIELD_NAME] = array();
+		}
+
+		echo json_encode($return);
 	}
 
 	public function get_post_detail()

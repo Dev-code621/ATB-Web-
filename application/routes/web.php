@@ -55,6 +55,9 @@
         // new added on 19th March, 2022
         Route::post('/delete_comment', 'PostController@delete_post_comment')->name('api.post.delete_comment');
         Route::post('/delete_reply', 'PostController@delete_post_reply')->name('api.post.delete_reply');
+
+        // adding pagination on 27 April, 2023
+        Route::post('/recent_feed', 'PostController@getRecentFeed')->name('api.post.recent_feed');
     });
 
     Route::group('/api/auth', ['namespace' => 'api'], function() {
