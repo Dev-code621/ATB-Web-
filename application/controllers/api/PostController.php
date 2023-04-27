@@ -1024,11 +1024,11 @@ class PostController extends MY_Controller
 					for ($x = 0; $x < count($multiPosts); $x++) {
 						if (intval($multiPosts[$x]['poster_profile_type']) == 0) {
 							//personal
-							$userInfos = $this->User_model->getOnlyUser(array('id' => $postContent[$x]['user_id']));
+							$userInfos = $this->User_model->getOnlyUser(array('id' => $multiPosts[$x]['user_id']));
 							$multiPosts[$x]['profile_name'] = $userInfos[0]['user_name'];
 							$multiPosts[$x]['profile_img'] = $userInfos[0]['pic_url'];
 						} else {
-							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $postContent[$x]['user_id']));
+							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $multiPosts[$x]['user_id']));
 							$multiPosts[$x]['profile_name'] = $businessInfos[0]['business_profile_name'];
 							$multiPosts[$x]['profile_img'] = $businessInfos[0]['business_logo'];
 						}
@@ -1119,11 +1119,11 @@ class PostController extends MY_Controller
 					for ($x = 0; $x < count($multiPosts); $x++) {
 						if (intval($multiPosts[$x]['poster_profile_type']) == 0) {
 							//personal
-							$userInfos = $this->User_model->getOnlyUser(array('id' => $postContent[$x]['user_id']));
+							$userInfos = $this->User_model->getOnlyUser(array('id' => $multiPosts[$x]['user_id']));
 							$multiPosts[$x]['profile_name'] = $userInfos[0]['user_name'];
 							$multiPosts[$x]['profile_img'] = $userInfos[0]['pic_url'];
 						} else {
-							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $postContent[$x]['user_id']));
+							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $multiPosts[$x]['user_id']));
 							if (count($businessInfos) > 0) {
 								$multiPosts[$x]['profile_name'] = $businessInfos[0]['business_profile_name'];
 								$multiPosts[$x]['profile_img'] = $businessInfos[0]['business_logo'];
@@ -1236,11 +1236,11 @@ class PostController extends MY_Controller
 					for ($x = 0; $x < count($multiPosts); $x++) {
 						if (intval($multiPosts[$x]['poster_profile_type']) == 0) {
 							//personal
-							$userInfos = $this->User_model->getOnlyUser(array('id' => $posts[$x]['user_id']));
+							$userInfos = $this->User_model->getOnlyUser(array('id' => $multiPosts[$x]['user_id']));
 							$multiPosts[$x]['profile_name'] = $userInfos[0]['user_name'];
 							$multiPosts[$x]['profile_img'] = $userInfos[0]['pic_url'];
 						} else {
-							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $posts[$x]['user_id']));
+							$businessInfos = $this->UserBusiness_model->getBusinessInfos(array('user_id' => $multiPosts[$x]['user_id']));
 							if (count($businessInfos) > 0) {
 								$multiPosts[$x]['profile_name'] = $businessInfos[0]['business_profile_name'];
 								$multiPosts[$x]['profile_img'] = $businessInfos[0]['business_logo'];
